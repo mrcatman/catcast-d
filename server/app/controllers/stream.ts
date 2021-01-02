@@ -37,7 +37,7 @@ async function routes (fastify: ServerInstance, options) {
             streamKey.channel = undefined;
             streamKey.user = undefined;
         }
-
+        streamKey.setComputed();
         res.send({key: streamKey});
     });
 
