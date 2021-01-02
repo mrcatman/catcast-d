@@ -19,10 +19,10 @@ export class User extends BaseModel {
     @Column()
     login: string;
 
-    @Column()
+    @Column({nullable: true})
     email: string;
 
-    @Column({ select: false })
+    @Column({ select: false, nullable: true })
     password: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
@@ -44,7 +44,7 @@ export class User extends BaseModel {
     updated_at: Date;
 
     @Column({nullable: true})
-    domain: string; // Federation domain; if null, channel is on the current server
+    domain: string; // Federation domain; if null, user is on the current server
 
     getJWTPayload() {
         return {

@@ -31,7 +31,7 @@ async function routes (fastify: ServerInstance, options) {
             login: [new NotEmptyValidator()],
             password: [new NotEmptyValidator()],
         });
-        let user = await User.findOne({login: data.login});
+        let user = await User.findOne({login: data.login, domain: null});
         if (!user) {
             throw {
                 statusCode: 404,

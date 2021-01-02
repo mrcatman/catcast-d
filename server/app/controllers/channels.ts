@@ -2,8 +2,9 @@ import { Channel } from '../models/Channel';
 import {ServerInstance} from "../types";
 import {checkRightsOrFail} from "../helpers/checkRights";
 import {StreamKey} from "../models/StreamKey";
-import {getBaseChannelValidators} from "../helpers/channels";
+import { getBaseChannelValidators, getFollowConditions } from '../helpers/channels'
 import {generateKeys} from "../federation/crypto";
+import { Follower } from '../models/Follower'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -70,9 +71,57 @@ async function routes (fastify: ServerInstance, options) {
     });
 
 
+    fastify.post('/:id/subscribe', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id});
 
+        let subscription = await Follower.findOne({
+            follower: {
+                id: req.user.id
+            },
+            actor_id: channel.id,
+            actor_type: Follower.TYPE_CHANNEL
+        })
+        if (!subscription) {
+            subscription = new Follower();
+            subscription.fill(getFollowConditions(req.user, channel));
+            await subscription.save();
+        }
+        res.send({
+            status: true
+        });
+    })
 
+    fastify.post('/:id/unsubscribe', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id});
 
+        let subscription = await Follower.findOne(getFollowConditions(req.user, channel))
+        if (subscription) {
+            await subscription.remove();
+        }
+        res.send({
+            status: true
+        });
+    })
+
+    fastify.get('/:id/subscribers-count', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id});
+
+        let subscribers_count = (await Follower.find({
+            actor_id: channel.id,
+            actor_type: Follower.TYPE_CHANNEL
+        })).length
+        let is_subscribed = !!(await Follower.findOne(getFollowConditions(req.user, channel)))
+        res.send({
+            subscribers_count,
+            is_subscribed
+        });
+    })
 
 }
 
