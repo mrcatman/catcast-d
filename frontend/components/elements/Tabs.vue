@@ -126,6 +126,7 @@
 <script lang="ts">
   import Vue, {PropType} from 'vue'
   import TabData from '~/components/types/Tabs'
+  import { Route } from "vue-router"
 
   export default Vue.extend({
 	props: {
@@ -168,7 +169,6 @@
 	},
 	watch:{
 		currentTab(tab) {
-	    console.log(tab);
 			this.$emit('input',tab);
 		}
 	},
@@ -178,7 +178,7 @@
       currentTab: this.value,
     }
   },
-  mounted() {
+  mounted(): void {
 	  if (this.remember) {
       if (this.$route.query[this.namespace]) {
         let tab = this.list.filter(tab => tab.id === this.$route.query[this.namespace]);

@@ -5,19 +5,14 @@
   "author": "Pavel Svitek",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon server/index.ts",
-    "dev:js": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
-    "build": "npm run build:client && npm run build:server",
-    "build:client": "nuxt build",
-    "build:server": "tsc -p server/",
-    "start": "cross-env NODE_ENV=production node server-dist/index.js",
-    "generate": "nuxt generate",
-    "test:client": "jest",
-    "test:client:watch": "npm run test:client -- --watch",
-    "test:server": "jest --config server/jest.config.js",
-    "test:server:watch": "npm run test:server -- --watch"
+    "dev": "nuxt-ts",
+    "build": "nuxt-ts build",
+    "start": "nuxt-ts start",
+    "generate": "nuxt-ts generate",
+    "lint": "eslint --max-warnings 0 --ext .ts,.vue ."
   },
   "dependencies": {
+    "@nuxt/typescript-runtime": "^2.0.0",
     "@nuxtjs/axios": "^5.12.4",
     "@nuxtjs/dotenv": "^1.4.1",
     "@types/hls.js": "^0.13.3",
@@ -27,6 +22,7 @@
     "express": "^4.17.1",
     "hls.js": "^0.14.17",
     "nuxt": "^2.14.1",
+    "nuxt-property-decorator": "^2.8.8",
     "nuxt-typed-vuex": "^0.1.22",
     "p2p-media-loader-hlsjs": "^0.6.2",
     "portal-vue": "^2.1.7",
@@ -37,7 +33,8 @@
     "vue-notification": "^1.3.20"
   },
   "devDependencies": {
-    "@nuxt/typescript-build": "^0.6.0",
+    "@nuxt/types": "^2.14.12",
+    "@nuxt/typescript-build": "^2.0.3",
     "@nuxtjs/style-resources": "^1.0.0",
     "@types/jest": "^26.0.9",
     "@vue/test-utils": "^1.0.3",

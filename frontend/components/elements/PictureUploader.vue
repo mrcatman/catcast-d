@@ -110,6 +110,7 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import Picture from '~/types/Picture'
 import { UploadPicture } from '~/api/modules/upload'
+import { Watch } from '~/node_modules/vue-property-decorator'
 enum uploadStatus {
   STATUS_NOT_STARTED,
   STATUS_UPLOADING,
@@ -144,46 +145,46 @@ const PictureUploaderProps = Vue.extend({
 
 const availablePictureExtensions = ['png', 'jpg', 'jpeg', 'gif'];
 
-@Component({
-  watch: {
-    value (newValue: Picture | null) {
-      this.picture = newValue;
-    },
-    picture(newVal) {
-      this.$emit('input', newVal);
-    }
-  }
-})
+@Component({})
 export default class PictureUploader extends PictureUploaderProps {
 	filename: string = '';
 	extensions: Array<string> = availablePictureExtensions;
   status: uploadStatus = uploadStatus.STATUS_NOT_STARTED;
   picture: Picture | null = null;
 
+  @Watch('value')
+  onValueChanged(newValue: Picture | null) {
+    this.picture = newValue;
+  }
+
+  @Watch('picture')
+  onPictureChanged(newVal: Picture | null) {
+    this.$emit('input', newVal);
+  }
+
+
 	get path() {
     return this.picture ? this.picture.full_url : null;
   }
+
 	get formatsListText() {
 	  return this.extensions.join(', ');
 	};
-
-	mounted() {
-
-	}
 
   reset() {
     this.picture = null;
   };
 
-  onFileInputChange(e) {
-    let files = e.target.files;
-			if (files && files[0]) {
+  onFileInputChange(e: Event) {
+    let files = (<HTMLInputElement>e.target).files;
+			if (files && files.length) {
 				let picture = files[0];
 				let re = /(?:\.([^.]+))?$/;
-				let extension = re.exec(picture.name)[1];
-				if (!extension) {
+				let result = re.exec(picture.name);
+				if (!result) {
           return;
         }
+				let extension = result[1];
         extension = extension.toLowerCase();
 				let extensions = this.extensions;
 				if (extensions.indexOf(extension) !== -1) {

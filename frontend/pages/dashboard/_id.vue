@@ -11,19 +11,21 @@
   }
 </style>
 <script lang="ts">
-  import Vue from 'vue';
+  import { Component, Vue } from 'nuxt-property-decorator'
+
   import Channel from '~/types/Channel'
   import { ChannelGetById, ChannelGetRights } from '~/api/modules/channels'
-  export default Vue.extend({
-    middleware: "auth",
-    data() {
-      return {
-        channel: {} as Channel,
-        rights: [] as Array<string>,
-        error: null,
-        loaded: false
-      }
-    },
+
+  @Component({
+    middleware: 'auth',
+  })
+  export default class DashboardContainerPage extends Vue {
+
+    channel: Channel = {} as Channel;
+    rights: Array<string> = [] as Array<string>;
+    error = null;
+    loaded: boolean = false;
+
     async fetch() {
       try {
         let id = parseInt(this.$route.params.id);
@@ -33,6 +35,6 @@
       } catch (e) {
         console.log(e);
       }
-    },
-  });
+    }
+  }
 </script>

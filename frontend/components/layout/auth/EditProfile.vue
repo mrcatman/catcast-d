@@ -14,6 +14,7 @@
   import {BaseFormComponent, Warning} from '~/components/types/BaseFormComponent'
   import User from '~/types/User'
   import { AuthUpdateProfile } from '~/api/modules/auth'
+  import { Route } from "vue-router"
 
   @Component
   export default class EditProfile extends BaseFormComponent {

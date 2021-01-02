@@ -9,19 +9,20 @@
   }
 </style>
 <script lang="ts">
-  import Vue from 'vue';
+  import { Component, Vue } from 'nuxt-property-decorator'
   import Channel from '~/types/Channel'
   import { ChannelGetByUrl } from '~/api/modules/channels'
   import LivePlayer from '~/components/layout/channel-page/LivePlayer.vue'
-  export default Vue.extend({
+
+  @Component({
     components: { LivePlayer },
-    data() {
-      return {
-        channel: {} as Channel,
-        error: null,
-        loaded: false
-      }
-    },
+  })
+  export default class ChannelPage extends Vue {
+
+    channel: Channel = {} as Channel;
+    error = null;
+    loaded: boolean = false
+
     async fetch() {
       try {
         this.channel = await ChannelGetByUrl(this.$route.params.url);
@@ -29,6 +30,6 @@
       } catch (e) {
         console.log(e);
       }
-    },
-  });
+    }
+  }
 </script>

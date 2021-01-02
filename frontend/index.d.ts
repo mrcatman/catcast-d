@@ -11,3 +11,9 @@ declare module '@nuxt/types' {
     $accessor: typeof accessorType
   }
 }
+
+declare module 'vue/types/options' {
+  interface ComponentOptions<V extends Vue> {
+    middleware?: string | string[];
+  }
+}

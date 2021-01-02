@@ -17,6 +17,7 @@
   import Channel from '~/types/Channel'
   import { ChannelCreate, ChannelUpdate } from '~/api/modules/channels'
   import { notifySuccess } from '~/helpers/notifications'
+  import { Route } from "vue-router"
 
   @Component
   export default class ChannelCommon extends BaseFormComponent {

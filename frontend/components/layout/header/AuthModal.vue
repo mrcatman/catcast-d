@@ -30,8 +30,8 @@
     tabs = [] as Array<TabData>;
     mounted(): void {
       this.tabs = [
-        {id: 'login', name: this.$t('auth.login')},
-        {id: 'register', name: this.$t('auth.register')},
+        {id: 'login', name: this.$t('auth.login') as string},
+        {id: 'register', name: this.$t('auth.register') as string},
       ]
     }
   };

@@ -14,34 +14,23 @@
 </template>
 
 <script lang="ts">
-  import Vue from 'vue'
+  import { Component, Vue } from 'nuxt-property-decorator'
+
   import { ChannelsGetListMy } from '~/api/modules/channels'
+  import ChannelThumb from '~/components/layout/thumbs/Channel.vue'
   import Channel from '~/types/Channel'
 
-
-  export default Vue.extend({
-    async fetch() {
-      this.channels = await ChannelsGetListMy();
-    },
-    mounted() {
-
-    },
+  @Component({
     components: {
-
-    },
-    data() {
-      return {
-        channels: [] as Array<Channel>
-      }
-    },
-    computed: {
-
-    },
-
-    methods: {
-
+      ChannelThumb,
     },
   })
+  export default class DashboardIndexPage extends Vue {
+    async fetch() {
+      this.channels = await ChannelsGetListMy();
+    }
+    channels = [] as Array<Channel>
+  }
 </script>
 
 <style>
