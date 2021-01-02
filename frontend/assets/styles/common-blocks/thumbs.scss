@@ -1,0 +1,46 @@
+.thumbs-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: .5em;
+}
+
+.thumb {
+  width: calc(100% / 4 - .5em);
+  margin: 0 .5em .5em 0;
+  text-decoration: none;
+  font-weight: 300;
+
+  &__picture {
+    padding-top: 60%;
+    background-color: #000;
+    background-size: cover;
+    background-position: center;
+    transition: box-shadow .3s;
+  }
+
+  &__logo {
+    width: 2em;
+    height: 2em;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0 .5em 0 0;
+  }
+
+  &__inner {
+    display: flex;
+    margin: .5em 0 0;
+  }
+
+  &__texts {
+    font-size: .875em;
+  }
+
+  &__main-title {
+    font-weight: 500;
+  }
+
+  &:hover &__picture {
+    box-shadow: 0 0 .5em var(--active-color);
+  }
+}

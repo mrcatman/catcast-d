@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["esnext", "esnext.asynciterable", "dom"],
+    // to go around ElementUI problem https://github.com/nuxt/typescript/issues/49
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "strict": true,
+    "noEmit": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"],
+      "@/*": ["./*"]
+    },
+    "types": ["jest", "@types/node", "@nuxt/types", "@nuxtjs/auth-next"]
+  },
+  "exclude": [
+    "node_modules",
+    ".nuxt",
+    "dist",
+    "server-dist",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ]
+}

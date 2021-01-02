@@ -1,0 +1,111 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:200,300,500,700,900");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://use.fontawesome.com/releases/v5.5.0/css/all.css");
+@import url("https://use.fontawesome.com/releases/v5.5.0/css/brands.css");
+@import "common-blocks/thumbs.scss";
+
+html {
+  height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  --shadow-big: 0px 0px rgba(0, 0, 0, 0);
+  --link-color: #fff;
+  --main-bg: #04131f;
+  --sidebar-bg: #02101b;
+  --title-box-color: #06121b;
+  --input-bg-color: #555;
+  --input-text-color: #fafafa;
+  --input-border-color: #555;
+  --input-border-active-color: #777;
+  --text-color: #fff;
+  --text-sub-color: #ddd;
+  --border-color: #ddd;
+  --box-header-color: #ffffff;
+  --box-footer-color: #041019;
+  --box-color: linear-gradient(#031929, #111b23);
+  --menu-color: #0b3658;
+  --box-element-color: #041b2b;
+  --inactive-color: #aaa;
+  --inactive-text-color: #777;
+  --text-warning-color: #fffd92;
+  --notifications-color: #252525;
+  --list-container-color: #001a2f;
+  --active-color: #107fd0;
+  --white: #fff;
+  --blue: #107fd0;
+  --green: #71ca0b;
+  --red: #d04310;
+  --positive-color: #71ca0b;
+  --negative-color: #d04310;
+  --disabled-color: #777;
+}
+body{
+  margin: 0;
+  padding: 0;
+  font-family: Montserrat, sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  overflow: hidden;
+  scrollbar-color: #eee rgba(0, 0, 0, 0);
+  scrollbar-width: thin;
+  background: var(--main-bg);
+  color: var(--text-color);
+  @media screen and (max-width: 1610px) {
+    & {
+      font-size: 16px;
+    }
+  }
+  @media screen and (max-width: 1100px) {
+    & {
+      font-size: 14px;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    & {
+      font-size: 16px;
+    }
+  }
+  @media screen and (max-width: 512px) {
+    & {
+      font-size: 14px;
+    }
+  }
+}
+
+a{
+  color: var(--link-color);
+  font-weight:400;
+}
+
+::-webkit-scrollbar-track
+{
+  border-radius: 0;
+}
+
+::-webkit-scrollbar
+{
+  width: .5em;
+  height: .25em;
+  background: none;
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: #eee;
+}
+.app .vue-notification {
+  font-size: 1.125em;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+.page-form {
+  margin: 1em auto;
+}
