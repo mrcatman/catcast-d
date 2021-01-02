@@ -1,6 +1,12 @@
 <template>
-  <div class="channel-page">
-    <LivePlayer :channel="channel" v-if="loaded" />
+  <div class="container">
+    <div class="channel-page" v-if="loaded">
+      <m-box>
+        <LivePlayer :channel="channel" />
+        <SubscribeBlock :channel="channel" />
+      </m-box>
+
+    </div>
   </div>
 </template>
 <style lang="scss">
@@ -13,9 +19,11 @@
   import Channel from '~/types/Channel'
   import { ChannelGetByUrl } from '~/api/modules/channels'
   import LivePlayer from '~/components/layout/channel-page/LivePlayer.vue'
+  import { Route } from "vue-router"
+  import SubscribeBlock from '~/components/layout/channel-page/SubscribeBlock.vue'
 
   @Component({
-    components: { LivePlayer },
+    components: { SubscribeBlock, LivePlayer },
   })
   export default class ChannelPage extends Vue {
 

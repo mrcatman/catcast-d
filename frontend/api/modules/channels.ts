@@ -38,3 +38,22 @@ export const ChannelGetRights = async (id: number): Promise<Array<string>> => {
   const res = await api.get(`${BASE_PATH}/${id}/rights`);
   return res.data.rights as Array<string>;
 };
+
+export const ChannelSubscribe = async (id: number): Promise<boolean> => {
+  const res = await api.post(`${BASE_PATH}/${id}/subscribe`);
+  return res.data.status as boolean;
+};
+
+export const ChannelUnsubscribe = async (id: number): Promise<boolean> => {
+  const res = await api.post(`${BASE_PATH}/${id}/unsubscribe`);
+  return res.data.status as boolean;
+};
+
+interface GetSubscribersResponse {
+  subscribers_count: number,
+  is_subscribed: boolean
+}
+export const ChannelGetSubscribersCount = async (id: number): Promise<GetSubscribersResponse> => {
+  const res = await api.get(`${BASE_PATH}/${id}/subscribers-count`);
+  return res.data as GetSubscribersResponse;
+};

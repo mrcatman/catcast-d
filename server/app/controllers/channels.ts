@@ -107,16 +107,14 @@ async function routes (fastify: ServerInstance, options) {
         });
     })
 
-    fastify.get('/:id/subscribers-count', {
-        preValidation: [fastify.authenticate]
-    }, async (req, res): Promise<any> => {
+    fastify.get('/:id/subscribers-count', async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({id: req.params.id});
 
         let subscribers_count = (await Follower.find({
             actor_id: channel.id,
             actor_type: Follower.TYPE_CHANNEL
         })).length
-        let is_subscribed = !!(await Follower.findOne(getFollowConditions(req.user, channel)))
+        let is_subscribed = req.user ? !!(await Follower.findOne(getFollowConditions(req.user, channel))) : false;
         res.send({
             subscribers_count,
             is_subscribed
