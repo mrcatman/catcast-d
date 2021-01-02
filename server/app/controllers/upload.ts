@@ -12,7 +12,7 @@ async function routes (fastify: ServerInstance, options) {
     }, async (req, res) => {
         const data = await req.file();
         const now = new Date();
-        const datePath = now.getFullYear() + '/' + now.getMonth() + '/' + now.getDay();
+        const datePath = now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate();
         const uploadsPath = '/uploads/' + datePath;
 
         const uploadsDir = path.dirname(require.main.filename) + uploadsPath;
