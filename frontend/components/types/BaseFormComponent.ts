@@ -40,7 +40,7 @@ const BaseFormComponent = Vue.extend({
   mounted(): void {
     for (let field of this.fields) {
       this.$watch(`form.${field}`, (value) => {
-        this.warnings[field] = this.validate(field, value);
+        this.$set(this.warnings, field, this.validate(field, value));
       })
     }
   }

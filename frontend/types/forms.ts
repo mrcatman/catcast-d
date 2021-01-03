@@ -1,5 +1,5 @@
 export enum Warning {
-  FIELD_REQUIRED = 'errors.field_required',
+  FIELD_REQUIRED = 'forms.errors.field_required',
 }
 
 export type FormValues = {

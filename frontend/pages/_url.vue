@@ -3,7 +3,8 @@
     <div class="channel-page" v-if="loaded">
       <m-box>
         <LivePlayer v-if="channel.is_online" :channel="channel" />
-        <SubscribeBlock :channel="channel" />
+        <ChannelInfo :channel="channel"/>
+
       </m-box>
 
     </div>
@@ -20,10 +21,10 @@
   import { ChannelGetByUrl } from '~/api/modules/channels'
   import LivePlayer from '~/components/layout/channel-page/LivePlayer.vue'
   import { Route } from "vue-router"
-  import SubscribeBlock from '~/components/layout/channel-page/SubscribeBlock.vue'
+  import ChannelInfo from '~/components/layout/channel-page/ChannelInfo.vue'
 
   @Component({
-    components: { SubscribeBlock, LivePlayer },
+    components: { ChannelInfo, LivePlayer },
   })
   export default class ChannelPage extends Vue {
 

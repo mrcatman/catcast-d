@@ -45,7 +45,7 @@
 	&__container{
     flex: 1;
 		position: relative;
-		margin: 1.5em 0;
+		margin: 1.5em 0 2em;
     &--disabled {
 
     }
@@ -129,13 +129,11 @@
     white-space: nowrap;
 		position: absolute;
     z-index: 1000;
-    top: .25em;
-    left: .5em;
-    font-size: 1em;
+    top: -1.5em;
+    left: 0;
+    font-size: .875em;
     font-weight: 400;
-		line-height: 2em;
 		transition: all 0.25s;
-
 		&--with-icon {
       left:2.5em;
     }
@@ -147,9 +145,7 @@
     }
 	}
 	&__container-not-empty &__title{
-		font-size:.75em;
-		top:-2em;
-		left:0;
+
 	}
 
 

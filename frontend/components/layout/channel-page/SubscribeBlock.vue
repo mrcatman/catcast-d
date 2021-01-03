@@ -13,7 +13,7 @@
   import { Prop } from '~/node_modules/vue-property-decorator'
 
   @Component({})
-  export default class ChannelPage extends Vue {
+  export default class SubscribeBlock extends Vue {
     @Prop({default: null}) readonly channel!: Channel
 
     subscribersCount: number = 0;

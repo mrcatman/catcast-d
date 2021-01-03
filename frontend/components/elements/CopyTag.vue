@@ -8,6 +8,10 @@
 .copy-tag {
   display: flex;
   align-items: center;
+  &__button {
+    margin: 0 0 .625em;
+    height: 3.125em;
+  }
 	.input__element-container {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;

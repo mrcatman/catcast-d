@@ -1,5 +1,5 @@
 <template>
-  <div class="page-form">
+  <div class="container page-form">
     <m-box>
       <ChannelCommon />
     </m-box>

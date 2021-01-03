@@ -22,7 +22,7 @@
   @Component
   export default class ChannelCommon extends BaseFormComponent {
 
-    @Prop({required: true})
+    @Prop({required: false})
     public channel!: Channel;
 
     fields: any = ['name', 'url', 'description'];
