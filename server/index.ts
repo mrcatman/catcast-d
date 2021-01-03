@@ -35,7 +35,8 @@ server.register(require('fastify-static'), {
     root: path.join(__dirname, 'uploads'),
     prefix: '/uploads/',
 })
-server.register(require('fastify-formbody'))
+server.register(require('fastify-formbody'));
+server.register(require('fastify-url-data'));
 
 server.decorate("authenticate", async function(request, reply) {
     try {

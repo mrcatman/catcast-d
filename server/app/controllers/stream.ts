@@ -53,9 +53,18 @@ async function routes (fastify: ServerInstance, options) {
             let [channel, user] = await getChannelFromNginxRequest(req);
             channel.is_online = true;
 
+            let recentlyEndedStream = await Stream.findOne({
+                channel: {
+                    id: channel.id
+                },
+                broadcaster: {
+                    id: user.id
+                }
+            })
+
             let stream = new Stream();
             stream.fill({
-                name: `${channel.name} - broadcast`, // todo: generate stream name from channel settings,
+                name: `${channel.name} - broadcast ${new Date().toLocaleString()}`, // todo: generate stream name from channel settings,
                 started_at: new Date(),
                 channel: channel,
                 broadcaster: user,

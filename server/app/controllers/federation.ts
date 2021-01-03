@@ -1,8 +1,10 @@
 import {ServerInstance} from "../types";
 import {User} from "../models/User";
-import {SHARED_INBOX_URL} from "../federation/constants";
+import { ITEMS_ON_PAGE, SHARED_INBOX_URL } from '../federation/constants'
 import {Channel} from "../models/Channel";
 import { Follower } from '../models/Follower'
+import { Stream } from '../models/Stream'
+import { context } from '../federation/context'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -11,15 +13,7 @@ async function routes (fastify: ServerInstance, options) {
             relations: ['avatar']
         });
         res.header('Content-Type', 'application/activity+json').send({
-            '@context': [
-                'https://www.w3.org/ns/activitystreams',
-                'https://w3id.org/security/v1',
-                {
-                    'PropertyValue': 'schema:PropertyValue',
-                    'schema': 'http://schema.org#',
-                    'value': 'schema:value'
-                },
-            ],
+            '@context': context,
             id: user.getActorUrl(),
             type: 'Person',
             following: user.getActorUrl('/following'),
@@ -51,15 +45,7 @@ async function routes (fastify: ServerInstance, options) {
             relations: ['logo']
         });
         res.header('Content-Type', 'application/activity+json').send({
-            '@context': [
-                'https://www.w3.org/ns/activitystreams',
-                'https://w3id.org/security/v1',
-                {
-                    'PropertyValue': 'schema:PropertyValue',
-                    'schema': 'http://schema.org#',
-                    'value': 'schema:value'
-                },
-            ],
+            '@context': context,
             id: channel.getActorUrl(),
             type: 'Group', // maybe change to something better?
             following: channel.getActorUrl('/following'),
@@ -86,55 +72,147 @@ async function routes (fastify: ServerInstance, options) {
         });
     });
 
-    async function getFollowersCollection(req, conditions) {
-        let followers = await Follower.find({
+    async function getFollowCollection(req, conditions, following = false) {
+        const relationsToLoad = !following ? ['follower'] : [];
+        const followsCount = await Follower.count({
             where: conditions,
-            relations: ['follower']
         });
-        let actorUrls = followers.filter(follower => {
-            return !!follower.follower;
-        }).map(follower => {
-            return follower.follower.getActorUrl()
-        })
-        return {
-            '@context': 'https://www.w3.org/ns/activitystreams',
-            id: `https://${fastify.config.domain}${req.url}`,
-            type: 'OrderedCollectionPage',
-            totalItems: actorUrls.length,
-            orderedItems: actorUrls
+        const url = req.urlData().path;
+        if (req.query.page) {
+            let page: number = parseInt(req.query.page);
+            let follows = await Follower.find({
+                order: {
+                    created_at: 'DESC',
+                },
+                skip: ITEMS_ON_PAGE * (page - 1),
+                take: ITEMS_ON_PAGE,
+                where: conditions,
+                relations: relationsToLoad
+            });
+            let actorUrls;
+           if (!following) {
+                actorUrls = follows.filter(follow => {
+                    return !!follow.follower;
+                }).map(follow => {
+                    return follow.follower.getActorUrl()
+                })
+            } else {
+                for (let following of follows) {
+                    await following.loadActor();
+                }
+               actorUrls = follows.filter(follow => {
+                   return !!follow.actor;
+               }).map(follow => {
+                   return follow.actor.getActorUrl()
+               })
+            }
+            const pagesCount = Math.ceil(followsCount / ITEMS_ON_PAGE);
+            return {
+                '@context': context,
+                id: `https://${fastify.config.domain}${url}`,
+                prev: page > 1 ? `https://${fastify.config.domain}${url}?page=${page - 1}` : undefined,
+                next: page < pagesCount ? `https://${fastify.config.domain}${url}?page=${page + 1}` : undefined,
+                type: 'OrderedCollectionPage',
+                totalItems: followsCount,
+                orderedItems: actorUrls
+            }
+        } else {
+            return {
+                '@context': context,
+                id: `https://${fastify.config.domain}${url}`,
+                first: `https://${fastify.config.domain}${url}?page=1`,
+                type: 'OrderedCollection',
+                totalItems: followsCount,
+            }
+        }
+    }
+
+    async function getOutboxCollection(req, conditions) {
+        const streamsCount = await Stream.count({
+            where: conditions,
+         });
+        const url = req.urlData().path;
+        if (req.query.page) {
+            let page: number = parseInt(req.query.page);
+            let streams = await Stream.find({
+                order: {
+                    started_at: 'DESC',
+                },
+                skip: ITEMS_ON_PAGE * (page - 1),
+                take: ITEMS_ON_PAGE,
+                where: conditions,
+                relations: ['channel', 'broadcaster']
+            });
+            let items = streams.map(stream => stream.toCreateActivity())
+            const pagesCount = Math.ceil(streamsCount / ITEMS_ON_PAGE);
+            return {
+                '@context': context,
+                id: `https://${fastify.config.domain}${url}`,
+                prev: page > 1 ? `https://${fastify.config.domain}${url}?page=${page - 1}` : undefined,
+                next: page < pagesCount ? `https://${fastify.config.domain}${url}?page=${page + 1}` : undefined,
+                type: 'OrderedCollectionPage',
+                totalItems: streamsCount,
+                orderedItems: items
+            }
+        } else {
+            return {
+                '@context': context,
+                id: `https://${fastify.config.domain}${url}`,
+                first: `https://${fastify.config.domain}${url}?page=1`,
+                type: 'OrderedCollection',
+                totalItems: streamsCount,
+            }
         }
     }
 
     fastify.get('/users/:login/followers', async (req, res): Promise<any> => {
         let user = await User.findOneOrFail({ login: req.params.login, domain: null });
-        res.send(await getFollowersCollection(req,{
+        res.send(await getFollowCollection(req,{
             actor_id: user.id,
             actor_type: Follower.TYPE_CHANNEL
-        }))
+        }, false))
     });
 
     fastify.get('/channels/:url/followers', async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({ url: req.params.url, domain: null });
-        res.send(await getFollowersCollection(req,{
+        res.send(await getFollowCollection(req,{
             actor_id: channel.id,
             actor_type: Follower.TYPE_CHANNEL
-        }))
+        }, false))
     });
 
     fastify.get('/users/:login/following', async (req, res): Promise<any> => {
         let user = await User.findOneOrFail({ login: req.params.login, domain: null });
-        res.send(await getFollowersCollection(req,{
+        res.send(await getFollowCollection(req,{
             follower: {
+                id: user.id
+            }
+        }, true))
+    });
+
+    fastify.get('/channels/:url/following', async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({ url: req.params.url, domain: null });
+        res.send(await getFollowCollection(req,{
+            follower: {
+                id: -1 // send empty collection, channels can't follow anybody
+            }
+        }, true))
+    });
+
+    fastify.get('/users/:login/outbox', async (req, res): Promise<any> => {
+        let user = await User.findOneOrFail({ login: req.params.login, domain: null });
+        res.send(await getOutboxCollection(req,{
+            broadcaster: {
                 id: user.id
             }
         }))
     });
 
-    fastify.get('/channels/:url/following', async (req, res): Promise<any> => {
+    fastify.get('/channels/:url/outbox', async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({ url: req.params.url, domain: null });
-        res.send(await getFollowersCollection(req,{
-            follower: {
-                id: -1 // send empty collection, channels can't follow anybody
+        res.send(await getOutboxCollection(req,{
+            channel: {
+                id: channel.id
             }
         }))
     });

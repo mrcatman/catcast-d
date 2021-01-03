@@ -37,5 +37,32 @@ export class Stream extends BaseModel {
     @JoinColumn({ name: 'broadcaster_id' })
     broadcaster: User;
 
+    toCreateActivity() {
+        return {
+            actor: this.channel.getActorUrl(),
+            cc: [this.channel.getActorUrl('/followers')], // now public only yet,
+            id: this.channel.getActorUrl(`/streams/${this.id}/activity`),
+            object: this.toObject(),
+            to: ['https://www.w3.org/ns/activitystreams#Public'],
+            type: 'Create'
+        }
+    }
+
+    toObject() {
+        return {
+            type: 'Note',
+            id: this.channel.getActorUrl(`/streams/${this.id}`),
+            url: this.channel.getActorUrl(`/streams/${this.id}`),
+            name: this.name,
+            content: this.name + `\n \n ${this.channel.getWebUrl()}`,
+            published: this.started_at,
+
+            // custom properties
+            catcast_object_type: 'Stream',
+            broadcaster: this.broadcaster.getActorUrl(),
+            channel: this.channel.getActorUrl(),
+            ended_at: this.ended_at
+        }
+    }
 
 }

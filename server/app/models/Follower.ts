@@ -36,4 +36,14 @@ export class Follower extends BaseModel {
     @UpdateDateColumn({ type: 'timestamp' })
     updated_at: Date;
 
+    actor: Channel | User;
+
+    async loadActor(): Promise<Channel | User> {
+        let entityType = this.actor_type === 'channel' ? Channel : User;
+        this.actor = await entityType.findOne({
+            id: this.actor_id
+        });
+        return this.actor;
+    }
+
 }
