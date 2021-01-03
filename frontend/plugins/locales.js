@@ -187,9 +187,10 @@ export default {
         "you_are_banned": "Вы забанены на этом канале"
       }
     },
-    "likes":
+    "subscribe_block":
     {
-      "title": "Мне нравится",
+      "subscribe": "Подписаться",
+      "unsubscribe": "Отписаться",
       "show_all": "Показать всех"
     },
     "search":

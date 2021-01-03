@@ -12,5 +12,6 @@ export interface ServerInstance {
     delete: Function,
     validate: Function,
     authenticate: Function,
+    authenticate_optional: Function,
     config: ServerConfig
 }

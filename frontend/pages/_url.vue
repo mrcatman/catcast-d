@@ -2,7 +2,7 @@
   <div class="container">
     <div class="channel-page" v-if="loaded">
       <m-box>
-        <LivePlayer :channel="channel" />
+        <LivePlayer v-if="channel.is_online" :channel="channel" />
         <SubscribeBlock :channel="channel" />
       </m-box>
 

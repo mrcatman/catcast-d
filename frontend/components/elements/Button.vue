@@ -4,10 +4,11 @@
       <span class="button__text">
         <slot></slot>
       </span>
-     <i class="button__icon button__icon--left material-icons" v-if="icon && !loading">{{icon}}</i>
+     <i class="button__icon button__icon--right material-icons" v-if="icon && !loading">{{icon}}</i>
      <i class="button__loading-indicator" v-if="loading">
         <m-preloader stroke-width="5" :circle-width="'1.5em'" />
      </i>
+      <span class="button__count" v-if="count !== null">{{count}}</span>
    </span>
 </a>
 </template>
@@ -54,14 +55,13 @@
     margin: -.25em -0;
     font-weight: 500;
   }
-	&__icon{
-		&--left{
+	&__icon {
+    font-size: 1.25em;
+		&--left {
 			margin :0 .5em 0 0;
-			font-size: 1.25em!important;
 		}
-		&--right{
+		&--right {
 			margin: 0 0 0 .5em;
-			font-size: 1.25em!important;
 		}
 		&--only {
 			margin: 0;
@@ -93,8 +93,11 @@
 		padding:.5em;
 	}
 	&__count {
-		margin: 0 0 0 10px;
+		margin: 0 0 0 .75em;
 		font-weight: bold;
+    &:empty {
+      display: none;
+    }
 	}
   &__loading-indicator {
     margin: 0 0 -.25em .75em;
@@ -132,6 +135,10 @@ import Vue, { PropOptions } from 'vue'
     },
     icon: {
       type: String,
+      required: false
+    },
+    count: {
+      type: Number,
       required: false
     }
 	},

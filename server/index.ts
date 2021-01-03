@@ -46,6 +46,15 @@ server.decorate("authenticate", async function(request, reply) {
     }
 })
 
+server.decorate("authenticate_optional", async function(request) {
+    try {
+        await request.jwtVerify()
+        request.user = await User.findOne({id: request.user.id});
+    } catch (err) {
+
+    }
+})
+
 server.decorate('validate', validate);
 server.decorate('config', config);
 

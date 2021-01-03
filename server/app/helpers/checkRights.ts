@@ -3,7 +3,6 @@ import {Channel} from "../models/Channel";
 
 export async function checkRights(user: User, channel: Channel, roles: Array<string>) {
     //await channel.owner;
-    console.log(channel.owner);
     return channel.owner.id === user.id;
 }
 
