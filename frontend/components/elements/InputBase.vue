@@ -22,6 +22,9 @@
 <style lang="scss">
 .input{
   &__icon {
+    position: absolute;
+    left: 0;
+    top: 0;
     padding: .25em;
     color: var(--text-sub-color);
     z-index: 100;

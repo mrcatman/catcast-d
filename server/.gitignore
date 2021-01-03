@@ -1,4 +1,5 @@
 .idea
 node_modules
 app/config.js
+app/config_2.js
 /uploads/*

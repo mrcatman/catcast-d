@@ -3,14 +3,16 @@
     <nuxt-link class="header__logo" to="/">
       <img src="/assets/pictures/logo-big.svg" class="header__logo__picture" />
     </nuxt-link>
+    <SearchBox />
     <UserPanel />
   </div>
 </template>
 <script>
   import UserPanel from './UserPanel'
+  import SearchBox from '~/components/layout/header/SearchBox'
   export default{
     name: 'HeaderNav',
-    components: { UserPanel }
+    components: { SearchBox, UserPanel }
   }
 </script>
 <style lang="scss">

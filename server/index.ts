@@ -4,7 +4,9 @@ import { validate } from "./app/validation/validate";
 import {User} from "./app/models/User";
 
 const server = fastify({logger: false});
-const config = require('./app/config');
+
+const configPath = process.argv.length >= 3 ? process.argv[2] : 'app/config';
+const config = require('./' + configPath);
 
 server.register(require('fastify-cookie'), {
     secret: "my-secret", // for cookies signature

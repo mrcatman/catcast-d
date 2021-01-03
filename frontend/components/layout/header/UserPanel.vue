@@ -14,6 +14,11 @@
     </div>
   </div>
 </template>
+<style lang="scss">
+  .auth-panel {
+    margin: 0 0 0 1em;
+  }
+</style>
 <script lang="ts">
   import Vue from 'vue'
   import AuthModal from './AuthModal.vue'

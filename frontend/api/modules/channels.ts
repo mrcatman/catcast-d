@@ -23,6 +23,11 @@ export const ChannelsGetListMy = async (): Promise<Array<Channel>> => {
   return res.data.channels as Array<Channel>;
 };
 
+export const ChannelsSearch = async (query: string): Promise<Array<Channel>> => {
+  const res = await api.get(`${BASE_PATH}/search?q=${query}`);
+  return res.data.channels as Array<Channel>;
+};
+
 export const ChannelGetById = async (id: number): Promise<Channel> => {
   const res = await api.get(`${BASE_PATH}/${id}`);
   return res.data.channel as Channel;
@@ -32,7 +37,6 @@ export const ChannelGetByUrl = async (url: string): Promise<Channel> => {
   const res = await api.get(`${BASE_PATH}/get-by-url/${url}`);
   return res.data.channel as Channel;
 };
-
 
 export const ChannelGetRights = async (id: number): Promise<Array<string>> => {
   const res = await api.get(`${BASE_PATH}/${id}/rights`);

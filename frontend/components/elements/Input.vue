@@ -5,7 +5,7 @@
   <div class="input__element-container">
 
     <div ref="inputEl" contenteditable="true" v-if="inputType === 'contenteditable'" @keyup="onKeyup" @blur="wasFocused = true" @change="onChange" class="input__element" :class="inputClasses"></div>
-    <input ref="inputEl" :min="min" :max="max" :disabled="disabled" :readonly="readonly" v-else-if="inputType !== 'textarea'" :type="inputType" @keyup="onKeyup" @blur="wasFocused = true" @change="onChange" v-model="val" class="input__element" :class="inputClasses" />
+    <input ref="inputEl" :min="min" :max="max" :disabled="disabled" :readonly="readonly" v-else-if="inputType !== 'textarea'" :type="inputType" @keyup="onKeyup" @blur="wasFocused = true" @change="onChange" @keypress="onKeypress" v-model="val" class="input__element" :class="inputClasses" />
     <textarea ref="inputEl" v-else @keyup="onKeyup" @change="onChange" :readonly="readonly"  v-model="val" @blur="wasFocused = true" class="input__element input__element--textarea" :class="inputClasses"></textarea>
 
     <div class="input__element-container__right">
@@ -197,6 +197,11 @@ export default {
         this.isChanging = false;
       });
 		},
+    onKeypress(e) {
+      if (e.key === 'Enter') {
+        this.$emit('submit');
+      }
+    },
 		onChange(e) {
       if (this.type === 'number') {
         let min = this.min;

@@ -1,10 +1,10 @@
 import { Channel } from '../models/Channel';
 import {ServerInstance} from "../types";
 import {checkRightsOrFail} from "../helpers/checkRights";
-import {StreamKey} from "../models/StreamKey";
 import { getBaseChannelValidators, getFollowConditions } from '../helpers/channels'
 import {generateKeys} from "../federation/crypto";
 import { Follower } from '../models/Follower'
+import {Like} from "typeorm";
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -19,6 +19,17 @@ async function routes (fastify: ServerInstance, options) {
         let channels = await Channel.find({owner: {
             id: req.user.id
         }});
+        res.send({channels});
+    })
+
+    fastify.get('/search', async (req, res) => {
+        let query = req.query.q || "";
+        let channels = await Channel.find({
+            where: [
+               {name: Like(`%${query}%`)},
+                {url: Like(`%${query}%`)}
+            ]
+        });
         res.send({channels});
     })
 

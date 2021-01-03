@@ -195,8 +195,8 @@ export default {
     },
     "search":
     {
-      "_title": "Поиск",
-      "search_text": "Поиск...",
+      "input_title": "Поиск каналов...",
+      "page_title": 'Поиск по запросу: "{search}"',
       "nothing_found": "Ничего не найдено",
       "found": "Найдено | Найден | Найдено | Найдено",
       "go_to_results": "Смотреть все",
