@@ -5,8 +5,8 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToOne,
-    JoinColumn, AfterLoad,
-} from "typeorm";
+    JoinColumn, AfterLoad, OneToMany, ManyToOne,
+} from 'typeorm'
 import { User } from "./User";
 import {Picture} from "./Picture";
 import {Stream} from "./Stream";
@@ -32,7 +32,7 @@ export class Channel extends BaseModel {
     @Column({default: false})
     is_online: boolean;
 
-    @OneToOne(() => User)
+    @OneToOne(() => Stream)
     @JoinColumn({ name: 'current_stream_id' })
     current_stream: Stream;
 
@@ -42,19 +42,16 @@ export class Channel extends BaseModel {
     @UpdateDateColumn({ type: 'timestamp' })
     updated_at: Date;
 
-    @OneToOne(() => User)
-    @JoinColumn({ name: 'owner_id' })
+    @ManyToOne(() => User, user => user.owned_channels)
+    @JoinColumn({ name: 'channel_id' })
     owner: User;
 
-    @OneToOne(() => User)
-    @JoinColumn({ name: 'broadcaster_id' })
-    broadcaster: User;
-
-    @OneToOne(() => Picture, {
-        eager: true
-    })
+    @OneToOne(() => Picture, { eager: true })
     @JoinColumn()
     logo: Picture;
+
+    @OneToMany(() => Stream, stream => stream.channel)
+    streams: Stream[];
 
     @Column({nullable: true})
     domain: string; // Federation domain; if null, channel is on the current server

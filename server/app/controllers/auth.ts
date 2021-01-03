@@ -21,6 +21,9 @@ async function routes (fastify: ServerInstance, options) {
         } catch (e) {
 
         }
+        if (!userInstance) {
+            userInstance = null;
+        }
         res.send({
             user: userInstance
         });

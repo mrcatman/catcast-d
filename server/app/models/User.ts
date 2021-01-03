@@ -4,11 +4,13 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToOne, JoinColumn
-} from "typeorm";
+    OneToOne, JoinColumn, OneToMany,
+} from 'typeorm'
 import {Picture} from "./Picture";
 import {BaseModel} from "./BaseModel";
 import * as config from '../config';
+import { Stream } from './Stream'
+import { Channel } from './Channel'
 
 @Entity('users')
 export class User extends BaseModel {
@@ -45,6 +47,12 @@ export class User extends BaseModel {
 
     @Column({nullable: true})
     domain: string; // Federation domain; if null, user is on the current server
+
+    @OneToMany(() => Channel, channel => channel.owner)
+    owned_channels: Channel[];
+
+    @OneToMany(() => Stream, stream => stream.broadcaster)
+    streams: Channel[];
 
     getJWTPayload() {
         return {

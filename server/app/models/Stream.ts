@@ -5,8 +5,8 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToOne,
-    JoinColumn, AfterLoad,
-} from "typeorm";
+    JoinColumn, AfterLoad, ManyToOne,
+} from 'typeorm'
 import { User } from "./User";
 import {Picture} from "./Picture";
 import {BaseModel} from "./BaseModel";
@@ -29,11 +29,11 @@ export class Stream extends BaseModel {
     @UpdateDateColumn({ type: 'timestamp', nullable: true })
     ended_at: Date;
 
-    @OneToOne(() => Channel)
+    @ManyToOne(() => Channel, channel => channel.streams)
     @JoinColumn({ name: 'channel_id' })
     channel: Channel;
 
-    @OneToOne(() => User)
+    @ManyToOne(() => User, user => user.streams)
     @JoinColumn({ name: 'broadcaster_id' })
     broadcaster: User;
 
