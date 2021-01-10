@@ -8,9 +8,12 @@ import {
 } from 'typeorm'
 import {Picture} from "./Picture";
 import {BaseModel} from "./BaseModel";
-import * as config from '../config';
 import { Stream } from './Stream'
 import { Channel } from './Channel'
+
+import { getConfig } from '../helpers/getConfig'
+import { SHARED_INBOX_URL } from '../federation/constants'
+const config = getConfig();
 
 @Entity('users')
 export class User extends BaseModel {
@@ -54,6 +57,12 @@ export class User extends BaseModel {
     @OneToMany(() => Stream, stream => stream.broadcaster)
     streams: Channel[];
 
+    @Column({type: 'text'})
+    public_key: string;
+
+    @Column({type: 'text', select: false })
+    private_key: string;
+
     getJWTPayload() {
         return {
             id: this.id,
@@ -69,10 +78,33 @@ export class User extends BaseModel {
         return `https://${config.domain}/api/federation/users/${this.login}${suffix}`;
     }
 
-    @Column({type: 'text'})
-    public_key: string;
-
-    @Column({type: 'text', select: false })
-    private_key: string;
+    toObject() {
+        return {
+            id: this.getActorUrl(),
+            type: 'Person',
+            catcastActorType: 'User',
+            following: this.getActorUrl('/following'),
+            followers: this.getActorUrl('/followers'),
+            inbox: this.getActorUrl('/inbox'),
+            outbox: this.getActorUrl('/outbox'),
+            preferredUsername: this.login,
+            name: this.login,
+            summary: this.about,
+            url: this.getWebUrl(),
+            publicKey: {
+                id: this.getActorUrl() + '#key',
+                owner: this.getActorUrl(),
+                publicKeyPem: this.public_key
+            },
+            icon: {
+                type: 'Image',
+                mediaType: 'image/png',
+                url: this.avatar? this.avatar.full_url : `https://${config.domain}/static/no-logo.png`
+            },
+            endpoints: {
+                sharedInbox: SHARED_INBOX_URL
+            }
+        }
+    }
 
 }

@@ -3,7 +3,10 @@
     <div class="channel-info__top">
       <div class="channel-info__logo" v-if="channel.logo" :style="{backgroundImage: `url(${channel.logo.full_url})`}"></div>
       <div class="channel-info__texts">
-        <h2 class="channel-info__name">{{channel.name}}</h2>
+        <div class="channel-info__texts__top">
+          <h2 class="channel-info__name">{{channel.name}}</h2>
+          <a v-if="channel.domain" class="channel-info__remote-url" target="_blank" :href="`https://${channel.domain}/${channel.url}`">{{channel.url}}@{{channel.domain}}</a>
+        </div>
         <SubscribeBlock :channel="channel" />
       </div>
     </div>
@@ -25,8 +28,12 @@
     }
 
     &__name {
+      display: inline-block;
       font-size: 1.325em;
       margin: 0 0 .5em;
+    }
+    &__remote-url {
+      font-size: .9375em;
     }
 
     &__texts {

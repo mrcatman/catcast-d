@@ -14,29 +14,7 @@ async function routes (fastify: ServerInstance, options) {
         });
         res.header('Content-Type', 'application/activity+json').send({
             '@context': context,
-            id: user.getActorUrl(),
-            type: 'Person',
-            following: user.getActorUrl('/following'),
-            followers: user.getActorUrl('/followers'),
-            inbox: user.getActorUrl('/inbox'),
-            outbox: user.getActorUrl('/outbox'),
-            preferredUsername: user.login,
-            name: user.login,
-            summary: user.about,
-            url: user.getWebUrl(),
-            publicKey: {
-                id: user.getActorUrl() + '#key',
-                owner: user.getActorUrl(),
-                publicKeyPem: user.public_key
-            },
-            icon: {
-                type: 'Image',
-                mediaType: 'image/png',
-                url: user.avatar?.full_url
-            },
-            endpoints: {
-                sharedInbox: SHARED_INBOX_URL
-            }
+            ...user.toObject()
         });
     });
 
@@ -46,29 +24,7 @@ async function routes (fastify: ServerInstance, options) {
         });
         res.header('Content-Type', 'application/activity+json').send({
             '@context': context,
-            id: channel.getActorUrl(),
-            type: 'Group', // maybe change to something better?
-            following: channel.getActorUrl('/following'),
-            followers: channel.getActorUrl('/followers'),
-            inbox: channel.getActorUrl('/inbox'),
-            outbox: channel.getActorUrl('/outbox'),
-            preferredUsername: channel.name,
-            name: channel.url,
-            summary: channel.description,
-            url: channel.getWebUrl(),
-            publicKey: {
-                id: channel.getActorUrl() + '#key',
-                owner: channel.getActorUrl(),
-                publicKeyPem: channel.public_key
-            },
-            icon: {
-                type: 'Image',
-                mediaType: 'image/png',
-                url: channel.logo?.full_url
-            },
-            endpoints: {
-                sharedInbox: SHARED_INBOX_URL
-            }
+            ...channel.toObject()
         });
     });
 

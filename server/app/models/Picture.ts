@@ -8,6 +8,9 @@ import {
 } from "typeorm";
 import {BaseModel} from "./BaseModel";
 
+import { getConfig } from '../helpers/getConfig'
+const config = getConfig();
+
 @Entity('pictures')
 export class Picture extends BaseModel {
 
@@ -15,12 +18,12 @@ export class Picture extends BaseModel {
     id: number;
 
     @Column({nullable: true})
-    domain: string | null;
+    remote_url: string | null;
 
-    @Column()
+    @Column({nullable: true})
     path: string;
 
-    @Column()
+    @Column({nullable: true})
     user_id: number;
 
     @CreateDateColumn({ type: 'timestamp' })
@@ -33,8 +36,11 @@ export class Picture extends BaseModel {
 
     @AfterLoad()
     setComputed() {
-        let domain = this.domain || 'http://localhost:4002';
-        this.full_url = domain + this.path;
+        let url = this.remote_url ? this.remote_url : `https://${config.domain}${this.path}`;
+        if (url.indexOf('https://localhost') !== -1) {
+            url = url.replace('https://localhost', 'http://localhost');
+        }
+        this.full_url = url;
     }
 
 

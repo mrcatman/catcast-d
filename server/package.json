@@ -14,6 +14,7 @@
   "dependencies": {
     "@types/busboy": "^0.2.3",
     "argon2": "^0.27.1",
+    "axios": "^0.21.1",
     "config": "^3.0.1",
     "crypto": "^1.0.1",
     "fastify": "^3.9.2",

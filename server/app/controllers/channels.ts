@@ -1,3 +1,6 @@
+import { remoteSearch } from '../federation/remoteSearch'
+
+const url = require('url');
 import { Channel } from '../models/Channel';
 import {ServerInstance} from "../types";
 import {checkRightsOrFail} from "../helpers/checkRights";
@@ -24,12 +27,21 @@ async function routes (fastify: ServerInstance, options) {
 
     fastify.get('/search', async (req, res) => {
         let query = req.query.q || "";
+        let remoteChannel;
+        try {
+            remoteChannel = await remoteSearch(query);
+        } catch (e) {
+
+        }
         let channels = await Channel.find({
             where: [
                {name: Like(`%${query}%`)},
                 {url: Like(`%${query}%`)}
             ]
         });
+        if (remoteChannel) {
+            channels.unshift(remoteChannel);
+        }
         res.send({channels});
     })
 
@@ -127,6 +139,9 @@ async function routes (fastify: ServerInstance, options) {
             actor_id: channel.id,
             actor_type: Follower.TYPE_CHANNEL
         })).length;
+        if (channel.followers_count) {
+            subscribers_count+= channel.followers_count;
+        }
         let is_subscribed = req.user ? !!(await Follower.findOne(getFollowConditions(req.user, channel))) : false;
         res.send({
             subscribers_count,

@@ -3,8 +3,11 @@ export const context = [
   'https://w3id.org/security/v1',
   {
     sc: 'http://schema.org#',
-    catcast_object_type: {
-      '@type': 'sc:Text', '@id': 'catcast:catcast_object_type'
+    catcastActorType: {
+      '@type': 'sc:Text', '@id': 'catcast:catcastActorType'
+    },
+    catcastObjectType: {
+      '@type': 'sc:Text', '@id': 'catcast:catcastObjectType'
     },
     broadcaster: {
       '@type': '@id', '@id': 'catcast:broadcaster'
@@ -12,8 +15,8 @@ export const context = [
     channel: {
       '@type': '@id', '@id': 'catcast:channel'
     },
-    ended_at: {
-      '@type': 'sc:Time', '@id': 'catcast:ended_at'
+    endedAt: {
+      '@type': 'sc:Time', '@id': 'catcast:endedAt'
     }
   }
 ]

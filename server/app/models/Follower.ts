@@ -4,8 +4,8 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToOne, JoinColumn
-} from "typeorm";
+    OneToOne, JoinColumn, ManyToOne,
+} from 'typeorm'
 
 import {BaseModel} from "./BaseModel";
 import { User } from './User'
@@ -20,7 +20,7 @@ export class Follower extends BaseModel {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @OneToOne(() => User)
+    @ManyToOne(() => User)
     @JoinColumn({ name: 'follower_id' })
     follower: User;
 

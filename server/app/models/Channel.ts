@@ -12,7 +12,9 @@ import {Picture} from "./Picture";
 import {Stream} from "./Stream";
 import {BaseModel} from "./BaseModel";
 
-import * as config from '../config';
+import { getConfig } from '../helpers/getConfig'
+import { SHARED_INBOX_URL } from '../federation/constants'
+const config = getConfig();
 
 @Entity('channels')
 export class Channel extends BaseModel {
@@ -43,7 +45,7 @@ export class Channel extends BaseModel {
     updated_at: Date;
 
     @ManyToOne(() => User, user => user.owned_channels)
-    @JoinColumn({ name: 'channel_id' })
+    @JoinColumn({ name: 'owner_id' })
     owner: User;
 
     @OneToOne(() => Picture, { eager: true })
@@ -56,6 +58,21 @@ export class Channel extends BaseModel {
     @Column({nullable: true})
     domain: string; // Federation domain; if null, channel is on the current server
 
+    @Column({ nullable: true })
+    followers_count: number; // Followers count for remote channels
+
+    @Column({nullable: true})
+    inbox_url: string;
+
+    @Column({nullable: true})
+    outbox_url: string;
+
+    @Column({nullable: true})
+    shared_inbox_url: string;
+
+    @Column({nullable: true})
+    web_url: string;
+
     screenshot: string;
 
     live_url: string;
@@ -67,7 +84,16 @@ export class Channel extends BaseModel {
             this.screenshot = domain + 'screens/' + this.id + '.png';
             this.live_url = domain + 'hls/' + this.id + '/index.m3u8';
         }
+        if (this.current_stream) {
+            this.current_stream.channel = undefined; // prevent circular JSON
+        }
     }
+
+    @Column({type: 'text'})
+    public_key: string;
+
+    @Column({type: 'text', select: false, nullable: true })
+    private_key: string;
 
     getWebUrl(): string {
         return `https://${config.domain}/${this.url}`;
@@ -77,10 +103,33 @@ export class Channel extends BaseModel {
         return `https://${config.domain}/api/federation/channels/${this.url}${suffix}`;
     }
 
-    @Column({type: 'text'})
-    public_key: string;
-
-    @Column({type: 'text', select: false })
-    private_key: string;
+    toObject() {
+        return {
+            id: this.getActorUrl(),
+            type: 'Group', // maybe change to something better?
+            catcastActorType: 'Channel',
+            following: this.getActorUrl('/following'),
+            followers: this.getActorUrl('/followers'),
+            inbox: this.getActorUrl('/inbox'),
+            outbox: this.getActorUrl('/outbox'),
+            preferredUsername: this.name,
+            name: this.url,
+            summary: this.description,
+            url: this.getWebUrl(),
+            publicKey: {
+                id: this.getActorUrl() + '#key',
+                owner: this.getActorUrl(),
+                publicKeyPem: this.public_key
+            },
+            icon: {
+                type: 'Image',
+                mediaType: 'image/png',
+                url: this.logo? this.logo.full_url : `https://${config.domain}/static/no-logo.png`
+            },
+            endpoints: {
+                sharedInbox: SHARED_INBOX_URL
+            }
+        }
+    }
 
 }

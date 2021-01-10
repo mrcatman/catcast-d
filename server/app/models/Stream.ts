@@ -4,14 +4,11 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToOne,
-    JoinColumn, AfterLoad, ManyToOne,
+    JoinColumn,
+    ManyToOne,
 } from 'typeorm'
 import { User } from "./User";
-import {Picture} from "./Picture";
 import {BaseModel} from "./BaseModel";
-
-import * as config from '../config';
 import {Channel} from "./Channel";
 
 @Entity('streams')
@@ -26,7 +23,7 @@ export class Stream extends BaseModel {
     @CreateDateColumn({ type: 'timestamp' })
     started_at: Date;
 
-    @UpdateDateColumn({ type: 'timestamp', nullable: true })
+    @Column({ type: 'timestamp', nullable: true })
     ended_at: Date;
 
     @ManyToOne(() => Channel, channel => channel.streams)
@@ -58,10 +55,10 @@ export class Stream extends BaseModel {
             published: this.started_at,
 
             // custom properties
-            catcast_object_type: 'Stream',
+            catcastObjectType: 'Stream',
             broadcaster: this.broadcaster.getActorUrl(),
             channel: this.channel.getActorUrl(),
-            ended_at: this.ended_at
+            endedAt: this.ended_at
         }
     }
 

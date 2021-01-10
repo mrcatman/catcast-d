@@ -2,11 +2,10 @@ import fastify from "fastify";
 const path = require('path');
 import { validate } from "./app/validation/validate";
 import {User} from "./app/models/User";
+import { getConfig } from './app/helpers/getConfig'
 
 const server = fastify({logger: false});
-
-const configPath = process.argv.length >= 3 ? process.argv[2] : 'app/config';
-const config = require('./' + configPath);
+const config = getConfig();
 
 server.register(require('fastify-cookie'), {
     secret: "my-secret", // for cookies signature
@@ -36,6 +35,11 @@ server.register(require('fastify-multipart'));
 server.register(require('fastify-static'), {
     root: path.join(__dirname, 'uploads'),
     prefix: '/uploads/',
+})
+server.register(require('fastify-static'), {
+    root: path.join(__dirname, 'static'),
+    prefix: '/static/',
+    decorateReply: false
 })
 server.register(require('fastify-formbody'));
 server.register(require('fastify-url-data'));
@@ -75,7 +79,7 @@ server.decorate('config', config);
     }
 
 
-    server.listen(4002, function (err, address) {
+    server.listen(config.port, function (err, address) {
         if (err) {
             console.log(err)
         }
