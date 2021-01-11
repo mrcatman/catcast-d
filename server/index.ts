@@ -1,10 +1,14 @@
-import fastify from "fastify";
+import fastify, { FastifyInstance } from 'fastify'
 const path = require('path');
 import { validate } from "./app/validation/validate";
 import {User} from "./app/models/User";
 import { getConfig } from './app/helpers/getConfig'
 
-const server = fastify({logger: false});
+interface FastifyInstanceExtended extends FastifyInstance {
+    getDefaultJsonParser: Function
+}
+
+const server = fastify({logger: false}) as any as FastifyInstanceExtended;
 const config = getConfig();
 
 server.register(require('fastify-cookie'), {
@@ -43,6 +47,12 @@ server.register(require('fastify-static'), {
 })
 server.register(require('fastify-formbody'));
 server.register(require('fastify-url-data'));
+server.register(require('fastify-raw-body'), {
+    field: 'rawBody',
+    global: false,
+})
+
+server.addContentTypeParser('application/activity+json', { parseAs: 'string' }, server.getDefaultJsonParser('ignore', 'ignore') as any)
 
 server.decorate("authenticate", async function(request, reply) {
     try {

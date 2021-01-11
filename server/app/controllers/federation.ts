@@ -1,10 +1,11 @@
 import {ServerInstance} from "../types";
 import {User} from "../models/User";
-import { ITEMS_ON_PAGE, SHARED_INBOX_URL } from '../federation/constants'
+import { ITEMS_ON_PAGE } from '../federation/constants'
 import {Channel} from "../models/Channel";
 import { Follower } from '../models/Follower'
 import { Stream } from '../models/Stream'
 import { context } from '../federation/context'
+import { handleInbox } from '../federation/handleInbox'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -172,6 +173,58 @@ async function routes (fastify: ServerInstance, options) {
             }
         }))
     });
+
+
+    fastify.post('/shared-inbox', {
+        config: {
+            rawBody: true
+        },
+    }, async (req, res): Promise<any> => {
+        let status = await handleInbox(req.headers, req.rawBody, '/api/federation/shared-inbox');
+        if (status) {
+            res.send({
+                status: true
+            })
+        } else {
+            res.status(400).send({
+                status: false
+            })
+        }
+    })
+
+    fastify.post('/channels/:url/inbox', {
+        config: {
+            rawBody: true
+        },
+    }, async (req, res): Promise<any> => {
+        let status = await handleInbox(req.headers, req.rawBody, `/api/federation/channels/${req.params.url}`);
+        if (status) {
+            res.send({
+                status: true
+            })
+        } else {
+            res.status(400).send({
+                status: false
+            })
+        }
+    })
+
+    fastify.post('/users/:login/inbox', {
+        config: {
+            rawBody: true
+        },
+    }, async (req, res): Promise<any> => {
+        let status = await handleInbox(req.headers, req.rawBody, `/api/federation/users/${req.params.login}`);
+        if (status) {
+            res.send({
+                status: true
+            })
+        } else {
+            res.status(400).send({
+                status: false
+            })
+        }
+    })
 
 }
 module.exports = routes;

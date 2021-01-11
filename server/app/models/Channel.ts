@@ -96,11 +96,11 @@ export class Channel extends BaseModel {
     private_key: string;
 
     getWebUrl(): string {
-        return `https://${config.domain}/${this.url}`;
+        return `https://${this.domain || config.domain}/${this.url}`;
     }
 
     getActorUrl(suffix = ''): string {
-        return `https://${config.domain}/api/federation/channels/${this.url}${suffix}`;
+        return `https://${this.domain || config.domain}/api/federation/channels/${this.url}${suffix}`;
     }
 
     toObject() {

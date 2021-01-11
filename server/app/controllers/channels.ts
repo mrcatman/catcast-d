@@ -8,6 +8,7 @@ import { getBaseChannelValidators, getFollowConditions } from '../helpers/channe
 import {generateKeys} from "../federation/crypto";
 import { Follower } from '../models/Follower'
 import {Like} from "typeorm";
+import { remoteFollow, remoteUnfollow } from '../federation/remoteFollow'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -111,6 +112,9 @@ async function routes (fastify: ServerInstance, options) {
             subscription.fill(getFollowConditions(req.user, channel));
             await subscription.save();
         }
+        if (channel.domain) {
+            remoteFollow(req.user, channel);
+        }
         res.send({
             status: true
         });
@@ -124,6 +128,9 @@ async function routes (fastify: ServerInstance, options) {
         let subscription = await Follower.findOne(getFollowConditions(req.user, channel))
         if (subscription) {
             await subscription.remove();
+        }
+        if (channel.domain) {
+            remoteUnfollow(req.user, channel);
         }
         res.send({
             status: true

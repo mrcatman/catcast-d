@@ -60,8 +60,23 @@ export class User extends BaseModel {
     @Column({type: 'text'})
     public_key: string;
 
-    @Column({type: 'text', select: false })
+    @Column({type: 'text', select: false, nullable: true })
     private_key: string;
+
+    @Column({ nullable: true })
+    followers_count: number; // Followers count for remote users
+
+    @Column({nullable: true})
+    inbox_url: string;
+
+    @Column({nullable: true})
+    outbox_url: string;
+
+    @Column({nullable: true})
+    shared_inbox_url: string;
+
+    @Column({nullable: true})
+    key_id: string;
 
     getJWTPayload() {
         return {
@@ -75,7 +90,7 @@ export class User extends BaseModel {
     }
 
     getActorUrl(suffix: string = ''): string {
-        return `https://${config.domain}/api/federation/users/${this.login}${suffix}`;
+        return `https://${this.domain || config.domain}/api/federation/users/${this.login}${suffix}`;
     }
 
     toObject() {
