@@ -100,7 +100,7 @@ async function routes (fastify: ServerInstance, options) {
                 where: conditions,
                 relations: ['channel', 'broadcaster']
             });
-            let items = streams.map(stream => stream.toCreateActivity())
+            let items = streams.map(stream => stream.toActivity('create'))
             const pagesCount = Math.ceil(streamsCount / ITEMS_ON_PAGE);
             return {
                 '@context': context,
