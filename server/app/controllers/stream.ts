@@ -4,6 +4,7 @@ import getChannelFromNginxRequest from "../helpers/getChannelFromNginxRequest";
 import {Channel} from "../models/Channel";
 import {checkRightsOrFail} from "../helpers/checkRights";
 import {Stream} from "../models/Stream";
+import { Create, Update } from '../federation/activities/Create'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -71,6 +72,8 @@ async function routes (fastify: ServerInstance, options) {
             })
             await stream.save();
 
+            Create(stream);
+
             channel.current_stream = stream;
             await channel.save();
 
@@ -96,6 +99,7 @@ async function routes (fastify: ServerInstance, options) {
             if (stream) {
                 stream.ended_at = new Date();
                 await stream.save();
+                Update(stream);
             }
             res.send({
                 status: true

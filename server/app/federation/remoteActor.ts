@@ -1,11 +1,11 @@
 import axios from '../helpers/axios';
-import { useHttpOnLocalhost } from '../helpers/useHttpOnLocalhost'
 import { Channel } from '../models/Channel'
 import { User } from '../models/User'
 import { MAX_PAGES_TO_FETCH } from './constants'
 import { Stream } from '../models/Stream'
 import { Picture } from '../models/Picture'
 import { getConfig } from '../helpers/getConfig'
+import { create } from './activityHandlers/Create'
 const {parse: parseUrl} = require('url');
 const config = getConfig();
 
@@ -65,7 +65,7 @@ export async function getActorByUrl(url: string): Promise<Channel | User | null>
 }
 
 export async function getRemoteActor(url: string): Promise<any> {
-  let remoteActor = (await axios.get(useHttpOnLocalhost(url))).data; //todo: add checks and cache
+  let remoteActor = (await axios.get(url)).data; //todo: add checks and cache
   return remoteActor;
 }
 
@@ -103,7 +103,7 @@ export async function fetchCommonInfo(remoteObject, localActor: Channel | User) 
     }
   }
   if (remoteObject.followers) {
-    let followersObject = (await axios.get(useHttpOnLocalhost(remoteObject.followers))).data;
+    let followersObject = (await axios.get(remoteObject.followers)).data;
     if (followersObject.totalItems) {
       localActor.followers_count = followersObject.totalItems;
     }
@@ -119,34 +119,16 @@ export async function fetchCommonInfo(remoteObject, localActor: Channel | User) 
   }
   await localActor.save();
   if (remoteObject.outbox) {
-    let outboxObject = (await axios.get(useHttpOnLocalhost(remoteObject.outbox))).data;
+    let outboxObject = (await axios.get(remoteObject.outbox)).data;
     if (outboxObject.type === 'OrderedCollection' && outboxObject.totalItems > 0) {
       let nextLink = outboxObject.first;
       for (let i = 0; i < MAX_PAGES_TO_FETCH; i++) {
         if (nextLink) {
-          let outboxCollectionObject = (await axios.get(useHttpOnLocalhost(nextLink))).data;
+          let outboxCollectionObject = (await axios.get(nextLink)).data;
           if (outboxCollectionObject.totalItems > 0 && outboxCollectionObject.orderedItems && outboxCollectionObject.orderedItems.length > 0) {
             for (let outboxItem of outboxCollectionObject.orderedItems) {
               if (outboxItem.type === 'Create' && outboxItem.to.includes('https://www.w3.org/ns/activitystreams#Public')) {
-                let outboxObject = outboxItem.object;
-                if (outboxObject.catcastObjectType === 'Stream') {
-                  let localStream = new Stream();
-                  localStream.name = outboxObject.name;
-                  localStream.started_at = outboxObject.published;
-                  localStream.ended_at = outboxObject.endedAt;
-                  await localStream.save();
-                  if (localActor instanceof Channel) {
-                    localStream.channel = localActor;
-                    if (!outboxObject.endedAt) {
-                      localActor.is_online = true;
-                      localActor.current_stream = localStream;
-                      await localActor.save();
-                      localActor.current_stream.channel = undefined;  // prevent circular JSON
-                    }
-                  } else {
-                    localStream.broadcaster = localActor;
-                  }
-                }
+                create(outboxItem.object);
               }
             }
             nextLink = outboxCollectionObject.next;

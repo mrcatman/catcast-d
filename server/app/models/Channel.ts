@@ -14,6 +14,7 @@ import {BaseModel} from "./BaseModel";
 
 import { getConfig } from '../helpers/getConfig'
 import { SHARED_INBOX_URL } from '../federation/constants'
+import { Follower } from './Follower'
 const config = getConfig();
 
 @Entity('channels')
@@ -60,6 +61,9 @@ export class Channel extends BaseModel {
 
     @Column({ nullable: true })
     followers_count: number; // Followers count for remote channels
+
+    @Column({nullable: true})
+    actor_id: string;
 
     @Column({nullable: true})
     inbox_url: string;
@@ -130,6 +134,13 @@ export class Channel extends BaseModel {
                 sharedInbox: SHARED_INBOX_URL
             }
         }
+    }
+
+    async followersCount() : Promise<number> {
+        return await Follower.count({
+            actor_id: this.id,
+            actor_type: Follower.TYPE_CHANNEL
+        })
     }
 
 }

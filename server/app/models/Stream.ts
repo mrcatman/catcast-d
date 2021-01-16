@@ -20,6 +20,9 @@ export class Stream extends BaseModel {
     @Column()
     name: string;
 
+    @Column({nullable: true})
+    object_id: string;
+
     @CreateDateColumn({ type: 'timestamp' })
     started_at: Date;
 

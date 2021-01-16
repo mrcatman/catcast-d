@@ -1,6 +1,7 @@
 import { User } from '../models/User'
 import { createHash, createSign, createVerify } from 'crypto';
 import validateUrl from './validateUrl'
+import { Channel } from '../models/Channel'
 const {parse: parseUrl} = require('url');
 
 // adapted from https://github.com/pixelfed/pixelfed/blob/dev/app/Util/ActivityPub/HttpSignature.php
@@ -34,11 +35,10 @@ function headersToSigningString(headers) {
   for (let key in headers) {
     str.push(key.toLowerCase() + ': ' + headers[key]);
   }
-  console.log(str);
   return str.join('\n');
 }
 
-export async function httpSign(user: User, url: string, body: any, headers = {}) {
+export async function httpSign(actor: Channel | User, url: string, body: any, headers = {}) {
   let digest;
   if (body) {
     digest = createHash('sha256').update(JSON.stringify(body)).digest('base64');
@@ -50,15 +50,16 @@ export async function httpSign(user: User, url: string, body: any, headers = {})
   let stringToSign = headersToSigningString(headers);
   let signedHeaders = Object.keys(headers).map(header => header.toLowerCase()).join(' ');
 
-  const key = (await User.findOne({
+  const classType = actor instanceof Channel ? Channel : User;
+  const key = (await classType.findOne({
     select: ['id', 'private_key'],
-    where: {id: user.id}
+    where: {id: actor.id}
   })).private_key;
 
   const sign = createSign('SHA256');
   sign.write(stringToSign);
   const signature = sign.sign(key, 'base64');
-  const signatureHeader = `keyId="${user.getActorUrl('#main-key')}",headers="${signedHeaders}",algorithm="rsa-sha256",signature="${signature}"`;
+  const signatureHeader = `keyId="${actor.getActorUrl('#main-key')}",headers="${signedHeaders}",algorithm="rsa-sha256",signature="${signature}"`;
   delete headers['(request-target)'];
   headers['Signature'] = signatureHeader;
   return headers;
