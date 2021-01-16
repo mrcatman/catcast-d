@@ -97,6 +97,17 @@ export class User extends BaseModel {
         return `https://${this.domain || config.domain}/api/federation/users/${this.login}${suffix}`;
     }
 
+    toActivity(type: string) {
+        return {
+            actor: this.getActorUrl(),
+            cc: [this.getActorUrl('/followers')],
+            id: this.getActorUrl(),
+            object: this.toObject(),
+            to: ['https://www.w3.org/ns/activitystreams#Public'],
+            type
+        }
+    }
+
     toObject() {
         return {
             id: this.getActorUrl(),

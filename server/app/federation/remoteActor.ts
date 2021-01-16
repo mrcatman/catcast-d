@@ -56,6 +56,7 @@ export async function getActorByUrl(url: string): Promise<Channel | User | null>
       } else {
         actor = new User();
       }
+      actor.actor_id = url;
       actor.domain = parsed.host;
       actor.key_id = remoteActor.publicKey.id;
       await fetchCommonInfo(remoteActor, actor);

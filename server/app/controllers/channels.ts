@@ -9,6 +9,7 @@ import {generateKeys} from "../federation/crypto";
 import { Follower } from '../models/Follower'
 import {Like} from "typeorm";
 import { Follow, Unfollow } from '../federation/activities/Follow'
+import { UpdateActor } from '../federation/activities/Create'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -74,6 +75,7 @@ async function routes (fastify: ServerInstance, options) {
         let data = await fastify.validate(req, getBaseChannelValidators());
         channel.fill(data);
         await channel.save();
+        UpdateActor(channel);
         res.send({
             channel
         });
@@ -155,6 +157,7 @@ async function routes (fastify: ServerInstance, options) {
             is_subscribed
         });
     })
+
 
 }
 

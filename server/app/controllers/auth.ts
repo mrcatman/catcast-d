@@ -1,6 +1,7 @@
 import {User} from "../models/User";
 import {ServerInstance} from "../types";
 import {generateKeys} from "../federation/crypto";
+import { UpdateActor } from '../federation/activities/Create'
 
 const argon2 = require('argon2');
 const NotEmptyValidator = require('../validation/validators/NotEmptyValidator');
@@ -95,6 +96,7 @@ async function routes (fastify: ServerInstance, options) {
         user.about = data.about;
         user.avatar = data.avatar;
         await user.save();
+        UpdateActor(user);
 
         res.send({
             user
