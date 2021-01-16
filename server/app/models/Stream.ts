@@ -37,14 +37,14 @@ export class Stream extends BaseModel {
     @JoinColumn({ name: 'broadcaster_id' })
     broadcaster: User;
 
-    toCreateActivity() {
+    toActivity(type: string) {
         return {
             actor: this.channel.getActorUrl(),
             cc: [this.channel.getActorUrl('/followers')], // now public only yet,
             id: this.channel.getActorUrl(`/streams/${this.id}/activity`),
             object: this.toObject(),
             to: ['https://www.w3.org/ns/activitystreams#Public'],
-            type: 'Create'
+            type
         }
     }
 

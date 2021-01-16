@@ -39,14 +39,14 @@ async function handleInboxActivity(data) {
         if (actor) {
           let followersCount = await actor.followersCount();
           if (followersCount > 0) {
-            create(data.object.object);
+            create(data.object);
             status = true;
           }
         }
       }
       break;
     case 'Update':
-      status = await update(data.object.object);
+      status = await update(data.object);
       break;
     default:
       console.log(`Unknown activity type: ${data.type}`);

@@ -3,7 +3,7 @@ import { Channel } from '../models/Channel'
 import { httpSign } from './httpSignature'
 import axios from '../helpers/axios';
 
-export async function sendActivityPubRequest(type: String, object, localActor: Channel | User, remoteActors: Array<Channel | User>): Promise<any> {
+export async function sendActivityPubRequest(type: String, params, localActor: Channel | User, remoteActors: Array<Channel | User>): Promise<any> {
   if (localActor.domain) {
     return;
   }
@@ -12,7 +12,7 @@ export async function sendActivityPubRequest(type: String, object, localActor: C
     type,
     id: localActor.getActorUrl(`#follow/${localActor.id}/undo`),
     actor: localActor.getActorUrl(),
-    object
+    ...params,
   };
   let remoteUrls: Array<string> = [];
   for (let remoteActor of remoteActors) {
