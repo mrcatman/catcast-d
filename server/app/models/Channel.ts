@@ -12,10 +12,11 @@ import {Picture} from "./Picture";
 import {Stream} from "./Stream";
 import {BaseModel} from "./BaseModel";
 
-import { getConfig } from '../helpers/getConfig'
+import { config } from '../config'
+
 import { SHARED_INBOX_URL } from '../federation/constants'
 import { Follower } from './Follower'
-const config = getConfig();
+
 
 @Entity('channels')
 export class Channel extends BaseModel {
@@ -83,11 +84,6 @@ export class Channel extends BaseModel {
 
     @AfterLoad()
     setComputed() {
-        let domain = 'http://localhost:8080/'; //todo: change
-        if (this.is_online) {
-            this.screenshot = domain + 'screens/' + this.id + '.png';
-            this.live_url = domain + 'hls/' + this.id + '/index.m3u8';
-        }
         if (this.current_stream) {
             this.current_stream.channel = undefined; // prevent circular JSON
         }
@@ -100,11 +96,11 @@ export class Channel extends BaseModel {
     private_key: string;
 
     getWebUrl(): string {
-        return `https://${this.domain || config.domain}/${this.url}`;
+        return `https://${this.domain || config('server.domain')}/${this.url}`;
     }
 
     getActorUrl(suffix = ''): string {
-        return `https://${this.domain || config.domain}/api/federation/channels/${this.url}${suffix}`;
+        return `https://${this.domain || config('server.domain')}/api/federation/channels/${this.url}${suffix}`;
     }
 
     toActivity(type: string) {
@@ -139,7 +135,7 @@ export class Channel extends BaseModel {
             icon: {
                 type: 'Image',
                 mediaType: 'image/png',
-                url: this.logo? this.logo.full_url : `https://${config.domain}/static/no-logo.png`
+                url: this.logo? this.logo.full_url : `https://${config('server.domain')}/static/no-logo.png`
             },
             endpoints: {
                 sharedInbox: SHARED_INBOX_URL

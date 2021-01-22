@@ -16,6 +16,7 @@ async function handleInboxActivity(data) {
   if (!data['@context'] || !data.type ||  !data.id || !data.actor || !data.object) {
     return;
   }
+ // console.log(data);
   let status;
   switch (data.type) {
     case 'Follow':
@@ -34,7 +35,7 @@ async function handleInboxActivity(data) {
       }
       break;
     case 'Create':
-      if (data.object && data.object.object) {
+      if (data.object) {
         let actor = await getActorByUrl(data.actor);
         if (actor) {
           let followersCount = await actor.followersCount();

@@ -90,8 +90,9 @@ export default {
       "_title": "Вход и регистрация",
       "confirm_account": "Подтверждение аккаунта",
       "forms": {
-        "login": "Имя пользователя",
+        "login": "Логин",
         "password": "Пароль",
+        "name": "Отображаемое имя",
         "email": "Электронная почта",
         "old_password": "Старый пароль",
         "new_password": "Новый пароль",

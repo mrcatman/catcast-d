@@ -1,8 +1,9 @@
 <template>
   <div>
-    <m-input append="@catcast.tv" :warnings="warnings.login" :errors="errors.login" v-model="form.login" :title="$t('auth.forms.login')" />
-    <m-input :warnings="warnings.about" :errors="errors.about" type="textarea" v-model="form.about" :title="$t('auth.forms.about')" />
+    <m-input :readonly="!!profile" append="@catcast.tv" :warnings="warnings.login" :errors="errors.login" v-model="form.login" :title="$t('auth.forms.login')" />
 
+    <m-input :warnings="warnings.name" :errors="errors.name" v-model="form.name" :title="$t('auth.forms.name')" />
+    <m-input :warnings="warnings.about" :errors="errors.about" type="textarea" v-model="form.about" :title="$t('auth.forms.about')" />
     <m-picture-uploader v-model="form.avatar" :title="$t('auth.forms.avatar')" />
 
     <m-button @click="sendForm" :loading="formIsSubmitting">{{$t('forms.save')}}</m-button>
@@ -19,7 +20,7 @@
   @Component
   export default class EditProfile extends BaseFormComponent {
     @Prop({default: null}) readonly profile!: User | null
-    fields: any = ['about'];
+    fields: any = ['name', 'about'];
     form = {} as User;
     mounted() {
       if (this.profile) {

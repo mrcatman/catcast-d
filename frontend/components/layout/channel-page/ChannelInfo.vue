@@ -15,6 +15,7 @@
 </template>
 <style lang="scss">
   .channel-info {
+    margin: 1em 0 0;
     &__top {
       display: flex;
       align-items: center;

@@ -5,6 +5,7 @@ import {Channel} from "../models/Channel";
 import {checkRightsOrFail} from "../helpers/checkRights";
 import {Stream} from "../models/Stream";
 import { Create, Update } from '../federation/activities/Create'
+import { MoreThanDate } from '../helpers/dates'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -54,28 +55,37 @@ async function routes (fastify: ServerInstance, options) {
             let [channel, user] = await getChannelFromNginxRequest(req);
             channel.is_online = true;
 
-            let recentlyEndedStream = await Stream.findOne({
-                channel: {
-                    id: channel.id
+            let stream = await Stream.findOne({
+                where: {
+                    channel: {
+                        id: channel.id
+                    },
+                    broadcaster: {
+                        id: user.id
+                    },
+                    ended_at: MoreThanDate(new Date().getTime() - 1000 * 120),
                 },
-                broadcaster: {
-                    id: user.id
-                }
+                relations: ['channel', 'broadcaster']
             })
+            if (stream) { // if found recently ended stream, delete end date
+                stream.ended_at = null;
+                await stream.save();
+                Update(stream);
+            } else {
+                stream = new Stream();
+                stream.fill({
+                    name: `${channel.name} - broadcast ${new Date().toLocaleString()}`, // todo: generate stream name from channel settings,
+                    started_at: new Date(),
+                    channel: channel,
+                    broadcaster: user,
+                })
+                await stream.save();
+                channel.current_stream = stream;
+                await channel.save();
+                Create(stream);
+            }
 
-            let stream = new Stream();
-            stream.fill({
-                name: `${channel.name} - broadcast ${new Date().toLocaleString()}`, // todo: generate stream name from channel settings,
-                started_at: new Date(),
-                channel: channel,
-                broadcaster: user,
-            })
-            await stream.save();
 
-            Create(stream);
-
-            channel.current_stream = stream;
-            await channel.save();
 
             res.send({
                 status: true
@@ -97,6 +107,12 @@ async function routes (fastify: ServerInstance, options) {
 
             let stream = channel.current_stream;
             if (stream) {
+                stream = await Stream.findOne({
+                    where: {
+                        id: stream.id,
+                    },
+                    relations: ['channel', 'broadcaster']
+                })
                 stream.ended_at = new Date();
                 await stream.save();
                 Update(stream);

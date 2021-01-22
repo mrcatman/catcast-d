@@ -2,27 +2,27 @@ import fastify, { FastifyInstance } from 'fastify'
 const path = require('path');
 import { validate } from "./app/validation/validate";
 import {User} from "./app/models/User";
-import { getConfig } from './app/helpers/getConfig'
+import { config } from './app/config'
 
 interface FastifyInstanceExtended extends FastifyInstance {
     getDefaultJsonParser: Function
 }
 
 const server = fastify({logger: false}) as any as FastifyInstanceExtended;
-const config = getConfig();
 
 server.register(require('fastify-cookie'), {
-    secret: "my-secret", // for cookies signature
-    parseOptions: {}     // options for parsing cookies
+    secret: config('secrets.cookie'),
+    parseOptions: {}
 });
 server.register(require('fastify-jwt'), {
-    secret: 'foobar',
+    secret: config('secrets.jwt'),
     cookie: {
         cookieName: 'token'
     }
 });
+console.log(config('database'));
 server.register(require('fastify-typeorm'), {
-    ...config.database,
+    ...config('database'),
     synchronize: true,
     extra: {
         "charset": "utf8mb4_unicode_ci"
@@ -73,10 +73,10 @@ server.decorate("authenticate_optional", async function(request) {
 })
 
 server.decorate('validate', validate);
-server.decorate('config', config);
 
 (async() => {
     const controllerPaths = {
+        'site': '/api/site',
         'channels': '/api/channels',
         'auth': '/api/auth',
         'upload': '/api/upload',
@@ -89,7 +89,7 @@ server.decorate('config', config);
     }
 
 
-    server.listen(config.port, function (err, address) {
+    server.listen(config('server.port'), function (err, address) {
         if (err) {
             console.log(err)
         }

@@ -53,6 +53,7 @@ async function routes (fastify: ServerInstance, options) {
     fastify.post('/register',  async (req, res): Promise<any> => {
         let data = await fastify.validate(req, {
             login: [new AlphanumericWithSymbolsValidator()],
+            name: [new MaxLengthValidator(120)],
             email: [new EmailValidator()],
             password: [new MinLengthValidator(8)],
         });
@@ -89,10 +90,12 @@ async function routes (fastify: ServerInstance, options) {
     }, async (req, res): Promise<any> => {
         let data = await fastify.validate(req, {
             about: [new MaxLengthValidator(500)],
+            name: [new MaxLengthValidator(120)],
             avatar: [new PictureValidator(false)],
         });
 
         let user = req.user;
+        user.name = data.name;
         user.about = data.about;
         user.avatar = data.avatar;
         await user.save();

@@ -11,10 +11,9 @@ import {BaseModel} from "./BaseModel";
 import { Stream } from './Stream'
 import { Channel } from './Channel'
 
-import { getConfig } from '../helpers/getConfig'
+import { config } from '../config'
 import { SHARED_INBOX_URL } from '../federation/constants'
 import { Follower } from './Follower'
-const config = getConfig();
 
 @Entity('users')
 export class User extends BaseModel {
@@ -39,6 +38,9 @@ export class User extends BaseModel {
     })
     @JoinColumn()
     avatar: Picture;
+
+    @Column({nullable: true})
+    name: string;
 
     @Column({nullable: true})
     about: string;
@@ -90,11 +92,11 @@ export class User extends BaseModel {
     }
 
     getWebUrl(): string {
-        return `https://${config.domain}/users/${this.login}`;
+        return `https://${config('server.domain')}/users/${this.login}`;
     }
 
     getActorUrl(suffix: string = ''): string {
-        return `https://${this.domain || config.domain}/api/federation/users/${this.login}${suffix}`;
+        return `https://${this.domain || config('server.domain')}/api/federation/users/${this.login}${suffix}`;
     }
 
     toActivity(type: string) {
@@ -117,7 +119,7 @@ export class User extends BaseModel {
             followers: this.getActorUrl('/followers'),
             inbox: this.getActorUrl('/inbox'),
             outbox: this.getActorUrl('/outbox'),
-            preferredUsername: this.login,
+            preferredUsername: this.name || this.login,
             name: this.login,
             summary: this.about,
             url: this.getWebUrl(),
@@ -129,7 +131,7 @@ export class User extends BaseModel {
             icon: {
                 type: 'Image',
                 mediaType: 'image/png',
-                url: this.avatar? this.avatar.full_url : `https://${config.domain}/static/no-logo.png`
+                url: this.avatar? this.avatar.full_url : `https://${config('server.domain')}/static/no-logo.png`
             },
             endpoints: {
                 sharedInbox: SHARED_INBOX_URL

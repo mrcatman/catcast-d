@@ -6,9 +6,11 @@ import filterObject from '../../helpers/filterObject'
 import { Picture } from '../../models/Picture'
 
 export async function create(object) {
+
   if (!object || !object.catcastObjectType) {
     return;
   }
+  console.log(object);
   if (object.catcastObjectType === 'Stream') {
     let stream = await Stream.findOne({
       object_id: object.id
@@ -19,6 +21,8 @@ export async function create(object) {
       stream.name = object.name;
       stream.started_at = object.published;
       stream.ended_at = object.endedAt;
+      stream.watch_url = object.watchUrl;
+      stream.cover_url = object.coverUrl;
       await stream.save();
       if (object.channel) {
         let channel = await getActorByUrl(object.channel);
@@ -43,6 +47,7 @@ export async function create(object) {
 }
 
 export async function update(object) {
+
   if (!object || (!object.catcastObjectType && !object.catcastActorType)) {
     return;
   }
@@ -62,16 +67,21 @@ async function updateStream(object) {
   let stream = await Stream.findOne({
     object_id: object.id
   });
+  console.log('update stream', stream, object);
   if (stream) {
     if (object.name) {
       stream.name = object.name;
     }
+    if (object.watchUrl) {
+      stream.watch_url = object.watchUrl;
+    }
+    if (object.coverUrl) {
+      stream.cover_url = object.coverUrl;
+    }
     if (object.published) {
       stream.started_at = object.published;
     }
-    if (object.endedAt) {
-      stream.ended_at = object.endedAt;
-    }
+    stream.ended_at = object.endedAt;
     await stream.save();
     return true;
   }
@@ -82,6 +92,7 @@ async function updateChannel(object) {
   let channel = await Channel.findOne({
     actor_id: object.id
   });
+
   if (channel) {
     if (object.preferredUsername) {
       channel.name = object.preferredUsername;
@@ -94,6 +105,7 @@ async function updateChannel(object) {
       picture.fill({
         remote_url: object.icon.url
       })
+      await picture.save();
       channel.logo = picture;
     }
     await channel.save();
@@ -107,9 +119,9 @@ async function updateUser(object) {
     actor_id: object.id
   });
   if (user) {
-    //if (object.preferredUsername) {
-    //  channel.name = object.preferredUsername;
-    //}
+    if (object.preferredUsername) {
+      user.name = object.preferredUsername;
+    }
     if (object.summary) {
       user.about = object.summary;
     }

@@ -5,7 +5,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     JoinColumn,
-    ManyToOne,
+    ManyToOne, AfterLoad,
 } from 'typeorm'
 import { User } from "./User";
 import {BaseModel} from "./BaseModel";
@@ -21,6 +21,12 @@ export class Stream extends BaseModel {
     name: string;
 
     @Column({nullable: true})
+    watch_url: string;
+
+    @Column({nullable: true})
+    cover_url: string;
+
+    @Column({nullable: true})
     object_id: string;
 
     @CreateDateColumn({ type: 'timestamp' })
@@ -29,6 +35,8 @@ export class Stream extends BaseModel {
     @Column({ type: 'timestamp', nullable: true })
     ended_at: Date;
 
+    @Column({ nullable: true })
+    channel_id: number;
     @ManyToOne(() => Channel, channel => channel.streams)
     @JoinColumn({ name: 'channel_id' })
     channel: Channel;
@@ -59,9 +67,24 @@ export class Stream extends BaseModel {
 
             // custom properties
             catcastObjectType: 'Stream',
+            watchUrl: this.watch_url,
+            coverUrl: this.cover_url,
             broadcaster: this.broadcaster.getActorUrl(),
             channel: this.channel.getActorUrl(),
             endedAt: this.ended_at
+        }
+    }
+
+    @AfterLoad()
+    setComputed() {
+        if (!this.object_id) {
+            let domain = 'http://localhost:8100/'; //todo: change
+            if (!this.watch_url) {
+                this.watch_url = domain + 'hls/' + this.channel_id + '/index.m3u8';
+            }
+            if (!this.cover_url) {
+                this.cover_url = domain + 'screens/' + this.channel_id + '.png';
+            }
         }
     }
 

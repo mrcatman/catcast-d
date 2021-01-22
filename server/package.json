@@ -17,6 +17,7 @@
     "axios": "^0.21.1",
     "config": "^3.0.1",
     "crypto": "^1.0.1",
+    "date-fns": "^2.16.1",
     "fastify": "^3.9.2",
     "fastify-cookie": "^5.0.2",
     "fastify-cors": "^5.1.0",

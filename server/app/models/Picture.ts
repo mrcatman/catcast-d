@@ -7,9 +7,8 @@ import {
     AfterLoad
 } from "typeorm";
 import {BaseModel} from "./BaseModel";
+import { config } from '../config'
 
-import { getConfig } from '../helpers/getConfig'
-const config = getConfig();
 
 @Entity('pictures')
 export class Picture extends BaseModel {
@@ -36,7 +35,7 @@ export class Picture extends BaseModel {
 
     @AfterLoad()
     setComputed() {
-        let url = this.remote_url ? this.remote_url : `https://${config.domain}${this.path}`;
+        let url = this.remote_url ? this.remote_url : `https://${config('server.domain')}${this.path}`;
         if (url.indexOf('https://localhost') !== -1) {
             url = url.replace('https://localhost', 'http://localhost');
         }

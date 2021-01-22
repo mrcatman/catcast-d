@@ -2,28 +2,26 @@ import axios from '../helpers/axios';
 import { Channel } from '../models/Channel'
 import { User } from '../models/User'
 import { MAX_PAGES_TO_FETCH } from './constants'
-import { Stream } from '../models/Stream'
 import { Picture } from '../models/Picture'
-import { getConfig } from '../helpers/getConfig'
+import { config } from '../config'
 import { create } from './activityHandlers/Create'
 const {parse: parseUrl} = require('url');
-const config = getConfig();
 
 export async function getActorByWebfinger(domain: string, resource: string) {
   const protocol = domain.indexOf('localhost') !== -1 ? 'http' : 'https';
   const webfingerUrl = `${protocol}://${domain}/.well-known/webfinger?resource=acct:${resource}@${domain}`;
   let res = (await axios.get(webfingerUrl)).data;
   if (res.links && res.links.length > 0) {
-    let link = res.links.filter(link => link.type === 'application/activity+json')[0];
+    let link = res.links.filter(link => link.rel === 'self')[0];
     if (link) {
-      return await getRemoteActor(link);
+      return await getRemoteActor(link.href);
     }
   }
 }
 
 export async function getActorByUrl(url: string): Promise<Channel | User | null> {
   let parsed = parseUrl(url);
-  if (parsed.host === config.host) {
+  if (parsed.host === config('server.domain')) {
     let splitted = url.split('/');
     let identifier = splitted[splitted.length - 1];
     let actorType = splitted[splitted.length - 2];

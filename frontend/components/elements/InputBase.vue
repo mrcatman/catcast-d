@@ -25,6 +25,7 @@
     position: absolute;
     left: 0;
     top: 0;
+    font-size: 1.5em;
     padding: .25em;
     color: var(--text-sub-color);
     z-index: 100;
@@ -65,9 +66,7 @@
     box-shadow: 0 0.25em 1.75em -0.75em var(--negative-color)!important;
   }
 
-	&__prepend{
-		border-top-left-radius: 5px;
-		border-bottom-left-radius: 5px;
+	&__prepend {
 		font-weight: 500;
 		display: block;
 		font-size: .75em;
@@ -75,8 +74,7 @@
     background: rgba(255,255,255,.1);
 	}
   &__append {
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+
     font-weight: 500;
     display: block;
     font-size: .75em;
@@ -163,7 +161,6 @@
     padding: .5em;
     background: rgba(255, 255, 255, .125);
     box-shadow: 0 .5em 1em -0.25em rgba(255, 255, 255, .125);
-    border-radius: .25em;
     &--with-warning {
       border-bottom-color: var(--text-warning-color);
     }
