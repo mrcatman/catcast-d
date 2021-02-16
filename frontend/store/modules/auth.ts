@@ -1,6 +1,7 @@
 import { getterTree, mutationTree, actionTree } from 'nuxt-typed-vuex'
 import User from '~/types/User'
 import { AuthGetMe, AuthLogout } from '~/api/modules/auth'
+import { Role } from '~/helpers/roles'
 
 export const state = () => ({
   me: null as User | null,
@@ -8,7 +9,9 @@ export const state = () => ({
 })
 
 export const getters = getterTree(state, {
-
+  isAdmin(state): boolean {
+    return state.me?.role_id === Role.ADMIN;
+  }
 })
 
 export const mutations = mutationTree(state, {

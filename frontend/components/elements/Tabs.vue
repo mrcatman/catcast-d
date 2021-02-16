@@ -37,7 +37,6 @@
 
   &__item {
     padding: .875em 1.25em;
-    font-size: 1.25em;
     font-weight: 400;
     border-bottom: 2px solid rgba(255, 255, 255, 0);
     flex: 1;

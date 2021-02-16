@@ -20,7 +20,7 @@ server.register(require('fastify-jwt'), {
         cookieName: 'token'
     }
 });
-console.log(config('database'));
+
 server.register(require('fastify-typeorm'), {
     ...config('database'),
     synchronize: true,
@@ -69,6 +69,17 @@ server.decorate("authenticate_optional", async function(request) {
         request.user = await User.findOne({id: request.user.id});
     } catch (err) {
 
+    }
+})
+server.decorate("authenticate_admin", async function(request, reply) {
+    try {
+        await request.jwtVerify()
+        request.user = await User.findOne({id: request.user.id});
+        if (!request.user.isAdmin()) {
+            throw new Error("Access error");
+        }
+    } catch (err) {
+        reply.send(err)
     }
 })
 

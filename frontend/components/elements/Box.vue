@@ -29,5 +29,8 @@
     &__content {
       padding: 1em;
     }
+    &__unset-padding {
+      margin: -1em;
+    }
   }
 </style>

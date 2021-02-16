@@ -13,5 +13,6 @@ export interface ServerInstance {
     validate: Function,
     authenticate: Function,
     authenticate_optional: Function,
+    authenticate_admin: Function,
     config: ServerConfig
 }

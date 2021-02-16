@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "build": "rm -rf dist && tsc --sourceMap -p ./",
-    "dev": "ts-node-dev ./index.ts",
-    "dev-second": "ts-node-dev ./index.ts app/config_2.js"
+    "dev": "ts-node-dev ./index.ts --config_path=config",
+    "dev-second": "ts-node-dev ./index.ts --config_path=config_2"
   },
   "author": "mrcatmann (Kirill Alexeev)",
   "license": "ISC",

@@ -115,7 +115,9 @@ export default {
         "settings": "Настройки",
         "dashboard": "Панель управления",
         "studio": "Эфирная студия",
+        "admin_panel": "Панель администратора",
       },
+
       "forgot_password":
       {
         "_title": "Забыли пароль?",
@@ -158,6 +160,7 @@ export default {
         "logo": "Логотип"
       }
     },
+
     "comments":
     {
       "title": "Комментарии",
@@ -2575,6 +2578,14 @@ export default {
     },
     "admin":
     {
+      "_title": "Панель администратора",
+      "config": {
+        "_title": "Настройки узла",
+        "tabs": {
+          "federation": "Федерация",
+          "frontend": "Внешний вид и информация об узле"
+        }
+      },
       "channels":
       {
         "id": "ID",

@@ -6,6 +6,7 @@
       <div class="auth-panel__avatar" v-if="avatar" :style="{backgroundImage: `url(${avatar})`}"></div>
       <div class="auth-panel__username">{{username}}</div>
       <m-popup-menu class="popup-menu-bottom popup-menu-bottom-left">
+        <m-popup-menu-item  v-if="isAdmin" to="/admin">{{$t('auth.menu.admin_panel')}}</m-popup-menu-item>
         <m-popup-menu-item to="/dashboard">{{$t('auth.menu.dashboard')}}</m-popup-menu-item>
         <m-popup-menu-item :to="`/user/${id}`" >{{$t('auth.menu.profile')}}</m-popup-menu-item>
         <m-popup-menu-item to="/user/settings">{{$t('auth.menu.settings')}}</m-popup-menu-item>
@@ -24,6 +25,9 @@
   import AuthModal from './AuthModal.vue'
   export default Vue.extend({
     computed: {
+      isAdmin() {
+        return this.$accessor.modules.auth.isAdmin;
+      },
       avatar() {
         return this.$accessor.modules.auth?.me?.avatar?.full_url;
       },

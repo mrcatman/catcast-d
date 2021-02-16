@@ -15,6 +15,8 @@ import { config } from '../config'
 import { SHARED_INBOX_URL } from '../federation/constants'
 import { Follower } from './Follower'
 
+import { Role } from '../helpers/roles'
+
 @Entity('users')
 export class User extends BaseModel {
 
@@ -44,6 +46,9 @@ export class User extends BaseModel {
 
     @Column({nullable: true})
     about: string;
+
+    @Column({default: 0})
+    role_id: number;
 
     @CreateDateColumn({ type: 'timestamp' })
     created_at: Date;
@@ -144,6 +149,10 @@ export class User extends BaseModel {
             actor_id: this.id,
             actor_type: Follower.TYPE_USER
         })
+    }
+
+    isAdmin() : boolean {
+        return this.role_id === Role.ADMIN;
     }
 
 }

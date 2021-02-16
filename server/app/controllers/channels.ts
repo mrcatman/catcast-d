@@ -14,23 +14,16 @@ import { UpdateActor } from '../federation/activities/Create'
 async function routes (fastify: ServerInstance, options) {
 
     fastify.get('/', async (req, res) => {
-        let channels = await Channel.find({
-            relations: ['current_stream']
-        });
+        let channels = await Channel.find();
         res.send({channels});
     })
 
     fastify.get('/my', {
         preValidation: [fastify.authenticate]
     }, async (req, res) => {
-        let channels = await Channel.find({
-            where: {
-                owner: {
-                    id: req.user.id
-                }
-            },
-            relations: ['current_stream']
-        });
+        let channels = await Channel.find({owner: {
+            id: req.user.id
+        }});
         res.send({channels});
     })
 
@@ -89,18 +82,12 @@ async function routes (fastify: ServerInstance, options) {
     })
 
     fastify.get('/:id', async (req, res) => {
-        let channel = await Channel.findOneOrFail({
-            where: { id: req.params.id },
-            relations: ['current_stream']
-          });
+        let channel = await Channel.findOneOrFail({id: req.params.id});
         res.send({channel});
     });
 
     fastify.get('/get-by-url/:url', async (req, res) => {
-        let channel = await Channel.findOneOrFail({
-            where: { url: req.params.url },
-            relations: ['current_stream']
-        });
+        let channel = await Channel.findOneOrFail({url: req.params.url});
         res.send({channel});
     });
 
@@ -171,7 +158,6 @@ async function routes (fastify: ServerInstance, options) {
         });
     })
 
-
 }
 
-module.exports = routes
+module.exports = routes;

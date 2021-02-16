@@ -1,7 +1,7 @@
 <template>
   <div class="header">
-    <nuxt-link class="header__logo" to="/">
-      <img src="/assets/pictures/logo-big.svg" class="header__logo__picture" />
+    <nuxt-link :title="config.site_name" class="header__logo" to="/">
+      <img :alt="config.site_name" :src="config.logo" class="header__logo__picture" />
     </nuxt-link>
     <SearchBox />
     <UserPanel />
@@ -12,6 +12,11 @@
   import SearchBox from '~/components/layout/header/SearchBox'
   export default{
     name: 'HeaderNav',
+    computed: {
+      config() {
+        return this.$accessor.modules.site?.config || {};
+      },
+    },
     components: { SearchBox, UserPanel }
   }
 </script>

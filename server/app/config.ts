@@ -6,7 +6,10 @@ let configFolder = argv.config_path || 'config';
 
 let configValues = {};
 
-export function config(key: string) {
+export function config(key: string | null = null) {
+  if (!key) {
+    return configValues;
+  }
   let keyPath = key.split('.');
   let namespace = keyPath.shift();
   let data;
@@ -27,3 +30,10 @@ export function config(key: string) {
   }
   return null;
 }
+
+fs.readdir(configFolder, (err, files) => {
+  for (let file of files) {
+    let namespace = file.split(".")[0];
+    configValues[namespace] = JSON.parse(fs.readFileSync(`${configFolder}/${file}`));
+  }
+});
