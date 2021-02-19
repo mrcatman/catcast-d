@@ -14,18 +14,18 @@ export const ChannelUpdate = async (data: Partial<Channel>): Promise<Channel> =>
   return res.data.channel as Channel;
 };
 
-export const ChannelsGet = async (): Promise<Paginator<Channel>> => {
-  const res = await api.get(`${BASE_PATH}`);
+export const ChannelsGet = async (page: number = 1): Promise<Paginator<Channel>> => {
+  const res = await api.get(`${BASE_PATH}?page=${page}`);
   return res.data as Paginator<Channel>;
 };
 
-export const ChannelsGetOnline = async (): Promise<Paginator<Channel>> => {
-  const res = await api.get(`${BASE_PATH}/online`);
+export const ChannelsGetOnline = async (page: number = 1): Promise<Paginator<Channel>> => {
+  const res = await api.get(`${BASE_PATH}/online?page=${page}`);
   return res.data as Paginator<Channel>;
 };
 
-export const ChannelsGetLocal = async (): Promise<Paginator<Channel>> => {
-  const res = await api.get(`${BASE_PATH}/local`);
+export const ChannelsGetLocal = async (page: number = 1): Promise<Paginator<Channel>> => {
+  const res = await api.get(`${BASE_PATH}/local?page=${page}`);
   return res.data as Paginator<Channel>;
 };
 

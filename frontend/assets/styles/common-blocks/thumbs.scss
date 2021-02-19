@@ -4,22 +4,29 @@
   padding: .5em;
   text-align: center;
   background: var(--box-color);
+  &__pager-container {
+    padding: .5em;
+    background: var(--title-box-color);
+  }
   &__outer {
-    margin: 1em 0;
+    margin: 1em auto!important;
   }
 
   &__title {
+    min-height: 1.75em;
+    display: flex;
+    align-items: center;
     background: var(--title-box-color);
     padding: .5em 1em;
     &__button {
-      margin: 0 0 0 .5em;
+      margin-left: .5em!important;
     }
-    &__empty {
-      flex: 1;
-      margin: .5em;
-      opacity: .75;
-      text-align: left;
-    }
+  }
+  &__empty {
+    flex: 1;
+    margin: .5em;
+    opacity: .75;
+    text-align: left;
   }
 }
 

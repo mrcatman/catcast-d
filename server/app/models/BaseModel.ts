@@ -22,12 +22,12 @@ export class BaseModel extends BaseEntity {
             }
         }
         const total = await this.count(props);
-        const count = req.body && req.body.count ? req.body.count : (req.query && req.query.count ? req.query.count : 10);
+        const count = req.body && req.body.count ? req.body.count : (req.query && req.query.count ? req.query.count : 12);
         let page = req.body && req.body.page ? req.body.page : (req.query && req.query.page ? req.query.page : 1);
         if (page < 1) {
             page = 1;
         }
-        let pagesCount = Math.ceil(count / total);
+        let pagesCount = Math.ceil(total / count);
         if (!pagesCount) {
             pagesCount = 0;
         }

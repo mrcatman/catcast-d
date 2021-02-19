@@ -20,6 +20,7 @@ import ListItemTexts from '~/components/elements/list/ListItemTexts'
 import ListItemTitle from '~/components/elements/list/ListItemTitle'
 import EditableItemsList from '@/components/elements/EditableItemsList'
 import Editor from '@/components/elements/Editor'
+import Pager from '@/components/elements/Pager'
 
 
 Vue.component('m-button', Button)
@@ -38,6 +39,7 @@ Vue.component('m-popup-menu', PopupMenu)
 Vue.component('m-popup-menu-header', PopupMenuHeader)
 Vue.component('m-popup-menu-item', PopupMenuItem)
 Vue.component('m-editable-items-list', EditableItemsList)
+Vue.component('m-pager', Pager)
 
 Vue.component('m-list', List)
 Vue.component('m-list-item', ListItem)

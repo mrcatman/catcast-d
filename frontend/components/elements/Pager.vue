@@ -1,37 +1,37 @@
 <template>
-<div class="pager" v-show="pagesCount > 1" :class="{'pager-vertical': vertical}">
-	<a class="pager__link" :key="$index" @click="goPage(page)" :class="{'pager__link--active':currentPage === page.value,'pager__link-unselectable':!page.selectable}" v-for="(page,$index) in pager">
-		<touch-ripple class="pager__link__inner" :speed="1" :opacity="0.3" color="#fff" transition="ease"><i v-if="page.text === '<'" class="fa fa-chevron-left"></i><i v-else-if="page.text == '>'" class="fa fa-chevron-right"></i><span v-else>{{page.text}}</span></touch-ripple>
+<div class="pager"  :class="{'pager--vertical': vertical}">
+	<a class="pager__link" :key="$index" @click="goToPage(page)" :class="{
+	  'pager__link--active': currentPage === page.value,
+    'pager__link--unselectable': !page.selectable
+    }" v-for="(page,$index) in pager">
+		<i v-if="page.text === '<'" class="fa fa-chevron-left"></i>
+    <i v-else-if="page.text == '>'" class="fa fa-chevron-right"></i>
+    <span v-else>{{page.text}}</span>
 	</a>
 </div>
 </template>
 <script>
-import isMobile from '~/functions/isMobile.js';
+
 export default{
 	props:{
 		vertical: Boolean,
 		value: Number,
 		data: Object,
-		count:{
-			type: Number,
-			required: false,
-		},
 	},
+  computed: {
+    pagesCount() {
+      return this.data.pagesCount;
+    }
+  },
 	data() {
 		return {
-			itemsShownCount: isMobile() ? 2 : 3,
+			itemsShownCount: 3,
 			pager: [],
 			currentPage: this.value ? this.value : 1,
-			pagesCount: (this.count !== undefined ? this.count : (this.data.last_page ? this.data.last_page : Math.ceil(this.data.count/this.data.on_page))),
 		}
 	},
-	watch:{
-    count(newCount) {
-      this.pagesCount = newCount;
-      this.generatePager();
-    },
+	watch: {
 		data(newData) {
-			this.pagesCount = (newData.last_page ? newData.last_page : Math.ceil(newData.count/newData.on_page));
 			this.generatePager();
 		},
 		currentPage(newVal, oldVal){
@@ -46,8 +46,8 @@ export default{
 		this.generatePager();
 	},
 	methods:{
-		goPage(page) {
-			if (page.selectable) {
+		goToPage(page) {
+		  if (page.selectable) {
 				this.currentPage = page.value;
 				this.$emit('pageChange', page.value);
 			}
@@ -57,8 +57,8 @@ export default{
 			let pagesCount = this.pagesCount;
 			let pagerArray = [1];
 			let currentPage = this.currentPage;
-			let start = currentPage-this.itemsShownCount;
-			let end = currentPage+this.itemsShownCount;
+			let start = currentPage - this.itemsShownCount;
+			let end = currentPage + this.itemsShownCount;
 
 			if (start>2) {
 				pagerArray.push('...');
@@ -85,9 +85,9 @@ export default{
 			});
 			pager.unshift(
 			  {
-          value: currentPage-1,
+          value: currentPage - 1,
           text: '<',
-          selectable: currentPage > 0
+          selectable: currentPage - 1 > 0
 			  }
       );
 			pager.push(
@@ -106,42 +106,42 @@ export default{
 }
 </script>
 <style lang="scss">
-.pager-vertical-container {
-    position: fixed;
-    top: 0;
-    height: 100%;
-    right: 1em;
-    width: 5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+
 
 .pager{
 	display: flex;
-	&-vertical{
+	&--vertical{
 		flex-direction: column;
 	}
 	&__link {
-		background: #eee;
+    background: rgba(255, 255, 255, .1);
 		display: block;
 		margin: 0 .5em 0 0;
-		color: #333!important;
-		font-weight: 500;
-		border-radius: 3px;
+    padding: .5em 1em;
 		cursor: pointer;
     text-align: center;
+    transition: background-color .25s;
+    &:hover {
+      background: rgba(255, 255, 255, .2);
+    }
 		&--active {
+      cursor: default;
 			background: var(--active-color);
-			color: var(--text-color)!important;
+			color: var(--text-color);
+      &:hover {
+        background: var(--active-color);
+      }
 		}
-		&-unselectable {
-			color: #777;
-			background: #ccc;
-		}
-		&__inner {
-			padding: .5em 1em;
-		}
+		&--unselectable {
+			opacity: .5;
+      cursor: default;
+      &:hover {
+        background: rgba(255, 255, 255, .1);
+      }
+    }
+    i {
+      font-size: .75em;
+    }
 	}
 	&-vertical &__link {
 		margin: .25em 0;
