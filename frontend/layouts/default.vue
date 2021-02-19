@@ -22,6 +22,6 @@
   import Vue from 'vue'
   import HeaderNav from '~/components/layout/header/HeaderNav.vue'
   export default Vue.extend({
-    components: { HeaderNav }
+    components: { HeaderNav },
   })
 </script>

@@ -3,7 +3,7 @@
 	<div class="filepicker__title">{{title}}</div>
   <div class="filepicker__container">
     <div class="filepicker__element">
-      <div v-show="picture !== null" class="filepicker__reset" @click="reset()">
+      <div v-show="picture !== null || picturePath !== null" class="filepicker__reset" @click="reset()">
         <i class="material-icons">close</i>
       </div>
       <input style="display:none" type="file" ref="fileinput" @change="onFileInputChange" />
@@ -133,13 +133,17 @@ const PictureUploaderProps = Vue.extend({
       }
     },
     value: {
-      type: Object,
+      type: [Object, String],
       required: false
     },
     title:{
       type:[String],
       required: false,
     },
+    returnPath: {
+      type: Boolean,
+      required: false
+    }
   }
 })
 
@@ -150,11 +154,26 @@ export default class PictureUploader extends PictureUploaderProps {
 	filename: string = '';
 	extensions: Array<string> = availablePictureExtensions;
   status: uploadStatus = uploadStatus.STATUS_NOT_STARTED;
-  picture: Picture | null = null;
+  picture: Picture  | null = null;
+  picturePath: string | null = null;
 
   @Watch('value')
-  onValueChanged(newValue: Picture | null) {
-    this.picture = newValue;
+  onValueChanged(newValue: Picture | string | null) {
+    if (this.returnPath) {
+      this.picturePath = newValue && typeof newValue === 'object'  ? newValue!.full_url! : newValue;
+    } else {
+      this.picture = typeof newValue === 'object'  ? newValue : null;
+    }
+  }
+
+  mounted() {
+    if (this.value) {
+      if (this.returnPath) {
+        this.picturePath = this.value;
+      } else {
+        this.picture = this.value;
+      }
+    }
   }
 
   @Watch('picture')
@@ -162,9 +181,14 @@ export default class PictureUploader extends PictureUploaderProps {
     this.$emit('input', newVal);
   }
 
+  @Watch('picturePath')
+  onPicturePathChanged(newVal: string | null) {
+    this.$emit('input', newVal);
+  }
 
-	get path() {
-    return this.picture ? this.picture.full_url : null;
+
+	get path() {;
+    return this.returnPath ? (this.picturePath) : (this.picture ? this.picture.full_url : null);
   }
 
 	get formatsListText() {
@@ -172,7 +196,12 @@ export default class PictureUploader extends PictureUploaderProps {
 	};
 
   reset() {
-    this.picture = null;
+    if (this.returnPath) {
+      this.picturePath = null;
+    } else {
+      this.picture = null;
+    }
+
   };
 
   onFileInputChange(e: Event) {
@@ -191,13 +220,13 @@ export default class PictureUploader extends PictureUploaderProps {
 					this.status = uploadStatus.STATUS_UPLOADING;
 					UploadPicture(picture).then((res) => {
             this.picture = res;
+            this.picturePath = res.full_url;
             this.status = uploadStatus.STATUS_SUCCESS;
           }).catch(() => {
             this.status = uploadStatus.STATUS_ERROR;
           })
 				} else {
           this.status = uploadStatus.STATUS_ERROR;
-					console.log(this);
 				}
 			}
 		}

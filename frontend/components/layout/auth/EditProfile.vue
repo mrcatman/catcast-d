@@ -34,7 +34,7 @@
     submit() {
        return AuthUpdateProfile(this.form);
     }
-    validate(field: string, value: string) : Array<Warning> | null {
+    validateField(field: string, value: string) : Array<Warning> | null {
       return null;
     }
   }

@@ -11,6 +11,7 @@
 </template>
 <style lang="scss">
 .radio-buttons {
+  margin: 1.25em 0;
   &__items {
     display: flex;
     flex-direction: column;
@@ -21,8 +22,9 @@
   }
 
   &__title {
-    font-size: .75em;
-    margin: 0 0 .25em;
+    font-size: 1em;
+    font-weight: 500;
+    margin: 0 0 .5em;
   }
 
   &__items--inline &__item {

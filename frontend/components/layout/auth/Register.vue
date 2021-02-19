@@ -29,7 +29,7 @@
     submit() {
       return AuthRegister(this.form.email, this.form.login, this.form.password);
     }
-    validate(field: string, value: string) : Array<Warning> | null {
+    validateField(field: string, value: string) : Array<Warning> | null {
       if (!value || value.length === 0) {
         return [Warning.FIELD_REQUIRED]
       }

@@ -2584,6 +2584,21 @@ export default {
         "tabs": {
           "federation": "Федерация",
           "frontend": "Внешний вид и информация об узле"
+        },
+        "frontend": {
+          "site_name": "Название узла",
+          "site_description": "Краткая информация об узле",
+          "site_contact_email": "Контактный e-mail адрес владельца",
+          "logo": "Логотип"
+        },
+        "federation": {
+          "enabled": "Включить федерацию",
+          "restriction": {
+            "_title": "Ограничения по коммуникации между узлами",
+            "none": "Не ограничивать",
+            "whitelist": "Белый список узлов",
+            "blacklist": "Черный список узлов",
+          }
         }
       },
       "channels":

@@ -9,12 +9,7 @@
     <span class="input__append" v-if="append">{{append}}</span>
 	</div>
 
-	<div class="input__errors" v-show="errors && errors.length>0">
-		<div v-for="(error,$index) in errors" :key="$index" class="input__error">{{printError(error)}}</div>
-	</div>
-  <div class="input__warnings" v-show="warnings && warnings.length > 0 && wasFocused">
-    <div v-for="(warning,$index) in warnings" :key="$index" class="input__warning">{{$t(warning)}}</div>
-  </div>
+  <ErrorsContainer :warnings="warnings" :errors="errors" />
 
   <div class="input__description" v-if="description && description !== '' ">{{description}}</div>
 </div>
@@ -187,6 +182,9 @@
     color: var(--input-text-color);
     font-family: inherit;
     font-size: inherit;
+    &--textarea {
+      font-size: .875em;
+    }
     &--with-icon {
       margin: 0 0 0 1.75em;
     }
@@ -262,8 +260,10 @@ input:-webkit-autofill:active  {
   }
 </style>
 <script>
+import ErrorsContainer from '@/components/elements/ErrorsContainer'
 export default {
-	props:{
+  components: { ErrorsContainer },
+  props:{
 	  disabled: {
 	    type: Boolean,
       required: false,
@@ -378,13 +378,6 @@ export default {
 	methods:{
     onClick(e) {
 	    this.$emit('click', e);
-    },
-	  printError(error) {
-	    if (Array.isArray(error)) {
-	      return this.$tc(error[0], error[1]);
-      } else {
-	      return this.$t(error);
-      }
     },
 		onKeyup(e) {
 			this.$emit('keyup',e);

@@ -1,5 +1,5 @@
 {
   "enabled": true,
-  "acceptFrom": [],
-  "rejectFrom": []
+  "accept_from": [],
+  "reject_from": []
 }

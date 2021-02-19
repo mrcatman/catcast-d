@@ -35,7 +35,7 @@
     }
 
     onSubmit(channel: Channel) {
-      notifySuccess(this.$t('global.saved').toString());
+      notifySuccess(this.$t('common.saved').toString());
       if (!this.channel) {
         this.$router.push(`/dashboard/${channel.id}/main`);
       }
@@ -43,7 +43,7 @@
     submit() {
       return this.channel ? ChannelUpdate(this.form) : ChannelCreate(this.form);
     }
-    validate(field: string, value: string) : Array<Warning> | null {
+    validateField(field: string, value: string) : Array<Warning> | null {
       if (field === 'name' || field === 'url') {
         if (!value || value.length === 0) {
           return [Warning.FIELD_REQUIRED]

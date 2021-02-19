@@ -1,5 +1,1 @@
-{
-  "enabled": true,
-  "acceptFrom": [],
-  "rejectFrom": []
-}
+{"enabled":true,"accept_from":[],"reject_from":[]}

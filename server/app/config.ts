@@ -31,9 +31,18 @@ export function config(key: string | null = null) {
   return null;
 }
 
+export const setConfig = (config) => {
+  for (let namespace in config) {
+    configValues[namespace] = config[namespace];
+    fs.writeFileSync(`${configFolder}/${namespace}.json`, JSON.stringify(configValues[namespace]));
+  }
+}
+
+
 fs.readdir(configFolder, (err, files) => {
   for (let file of files) {
     let namespace = file.split(".")[0];
     configValues[namespace] = JSON.parse(fs.readFileSync(`${configFolder}/${file}`));
   }
 });
+

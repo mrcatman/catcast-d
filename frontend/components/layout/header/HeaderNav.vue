@@ -1,7 +1,8 @@
 <template>
   <div class="header">
     <nuxt-link :title="config.site_name" class="header__logo" to="/">
-      <img :alt="config.site_name" :src="config.logo" class="header__logo__picture" />
+      <img v-if="config.logo" :alt="config.site_name" :src="config.logo" class="header__logo__picture" />
+      <span v-else class="header__logo__text">{{config.site_name}}</span>
     </nuxt-link>
     <SearchBox />
     <UserPanel />
@@ -35,7 +36,12 @@
     z-index: 10000000;
     background: var(--sidebar-bg);
     &__logo {
-      margin: 0 1.25em;
+      margin: 0 1.25em 0 .5em;
+      text-decoration: none;
+      &__text {
+        font-size: 1.25em;
+        font-weight: bold;
+      }
       &__picture{
         height: 2.5em;
         opacity: .875;
