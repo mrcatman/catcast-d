@@ -4,7 +4,7 @@
       <template v-slot:heading>{{$t('search.page_title', {search: $route.query.q})}}</template>
       <template v-slot:default>
         <div class="thumbs-list">
-          <ChannelThumb :channel="channel" :key="channel.id" v-for="channel in channels" />
+          <ChannelThumb :channel="channel" :key="channel.id" v-for="channel in channels.list" />
         </div>
       </template>
     </m-box>
@@ -25,7 +25,7 @@ import { Watch } from '~/node_modules/vue-property-decorator'
   },
 })
 export default class SearchPage extends Vue {
-  channels = [] as Array<Channel>
+  channels = {} as Paginator<Channel>
 
   @Watch('$route')
   onRouteChange() {

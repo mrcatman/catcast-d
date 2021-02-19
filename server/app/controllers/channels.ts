@@ -14,17 +14,31 @@ import { UpdateActor } from '../federation/activities/Create'
 async function routes (fastify: ServerInstance, options) {
 
     fastify.get('/', async (req, res) => {
-        let channels = await Channel.find();
-        res.send({channels});
+        let channels = await Channel.paginate({}, req);
+        res.send(channels);
+    })
+
+    fastify.get('/local', async (req, res) => {
+        let channels = await Channel.paginate({
+            domain: null
+        }, req);
+        res.send(channels);
+    })
+
+    fastify.get('/online', async (req, res) => {
+        let channels = await Channel.paginate({
+            is_online: true
+        }, req);
+        res.send(channels);
     })
 
     fastify.get('/my', {
         preValidation: [fastify.authenticate]
     }, async (req, res) => {
-        let channels = await Channel.find({owner: {
+        let channels = await Channel.paginate({owner: {
             id: req.user.id
-        }});
-        res.send({channels});
+        }}, req);
+        res.send(channels);
     })
 
     fastify.get('/search', async (req, res) => {
@@ -35,16 +49,16 @@ async function routes (fastify: ServerInstance, options) {
         } catch (e) {
 
         }
-        let channels = await Channel.find({
+        let channels = await Channel.paginate({
             where: [
                {name: Like(`%${query}%`)},
                 {url: Like(`%${query}%`)}
             ]
-        });
+        }, req);
         if (remoteChannel) {
-            channels.unshift(remoteChannel);
+            channels.list.unshift(remoteChannel);
         }
-        res.send({channels});
+        res.send(channels);
     })
 
     fastify.post('/', {

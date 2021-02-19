@@ -2,6 +2,25 @@
   display: flex;
   flex-wrap: wrap;
   padding: .5em;
+  text-align: center;
+  background: var(--box-color);
+  &__outer {
+    margin: 1em 0;
+  }
+
+  &__title {
+    background: var(--title-box-color);
+    padding: .5em 1em;
+    &__button {
+      margin: 0 0 0 .5em;
+    }
+    &__empty {
+      flex: 1;
+      margin: .5em;
+      opacity: .75;
+      text-align: left;
+    }
+  }
 }
 
 .thumb {
@@ -19,6 +38,7 @@
   }
 
   &__logo {
+    background-color: #000;
     width: 2em;
     height: 2em;
     background-size: contain;
@@ -29,6 +49,7 @@
 
   &__inner {
     display: flex;
+    align-items: center;
     margin: .5em 0 0;
   }
 

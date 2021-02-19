@@ -1,5 +1,5 @@
 <template>
-<div class="editor-container">
+<div class="editor__container">
   <div class="editor__title">{{title}}</div>
   <quill-editor
     v-model="content"
@@ -9,23 +9,21 @@
     @focus="onEditorFocus($event)"
     @ready="onEditorReady($event)">
   </quill-editor>
-  <div class="editor__errors" v-if="errors">
-    <div class="editor__error" :key="$index" v-for="(error, $index) in errors">
-      {{$t(error)}}
-    </div>
-  </div>
+  <ErrorsContainer :warnings="warnings" :errors="errors" />
 </div>
 </template>
 <style lang="scss">
+@import 'quill/dist/quill.core.css';
+@import 'quill/dist/quill.snow.css';
 .editor {
-	&-container{
-		margin: 0 0 1em;
+  &__container{
+    padding: 0 0 1em;
   }
-	&__title {
-		margin: .5em 0;
-    font-size: .75em;
-    color: var(--text-sub-color);
-	}
+  &__title {
+    margin: .5em 0;
+   font-size: .875em;
+    font-weight: 400;
+  }
   &__errors {
     color: var(--negative-color);
     font-size: .75em;
@@ -34,46 +32,44 @@
   }
 }
 .ql-toolbar.ql-snow {
-    background: rgba(255, 255, 255, .25);
-    color: #ccc!important;
-	  border: none!important;
-    .theme-default & {
-      box-shadow: 0 5px 25px -5px rgba(0, 0, 0, 0.45);
-    }
+  background: rgba(255, 255, 255, .25);
+  color: #ccc!important;
+  border: none!important;
+  .theme-default & {
+    box-shadow: 0 5px 25px -5px rgba(0, 0, 0, 0.45);
+  }
 }
 .ql-toolbar button {
-    color: #fff!important;
+  color: #fff!important;
 }
 
 .ql-stroke {
-    stroke: #eee!important;
+  stroke: #eee!important;
 }
 
 .ql-fill {
-    fill: #eee!important;
+  fill: #eee!important;
 }
 
 .ql-picker-label {
-    color: #eee;
+  color: #eee;
 }
 
 .ql-container {
-    border: none!important;
-    background: rgba(255, 255, 255, .1);
+  border: none!important;
+  background: rgba(255, 255, 255, .1);
 }
 
 .ql-container {font: inherit!important;}
 
 .ql-snow.ql-toolbar button:hover, .ql-snow .ql-toolbar button:hover, .ql-snow.ql-toolbar button:focus, .ql-snow .ql-toolbar button:focus, .ql-snow.ql-toolbar button.ql-active, .ql-snow .ql-toolbar button.ql-active, .ql-snow.ql-toolbar .ql-picker-label:hover, .ql-snow .ql-toolbar .ql-picker-label:hover, .ql-snow.ql-toolbar .ql-picker-label.ql-active, .ql-snow .ql-toolbar .ql-picker-label.ql-active, .ql-snow.ql-toolbar .ql-picker-item:hover, .ql-snow .ql-toolbar .ql-picker-item:hover, .ql-snow.ql-toolbar .ql-picker-item.ql-selected, .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
-	color:#fff!important;
-}
-.bright .editor__title {
-  color: #333;
+  color:#fff!important;
 }
 
 .quill-editor {
   box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
 }
+
 
 </style>
 <script>
@@ -106,6 +102,10 @@ export default {
     simple: {
       type: Boolean,
       required: false
+    },
+    warnings: {
+      type: Array,
+      required: false,
     },
     errors: {
       type: Array,
@@ -144,12 +144,10 @@ export default {
   },
   methods: {
     onEditorBlur(editor) {
-
     },
     onEditorFocus(editor) {
     },
     onEditorReady(editor) {
-
     },
     onEditorChange({ editor, html, text }) {
       this.$emit('input', html);

@@ -1,5 +1,5 @@
 <template>
-<a class="button" @click="onClick" :class="buttonClasses">
+<component :is="to ? 'router-link' : 'span'" class="button" @click="onClick"  :to="to"  :class="buttonClasses">
    <span class="button__content" >
       <span class="button__text">
         <slot></slot>
@@ -10,7 +10,7 @@
      </i>
       <span class="button__count" v-if="count !== null">{{count}}</span>
    </span>
-</a>
+</component>
 </template>
 <style lang="scss">
 .button {
@@ -139,6 +139,10 @@ import Vue, { PropOptions } from 'vue'
     },
     count: {
       type: Number,
+      required: false
+    },
+    to: {
+      type: String,
       required: false
     }
 	},

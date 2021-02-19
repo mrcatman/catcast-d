@@ -19,12 +19,14 @@ import ListItemPicture from '~/components/elements/list/ListItemPicture'
 import ListItemTexts from '~/components/elements/list/ListItemTexts'
 import ListItemTitle from '~/components/elements/list/ListItemTitle'
 import EditableItemsList from '@/components/elements/EditableItemsList'
+import Editor from '@/components/elements/Editor'
 
 
 Vue.component('m-button', Button)
 Vue.component('m-modal', Modal)
 Vue.component('m-tabs', Tabs)
 Vue.component('m-input', Input)
+Vue.component('m-editor', Editor)
 Vue.component('m-copy-tag', CopyTag)
 Vue.component('m-preloader', Preloader)
 Vue.component('m-box', Box)

@@ -5,7 +5,7 @@
     <transition-group name="fade">
       <div key="frontend" v-if="form.frontend" v-show="currentTab === 'frontend'">
         <m-input :warnings="warnings['frontend.site_name']" :errors="errors['frontend.site_name']" v-model="form.frontend.site_name" :title="$t('admin.config.frontend.site_name')" />
-        <m-input type="textarea" :warnings="warnings['frontend.site_description']" :errors="errors['frontend.site_description']" v-model="form.frontend.site_description" :title="$t('admin.config.frontend.site_description')" />
+        <m-editor :warnings="warnings['frontend.site_description']" :errors="errors['frontend.site_description']" v-model="form.frontend.site_description" :title="$t('admin.config.frontend.site_description')" />
         <m-input :warnings="warnings['frontend.site_contact_email']" :errors="errors['frontend.site_contact_email']" v-model="form.frontend.site_contact_email" :title="$t('admin.config.frontend.site_contact_email')" />
         <m-picture-uploader :returnPath="true" v-model="form.frontend.logo" :title="$t('admin.config.frontend.logo')" />
       </div>

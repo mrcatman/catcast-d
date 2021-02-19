@@ -1,5 +1,6 @@
 import api from "../index";
 import Channel from '~/types/Channel'
+import Paginator from '~/types/Paginator'
 
 const BASE_PATH = "channels";
 
@@ -13,19 +14,29 @@ export const ChannelUpdate = async (data: Partial<Channel>): Promise<Channel> =>
   return res.data.channel as Channel;
 };
 
-export const ChannelsGetList = async (): Promise<Array<Channel>> => {
+export const ChannelsGet = async (): Promise<Paginator<Channel>> => {
   const res = await api.get(`${BASE_PATH}`);
-  return res.data.channels as Array<Channel>;
+  return res.data as Paginator<Channel>;
 };
 
-export const ChannelsGetListMy = async (): Promise<Array<Channel>> => {
+export const ChannelsGetOnline = async (): Promise<Paginator<Channel>> => {
+  const res = await api.get(`${BASE_PATH}/online`);
+  return res.data as Paginator<Channel>;
+};
+
+export const ChannelsGetLocal = async (): Promise<Paginator<Channel>> => {
+  const res = await api.get(`${BASE_PATH}/local`);
+  return res.data as Paginator<Channel>;
+};
+
+export const ChannelsGetListMy = async (): Promise<Paginator<Channel>> => {
   const res = await api.get(`${BASE_PATH}/my`);
-  return res.data.channels as Array<Channel>;
+  return res.data as Paginator<Channel>;
 };
 
-export const ChannelsSearch = async (query: string): Promise<Array<Channel>> => {
+export const ChannelsSearch = async (query: string): Promise<Paginator<Channel>> => {
   const res = await api.get(`${BASE_PATH}/search?q=${query}`);
-  return res.data.channels as Array<Channel>;
+  return res.data as Paginator<Channel>;
 };
 
 export const ChannelGetById = async (id: number): Promise<Channel> => {

@@ -1,31 +1,49 @@
 <template>
-  <div class="container">
-    <div class="thumbs-list">
-      <ChannelThumb :channel="channel" :key="channel.id" v-for="channel in channels" />
+  <div class="container index-page">
+    <div class="index-page__about">
+      <div class="index-page__about__text" v-html="config.site_description"></div>
     </div>
+    <ChannelsList :title="$t('channels.lists.online')" link="/channels/online" :fn="ChannelsGetOnline" />
+    <ChannelsList :title="$t('channels.lists.local')" link="/channels/local" :fn="ChannelsGetLocal" />
+    <ChannelsList :title="$t('channels.lists.all')" link="/channels/all" :fn="ChannelsGet" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 
-import { ChannelsGetList } from '~/api/modules/channels'
-import ChannelThumb from '~/components/layout/thumbs/Channel.vue'
-import Channel from '~/types/Channel'
+import { ChannelsGet, ChannelsGetLocal, ChannelsGetOnline } from '~/api/modules/channels'
+import ChannelsList from '~/components/layout/lists/ChannelsList.vue'
 
 @Component({
   components: {
-    ChannelThumb,
+    ChannelsList,
   },
 })
 export default class IndexPage extends Vue {
-  async fetch() {
-    this.channels = await ChannelsGetList();
+
+  get config() {
+    return this.$accessor.modules.site.config;
   }
-  channels = [] as Array<Channel>
+
+  ChannelsGet = ChannelsGet;
+  ChannelsGetLocal = ChannelsGetLocal;
+  ChannelsGetOnline = ChannelsGetOnline;
 }
 </script>
 
-<style>
+<style lang="scss">
+.index-page {
+  &__about {
+    padding: 1em;
+    background: var(--box-color);
+    margin: 1em 0 0;
+    font-size: 1.125em;
+    box-shadow: .5em .5em 1.75em var(--active-color);
 
+    &__text {
+      margin: -1em 0;
+    }
+  }
+}
 </style>
