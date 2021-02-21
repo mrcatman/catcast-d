@@ -162,7 +162,7 @@ export default class PictureUploader extends PictureUploaderProps {
     if (this.returnPath) {
       this.picturePath = newValue && typeof newValue === 'object'  ? newValue!.full_url! : newValue;
     } else {
-      this.picture = typeof newValue === 'object'  ? newValue : null;
+      this.picture = newValue;
     }
   }
 
@@ -178,12 +178,16 @@ export default class PictureUploader extends PictureUploaderProps {
 
   @Watch('picture')
   onPictureChanged(newVal: Picture | null) {
-    this.$emit('input', newVal);
+    if (!this.returnPath) {
+      this.$emit('input', newVal);
+    }
   }
 
   @Watch('picturePath')
   onPicturePathChanged(newVal: string | null) {
-    this.$emit('input', newVal);
+    if (this.returnPath) {
+      this.$emit('input', newVal);
+    }
   }
 
 
