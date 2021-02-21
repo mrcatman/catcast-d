@@ -21,6 +21,9 @@ export class Stream extends BaseModel {
     name: string;
 
     @Column({nullable: true})
+    description: string;
+
+    @Column({nullable: true})
     watch_url: string;
 
     @Column({nullable: true})

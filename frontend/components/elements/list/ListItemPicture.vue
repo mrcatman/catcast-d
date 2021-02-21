@@ -5,6 +5,7 @@
   .list-item__picture {
     width: 3em;
     height: 3em;
+    margin: 0 1em 0 0;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;

@@ -167,6 +167,16 @@ export default {
         "see_all": "Смотреть все",
       }
     },
+    "stream_info": {
+
+
+    },
+    "streams": {
+      "info": "Настройки стрима",
+      "list": "Прошлые стримы канала",
+      "title": "Название стрима",
+      "description": "Описание стрима"
+    },
 
     "comments":
     {
@@ -2314,6 +2324,7 @@ export default {
     },
     "player":
     {
+      "channel_is_offline": "Канал не в эфире",
       "broadcast_will_start_soon": "Эфир начнется через несколько секунд",
       "radio_error": "Ошибка. Возможно, радио не в эфире",
       "embed":

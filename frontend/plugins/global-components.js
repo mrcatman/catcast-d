@@ -18,6 +18,9 @@ import ListItem from '~/components/elements/list/ListItem'
 import ListItemPicture from '~/components/elements/list/ListItemPicture'
 import ListItemTexts from '~/components/elements/list/ListItemTexts'
 import ListItemTitle from '~/components/elements/list/ListItemTitle'
+import ListItemSub from '~/components/elements/list/ListItemSub'
+import ListBottom from '~/components/elements/list/ListBottom'
+
 import EditableItemsList from '@/components/elements/EditableItemsList'
 import Editor from '@/components/elements/Editor'
 import Pager from '@/components/elements/Pager'
@@ -46,5 +49,5 @@ Vue.component('m-list-item', ListItem)
 Vue.component('m-list-item-picture', ListItemPicture)
 Vue.component('m-list-item-texts', ListItemTexts)
 Vue.component('m-list-item-title', ListItemTitle)
-
-
+Vue.component('m-list-item-sub', ListItemSub)
+Vue.component('m-list-bottom', ListBottom)

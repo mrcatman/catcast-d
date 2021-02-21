@@ -1,6 +1,8 @@
 import api from "../index";
 import Channel from '~/types/Channel'
 import Paginator from '~/types/Paginator'
+import { ChannelPermissions } from '~/helpers/channelPermissions'
+import Stream from '~/types/Stream'
 
 const BASE_PATH = "channels";
 
@@ -49,9 +51,9 @@ export const ChannelGetByUrl = async (url: string): Promise<Channel> => {
   return res.data.channel as Channel;
 };
 
-export const ChannelGetRights = async (id: number): Promise<Array<string>> => {
-  const res = await api.get(`${BASE_PATH}/${id}/rights`);
-  return res.data.rights as Array<string>;
+export const ChannelGetPermissions = async (id: number): Promise<Array<string>> => {
+  const res = await api.get(`${BASE_PATH}/${id}/permissions`);
+  return res.data.permissions as Array<ChannelPermissions>;
 };
 
 export const ChannelSubscribe = async (id: number): Promise<boolean> => {
@@ -71,4 +73,15 @@ interface GetSubscribersResponse {
 export const ChannelGetSubscribersCount = async (id: number): Promise<GetSubscribersResponse> => {
   const res = await api.get(`${BASE_PATH}/${id}/subscribers-count`);
   return res.data as GetSubscribersResponse;
+};
+
+export const ChannelSetStreamSettings = async (id: number, data: any): Promise<any> => {
+  await api.put(`${BASE_PATH}/${id}/stream-settings`, data);
+  return true;
+};
+
+
+export const ChannelGetStreams = async (id: number, page: number): Promise<Paginator<Stream>> => {
+  const res = await api.get(`${BASE_PATH}/${id}/streams?page=${page}`);
+  return res.data.streams as Paginator<Stream>;
 };

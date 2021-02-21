@@ -3,6 +3,7 @@
     <div class="player__outer">
       <div class="player__inner">
         <video class="player__video" ref="video"></video>
+        <div class="player__offline" v-if="!channel.is_online">{{$t('player.channel_is_offline')}}</div>
         <div class="player__bottom">
           <div class="player__bottom__left">
             <a title="Play" class="player__button" @click="state.playing = !state.playing">
@@ -64,6 +65,18 @@
       &:hover {
         opacity: .75;
       }
+    }
+    &__offline {
+      position: absolute;
+      font-size: 1.5em;
+      font-weight: bold;
+      top: calc(50% - 1.25em);
+      left: 0;
+      width: 100%;
+      text-align: center;
+      background: rgba(255, 255, 255, .1);
+      padding: .5em;
+      box-sizing: border-box;
     }
   }
 </style>
@@ -127,7 +140,7 @@
 
       if (this.channel.is_online && this.channel.current_stream) {
         this.playerInstance.loadSource(this.channel.current_stream.watch_url);
-      } 
+      }
     }
 
 

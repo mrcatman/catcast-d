@@ -2,10 +2,11 @@ import {ServerInstance} from "../types";
 import {StreamKey} from "../models/StreamKey";
 import getChannelFromNginxRequest from "../helpers/getChannelFromNginxRequest";
 import {Channel} from "../models/Channel";
-import {checkRightsOrFail} from "../helpers/checkRights";
+import {checkPermissionsOrFail} from "../helpers/checkPermissions";
 import {Stream} from "../models/Stream";
 import { Create, Update } from '../federation/activities/Create'
 import { MoreThanDate } from '../helpers/dates'
+import { ChannelPermissions } from '../helpers/channelPermissions'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -13,7 +14,7 @@ async function routes (fastify: ServerInstance, options) {
         preValidation: [fastify.authenticate]
     }, async (req, res) => {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
-        await checkRightsOrFail(req.user, channel, ['broadcast']);
+        await checkPermissionsOrFail(req.user, channel, [ChannelPermissions.BROADCAST]);
         let streamKey = await StreamKey.findOne(
             {
                 user: {

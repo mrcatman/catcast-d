@@ -1,5 +1,5 @@
 <template>
-<div class="box__unset-padding">
+<div >
   <m-tabs :list="tabs" v-model="currentTab" />
   <div class="box__content">
     <transition-group name="fade">

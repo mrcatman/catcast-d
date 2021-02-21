@@ -12,3 +12,4 @@ export const StreamGetServers = async (): Promise<Array<String>> => {
   const res = await api.get(`${BASE_PATH}/servers`);
   return res.data.servers as Array<String>;
 };
+

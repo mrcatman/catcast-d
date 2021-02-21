@@ -2,11 +2,11 @@
   <portal to="modals">
   <div class="modal" :class="{'modal--inline': inline, 'modal--no-padding': noPadding}" v-if="value">
     <div class="modal__background" @click="closeModal"></div>
-    <div class="modal__box" :class="{'modal__box-autosize':autoSize}">
+    <div class="modal__box" :class="{'modal__box--autosize':autoSize}">
       <a v-show="showCloseButton" @click="closeModal" class="modal__close">
         <m-button flat rounded icon="close"></m-button>
       </a>
-      <div class="modal__header" v-if="header">{{header}}</div>
+      <div class="modal__title" v-if="title">{{title}}</div>
       <div class="modal__content">
         <slot></slot>
       </div>
@@ -62,7 +62,7 @@
     }
   }
 
-  &__header {
+  &__title {
     font-weight: 500;
     background: linear-gradient(-90deg,var(--box-footer-color),var(--active-color));
     padding: .75em 1em;
@@ -77,7 +77,7 @@
     background: var(--box-color);
     color: var(--text-color);
     min-height: .625em;
-    &-autosize {
+    &--autosize {
       min-width: 0;
       max-height: 100%;
     }
@@ -118,7 +118,7 @@
 
   &__close {
     position: absolute;
-    top: .5em;
+    top: .25em;
     right: .5em;
     z-index: 10000;
 
@@ -196,7 +196,7 @@
         type: Boolean,
         required: false,
       },
-      header: {
+      title: {
         type: String,
         required: false,
         default: '',

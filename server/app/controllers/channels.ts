@@ -1,15 +1,19 @@
 import { remoteSearch } from '../federation/remoteSearch'
 
-const url = require('url');
 import { Channel } from '../models/Channel';
 import {ServerInstance} from "../types";
-import {checkRightsOrFail} from "../helpers/checkRights";
+import { checkPermissionsOrFail, getPermissions } from '../helpers/checkPermissions'
 import { getBaseChannelValidators, getFollowConditions } from '../helpers/channels'
 import {generateKeys} from "../federation/crypto";
 import { Follower } from '../models/Follower'
 import {Like} from "typeorm";
 import { Follow, Unfollow } from '../federation/activities/Follow'
 import { UpdateActor } from '../federation/activities/Create'
+import { ChannelPermissions } from '../helpers/channelPermissions'
+import { Stream } from '../models/Stream'
+
+const NotEmptyValidator = require('../validation/validators/NotEmptyValidator');
+const MaxLengthValidator = require('../validation/validators/MaxLengthValidator');
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -85,7 +89,7 @@ async function routes (fastify: ServerInstance, options) {
         preValidation: [fastify.authenticate]
     }, async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
-        await checkRightsOrFail(req.user, channel, ['common']);
+        await checkPermissionsOrFail(req.user, channel, [ChannelPermissions.EDIT_STREAM_INFO]);
         let data = await fastify.validate(req, getBaseChannelValidators());
         channel.fill(data);
         await channel.save();
@@ -105,9 +109,12 @@ async function routes (fastify: ServerInstance, options) {
         res.send({channel});
     });
 
-    fastify.get('/:id/rights', async (req, res) => {
-        let rights = ['admin']; //TODO
-        res.send({rights});
+    fastify.get('/:id/permissions', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res) => {
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        let permissions = await getPermissions(req.user, channel);
+        res.send({permissions});
     });
 
 
@@ -169,6 +176,35 @@ async function routes (fastify: ServerInstance, options) {
         res.send({
             subscribers_count,
             is_subscribed
+        });
+    })
+
+    fastify.put('/:id/stream-settings', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        await checkPermissionsOrFail(req.user, channel, [ChannelPermissions.EDIT_STREAM_INFO]);
+        let data = await fastify.validate(req, {
+            title: [new NotEmptyValidator()],
+            description: [new MaxLengthValidator(500)],
+        });
+        channel.stream_settings = JSON.stringify(data);
+        res.send({
+            status: 1,
+        });
+    })
+
+    fastify.get('/:id/streams', async (req, res): Promise<any> => {
+        let streams = await Stream.paginate({
+            where: {
+                channel_id: parseInt(req.params.id)
+            },
+            order: {
+                started_at: 'DESC',
+            },
+        }, req)
+        res.send({
+            streams
         });
     })
 

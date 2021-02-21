@@ -17,6 +17,7 @@ import { config } from '../config'
 import { SHARED_INBOX_URL } from '../federation/constants'
 import { Follower } from './Follower'
 
+import { defaultStreamSettings } from '../helpers/streamSettings'
 
 @Entity('channels')
 export class Channel extends BaseModel {
@@ -82,11 +83,15 @@ export class Channel extends BaseModel {
 
     live_url: string;
 
+    @Column({nullable: true, default: JSON.stringify(defaultStreamSettings)})
+    stream_settings: string;
+
     @AfterLoad()
     setComputed() {
         if (this.current_stream) {
             this.current_stream.channel = undefined; // prevent circular JSON
         }
+        this.stream_settings = JSON.parse(this.stream_settings);
     }
 
     @Column({type: 'text'})
