@@ -185,10 +185,11 @@ async function routes (fastify: ServerInstance, options) {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
         await checkPermissionsOrFail(req.user, channel, [ChannelPermissions.EDIT_STREAM_INFO]);
         let data = await fastify.validate(req, {
-            title: [new NotEmptyValidator()],
+            name: [new NotEmptyValidator()],
             description: [new MaxLengthValidator(500)],
         });
         channel.stream_settings = JSON.stringify(data);
+        await channel.save();
         res.send({
             status: 1,
         });
