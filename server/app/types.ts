@@ -14,5 +14,11 @@ export interface ServerInstance {
     authenticate: Function,
     authenticate_optional: Function,
     authenticate_admin: Function,
-    config: ServerConfig
+    config: ServerConfig,
+    ws: any
+}
+
+export interface StreamSettings {
+    name: String,
+    description?: string;
 }

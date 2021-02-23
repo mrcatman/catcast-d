@@ -19,6 +19,7 @@ export async function create(object) {
       stream = new Stream();
       stream.object_id = object.id;
       stream.name = object.name;
+      stream.description = object.description;
       stream.started_at = object.published;
       stream.ended_at = object.endedAt;
       stream.watch_url = object.watchUrl;
@@ -71,6 +72,9 @@ async function updateStream(object) {
   if (stream) {
     if (object.name) {
       stream.name = object.name;
+    }
+    if (object.description) {
+      stream.name = object.description;
     }
     if (object.watchUrl) {
       stream.watch_url = object.watchUrl;

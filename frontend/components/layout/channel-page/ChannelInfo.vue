@@ -1,26 +1,32 @@
 <template>
-  <div class="channel-info">
-    <StreamInfoModal :channel="channel" v-model="streamInfoModalVisible" />
+  <div class="channel-info" v-if="channelData">
+    <StreamInfoModal @saved="onStreamInfoSaved" :channel="channelData" v-model="streamInfoModalVisible" />
 
     <div class="channel-info__top">
-      <div class="channel-info__logo" v-if="channel.logo" :style="{backgroundImage: `url(${channel.logo.full_url})`}"></div>
+      <div class="channel-info__logo" v-if="channelData.logo" :style="{backgroundImage: `url(${channelData.logo.full_url})`}"></div>
       <div class="channel-info__texts">
         <div class="channel-info__texts__top">
-          <h2 class="channel-info__name">{{channel.name}}<m-button v-if="canEditStreamInfo" @click="streamInfoModalVisible = true" class="channel-info__edit-stream" flat icon="edit"></m-button></h2>
-          <a v-if="channel.domain" class="channel-info__remote-url" target="_blank" :href="`https://${channel.domain}/${channel.url}`">{{channel.url}}@{{channel.domain}}</a>
+          <h1 class="channel-info__stream-name" v-if="channelData.is_online && channelData.current_stream">{{channelData.current_stream.name}}</h1>
+          <h2 class="channel-info__name">{{channelData.name}}<m-button v-if="canEditStreamInfo" @click="streamInfoModalVisible = true" class="channel-info__edit-stream" flat icon="edit"></m-button></h2>
+          <a v-if="channelData.domain" class="channel-info__remote-url" target="_blank" :href="`https://${channelData.domain}/${channelData.url}`">{{channelData.url}}@{{channelData.domain}}</a>
         </div>
         <SubscribeBlock :channel="channel" />
       </div>
     </div>
-    <div class="channel-info__description">{{channel.description}}</div>
+    <div class="channel-info__description-container">
+      <div class="channel-info__stream-description" v-if="channelData.is_online && channelData.current_stream">{{channelData.current_stream.description}}</div>
+      <div class="channel-info__description">{{channelData.description}}</div>
+    </div>
+
   </div>
 </template>
 <style lang="scss">
   .channel-info {
     margin: 1em 0 0;
+    position: relative;
     &__top {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
     }
     &__logo {
       background-color: rgba(0, 0, 0, .5);
@@ -36,18 +42,26 @@
       align-items: center;
       font-size: 1.325em;
       margin: 0 0 .5em;
+      font-weight: 400;
     }
     &__remote-url {
       font-size: .9375em;
     }
-
+    &__stream-name {
+      font-size: 1.75em;
+      margin: 0;
+    }
     &__texts {
       margin: 0 0 0 1em;
     }
 
-    &__description {
-      margin: 1em 0 0;
+    &__description-container {
+      margin: .5em 0 0;
       line-height: 1.75;
+    }
+    &__stream-description {
+      font-size: 1.25em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     &__edit-stream {
       font-size: .625em;
@@ -67,11 +81,22 @@ import SubscribeBlock from '~/components/layout/channel-page/SubscribeBlock.vue'
 import { ChannelPermissions } from '~/helpers/channelPermissions'
 import StreamInfoModal from '~/components/layout/channel-page/StreamInfoModal.vue'
 
-@Component({
+  @Component({
     components: { StreamInfoModal, SubscribeBlock },
   })
   export default class ChannelInfoBlock extends Vue {
     streamInfoModalVisible: boolean = false;
+    channelData: Channel | null = null;
+
+    mounted() {
+      this.channelData = this.channel;
+    }
+
+    onStreamInfoSaved(streamInfo: any) {
+      if (this.channelData && this.channelData.current_stream ) {
+        this.channelData.current_stream = { ...this.channelData.current_stream, ...streamInfo };
+      }
+    }
 
     get canEditStreamInfo() {
       return this.permissions.includes(ChannelPermissions.EDIT_STREAM_INFO);

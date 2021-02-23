@@ -75,7 +75,8 @@ async function routes (fastify: ServerInstance, options) {
             } else {
                 stream = new Stream();
                 stream.fill({
-                    name: `${channel.name} - broadcast ${new Date().toLocaleString()}`, // todo: generate stream name from channel settings,
+                    name: channel.stream_settings && channel.stream_settings.name ? channel.stream_settings.name : `${channel.name} - broadcast ${new Date().toLocaleString()}`, // todo: generate stream name from channel settings,
+                    description: channel.stream_settings && channel.stream_settings.description ? channel.stream_settings.description : '',
                     started_at: new Date(),
                     channel: channel,
                     broadcaster: user,

@@ -22,8 +22,10 @@ async function routes (fastify: ServerInstance, options) {
     })
 
     fastify.get('/frontend-config',  async (req, res): Promise<any> => {
+        let configValues = config('frontend');
+        configValues.domain = config('server.domain');
         res.send({
-            config: config('frontend')
+            config: configValues
         });
     })
 

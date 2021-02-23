@@ -56,26 +56,27 @@ export default{
 			this.pager = [];
 			let pagesCount = this.pagesCount;
 			let pagerArray = [1];
-			let currentPage = this.currentPage;
+      let currentPage = this.currentPage;
 			let start = currentPage - this.itemsShownCount;
 			let end = currentPage + this.itemsShownCount;
 
-			if (start>2) {
+			if (start > 2) {
 				pagerArray.push('...');
 			}
-			for (let i = start; i<=end; i++) {
-				if (i >=1  && i <= pagesCount && pagerArray.indexOf(i) === -1) {
-					pagerArray.push(i);
-				}
-			}
+			if (pagesCount > 0) {
+        for (let i = start; i <= end; i++) {
+          if (i >= 1 && i <= pagesCount && pagerArray.indexOf(i) === -1) {
+            pagerArray.push(i);
+          }
+        }
 
-			if (pagerArray.indexOf(pagesCount) === -1) {
-				if (pagesCount-end>1) {
-					pagerArray.push('...');
-				}
-				pagerArray.push(pagesCount);
-			}
-
+        if (pagerArray.indexOf(pagesCount) === -1) {
+          if (pagesCount - end > 1) {
+            pagerArray.push('...');
+          }
+          pagerArray.push(pagesCount);
+        }
+      }
 			let pager = pagerArray.map(item=>{
 				return {
 				  value: item,

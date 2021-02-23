@@ -10,7 +10,6 @@ export async function sendActivityPubRequest(type: String, params, localActor: C
   const payload = {
     '@context': 'https://www.w3.org/ns/activitystreams',
     type,
-    id: localActor.getActorUrl(`#follow/${localActor.id}/undo`),
     actor: localActor.getActorUrl(),
     ...params,
   };

@@ -41,6 +41,7 @@
     onSubmit() {
       notifySuccess(this.$t('common.saved').toString());
       this.visible = false;
+      this.$emit('saved', this.form);
     }
     submit() {
       return ChannelSetStreamSettings(this.channel.id, this.form);

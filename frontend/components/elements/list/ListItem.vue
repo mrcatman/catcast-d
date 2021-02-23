@@ -11,7 +11,7 @@
     text-decoration: none;
     height: 3em;
     font-size: 1em;
-    padding: 1em 1.25em;
+    padding: .875em;
     border-bottom: 1px solid rgba(255, 255, 255, .1);
     transition: all .25s;
     position: relative;

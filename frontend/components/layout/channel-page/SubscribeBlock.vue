@@ -4,7 +4,11 @@
   </div>
 </template>
 <style lang="scss">
-
+.subscribe-block {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 </style>
 <script lang="ts">
   import { Component, Vue } from 'nuxt-property-decorator'

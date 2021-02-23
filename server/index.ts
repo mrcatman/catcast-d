@@ -10,6 +10,8 @@ interface FastifyInstanceExtended extends FastifyInstance {
 
 const server = fastify({logger: false}) as any as FastifyInstanceExtended;
 
+server.register(require('fastify-websocket'))
+
 server.register(require('fastify-cookie'), {
     secret: config('secrets.cookie'),
     parseOptions: {}
@@ -85,6 +87,7 @@ server.decorate("authenticate_admin", async function(request, reply) {
 
 server.decorate('validate', validate);
 
+
 (async() => {
     const controllerPaths = {
         'site': '/api/site',
@@ -93,14 +96,15 @@ server.decorate('validate', validate);
         'upload': '/api/upload',
         'stream': '/api/stream',
         'webfinger': '.well-known',
-        'federation': '/api/federation'
+        'federation': '/api/federation',
+        'chat': '/api/chat'
     };
     for (let controller in controllerPaths) {
         server.register(await import('./app/controllers/' + controller), {prefix: controllerPaths[controller]})
     }
 
 
-    server.listen(config('server.port'), function (err, address) {
+    server.listen(config('server.port'), '0.0.0.0', function (err, address) {
         if (err) {
             console.log(err)
         }

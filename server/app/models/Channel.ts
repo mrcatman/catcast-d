@@ -5,7 +5,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToOne,
-    JoinColumn, AfterLoad, OneToMany, ManyToOne,
+    JoinColumn, AfterLoad, OneToMany, ManyToOne, BeforeInsert, BeforeUpdate,
 } from 'typeorm'
 import { User } from "./User";
 import {Picture} from "./Picture";
@@ -18,6 +18,7 @@ import { SHARED_INBOX_URL } from '../federation/constants'
 import { Follower } from './Follower'
 
 import { defaultStreamSettings } from '../helpers/streamSettings'
+import { StreamSettings } from '../types'
 
 @Entity('channels')
 export class Channel extends BaseModel {
@@ -84,15 +85,20 @@ export class Channel extends BaseModel {
     live_url: string;
 
     @Column({nullable: true, default: JSON.stringify(defaultStreamSettings)})
-    stream_settings: string;
+    stream_settings_value: string;
+
+    stream_settings: StreamSettings;
 
     @AfterLoad()
     setComputed() {
         if (this.current_stream) {
             this.current_stream.channel = undefined; // prevent circular JSON
         }
-        this.stream_settings = JSON.parse(this.stream_settings);
+        if (this.stream_settings_value) {
+            this.stream_settings = JSON.parse(this.stream_settings_value) as StreamSettings;
+        }
     }
+
 
     @Column({type: 'text'})
     public_key: string;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <m-input :description="$t('auth.forms.email_description')" :warnings="warnings.email" :errors="errors.email" v-model="form.email" :title="$t('auth.forms.email')" />
-    <m-input append="@catcast.tv" :warnings="warnings.login" :errors="errors.login" v-model="form.login" :title="$t('auth.forms.login')" />
+    <m-input :append="`@${domain}`" :warnings="warnings.login" :errors="errors.login" v-model="form.login" :title="$t('auth.forms.login')" />
     <m-input :warnings="warnings.password" :errors="errors.password" type="password" v-model="form.password" :title="$t('auth.forms.password')" />
     <m-input :warnings="warnings.repeat_password" :errors="errors.repeat_password" type="password" v-model="form.repeat_password" :title="$t('auth.forms.repeat_password')" />
 
@@ -17,6 +17,9 @@
 
   @Component
   export default class Register extends BaseFormComponent {
+    get domain() {
+      return this.$accessor.modules.site?.config?.domain;
+    }
     fields: any = ['login', 'username', 'password', 'repeat_password'];
     form = {
       email: '',

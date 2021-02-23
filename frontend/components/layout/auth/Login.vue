@@ -1,6 +1,6 @@
 <template>
   <div>
-    <m-input append="@catcast.tv" :warnings="warnings.login" :errors="errors.login" v-model="form.login" :title="$t('auth.forms.login')" />
+    <m-input :append="`@${domain}`" :warnings="warnings.login" :errors="errors.login" v-model="form.login" :title="$t('auth.forms.login')" />
     <m-input :warnings="warnings.password" :errors="errors.password" type="password" v-model="form.password" :title="$t('auth.forms.password')" />
 
     <m-button @click="sendForm" :loading="formIsSubmitting" big>{{$t('auth.forms.login_button')}}</m-button>
@@ -15,6 +15,9 @@
 
   @Component
   export default class Login extends BaseFormComponent {
+    get domain() {
+      return this.$accessor.modules.site?.config?.domain;
+    }
     fields: any = ['login', 'password'];
     form = {
       login: '',

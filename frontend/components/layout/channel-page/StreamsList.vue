@@ -9,7 +9,7 @@
               {{stream.name}}
             </m-list-item-title>
             <m-list-item-sub>
-              {{stream.started_at}}
+              {{getStreamTime(stream)}}
             </m-list-item-sub>
           </m-list-item-texts>
         </m-list-item>
@@ -41,6 +41,24 @@ export default class ChannelInfoBlock extends Vue {
   @Watch('currentPage')
   onCurrentPageChange() {
     this.load();
+  }
+
+  getStreamTime(stream) {
+    let startDate = new Date(stream.started_at);
+    let startDateString = startDate.toLocaleDateString();
+    let startTimeString = startDate.toLocaleTimeString().replace(/(.*)\D\d+/, '$1');
+    let start = startDateString + ' ' + startTimeString;
+    if (stream.ended_at) {
+      let endDate = new Date(stream.ended_at);
+      let endDateString =  endDate.toLocaleDateString();
+      let endTimeString = endDate.toLocaleTimeString().replace(/(.*)\D\d+/, '$1');
+      let end = startDateString === endDateString ? endTimeString : (endDateString + ' ' + endTimeString);
+      if (startDateString !== endDateString || startTimeString !== endTimeString) {
+        return `${start} - ${end}`;
+      }
+
+    }
+    return start;
   }
 
   async load() {

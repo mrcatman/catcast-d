@@ -30,7 +30,7 @@ export default {
     &__heading {
       font-size: 1.25em;
       font-weight: bold;
-      padding: 1em;
+      padding: .5em .75em;
       border-bottom: 1px solid rgba(255,255,255,.1);
       background: var(--box-header-color);
       color: var(--active-color);

@@ -8,7 +8,7 @@ import {generateKeys} from "../federation/crypto";
 import { Follower } from '../models/Follower'
 import {Like} from "typeorm";
 import { Follow, Unfollow } from '../federation/activities/Follow'
-import { UpdateActor } from '../federation/activities/Create'
+import { Update, UpdateActor } from '../federation/activities/Create'
 import { ChannelPermissions } from '../helpers/channelPermissions'
 import { Stream } from '../models/Stream'
 
@@ -18,20 +18,28 @@ const MaxLengthValidator = require('../validation/validators/MaxLengthValidator'
 async function routes (fastify: ServerInstance, options) {
 
     fastify.get('/', async (req, res) => {
-        let channels = await Channel.paginate({}, req);
+        let channels = await Channel.paginate({
+            relations: ['current_stream']
+        }, req);
         res.send(channels);
     })
 
     fastify.get('/local', async (req, res) => {
         let channels = await Channel.paginate({
-            domain: null
+            where: {
+                domain: null
+            },
+            relations: ['current_stream']
         }, req);
         res.send(channels);
     })
 
     fastify.get('/online', async (req, res) => {
         let channels = await Channel.paginate({
-            is_online: true
+            where: {
+                is_online: true
+            },
+            relations: ['current_stream']
         }, req);
         res.send(channels);
     })
@@ -100,20 +108,27 @@ async function routes (fastify: ServerInstance, options) {
     })
 
     fastify.get('/:id', async (req, res) => {
-        let channel = await Channel.findOneOrFail({id: req.params.id});
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {
+            relations: ['current_stream']
+        });
         res.send({channel});
     });
 
     fastify.get('/get-by-url/:url', async (req, res) => {
-        let channel = await Channel.findOneOrFail({url: req.params.url});
+        let channel = await Channel.findOneOrFail({url: req.params.url}, {
+            relations: ['current_stream']
+        });
         res.send({channel});
     });
 
     fastify.get('/:id/permissions', {
-        preValidation: [fastify.authenticate]
+        preValidation: [fastify.authenticate_optional]
     }, async (req, res) => {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
-        let permissions = await getPermissions(req.user, channel);
+        let permissions = [];
+        if (req.user) {
+            permissions = await getPermissions(req.user, channel);
+        }
         res.send({permissions});
     });
 
@@ -182,14 +197,19 @@ async function routes (fastify: ServerInstance, options) {
     fastify.put('/:id/stream-settings', {
         preValidation: [fastify.authenticate]
     }, async (req, res): Promise<any> => {
-        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner', 'current_stream']});
         await checkPermissionsOrFail(req.user, channel, [ChannelPermissions.EDIT_STREAM_INFO]);
         let data = await fastify.validate(req, {
             name: [new NotEmptyValidator()],
             description: [new MaxLengthValidator(500)],
         });
-        channel.stream_settings = JSON.stringify(data);
+        channel.stream_settings_value = JSON.stringify(data);
         await channel.save();
+        if (channel.current_stream) {
+            channel.current_stream.fill(data);
+            await channel.current_stream.save();
+            Update(channel.current_stream);
+        }
         res.send({
             status: 1,
         });

@@ -16,7 +16,7 @@ export class BaseModel extends BaseEntity {
     }
 
     static async paginate(props, req) {
-        if (!props.where && Object.keys(props).length > 0) {
+        if (!props.where && Object.keys(props).length > 0 && !Object.keys(props).includes('relations')) {
             props = {
                 where: props
             }

@@ -3,6 +3,7 @@
     <div class="channel-page">
       <m-box>
         <LivePlayer :channel="channel" />
+        <Chat :channel="channel" :permissions="permissions" />
         <ChannelInfo :channel="channel" :permissions="permissions" />
       </m-box>
       <StreamsList :channel="channel" />
@@ -14,11 +15,12 @@
   import Channel from '~/types/Channel'
   import LivePlayer from '~/components/layout/channel-page/LivePlayer.vue'
   import ChannelInfo from '~/components/layout/channel-page/ChannelInfo.vue'
+  import Chat from '~/components/layout/channel-page/Chat.vue'
   import StreamsList from '~/components/layout/channel-page/StreamsList.vue'
   import { ChannelPermissions } from '~/helpers/channelPermissions'
 
   @Component({
-    components: { ChannelInfo, LivePlayer, StreamsList },
+    components: { ChannelInfo, Chat, LivePlayer, StreamsList },
   })
   export default class ChannelPage extends Vue {
     @Prop({required: true}) readonly channel!: Channel

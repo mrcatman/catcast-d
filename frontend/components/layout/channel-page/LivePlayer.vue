@@ -123,7 +123,7 @@
           swarmId: this.channel.id!.toString()
         },
         loader: {
-          trackerAnnounce: ["wss://tracker.novage.com.ua", "wss://tracker.openwebtorrent.com"] //'ws://localhost:8000'//
+          trackerAnnounce: ["wss://tracker.openwebtorrent.com"] //'ws://localhost:8000'//
         }
       }
     }
@@ -140,6 +140,8 @@
 
       if (this.channel.is_online && this.channel.current_stream) {
         this.playerInstance.loadSource(this.channel.current_stream.watch_url);
+        this.state.playing = true;
+        console.log(this.channel.current_stream.watch_url);
       }
     }
 

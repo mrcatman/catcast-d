@@ -1,8 +1,8 @@
 import { verifySignature } from './verifySignature'
-import validateUrl from './validateUrl'
 import { follow, unfollow } from './activityHandlers/Follow'
 import { getActorByUrl } from './remoteActor'
 import { create, update } from './activityHandlers/Create'
+import { connect } from './activityHandlers/Chat'
 
 export async function handleInbox(headers, body, path) {
   if (await verifySignature(headers, body, path)) {
@@ -16,7 +16,7 @@ async function handleInboxActivity(data) {
   if (!data['@context'] || !data.type ||  !data.id || !data.actor || !data.object) {
     return;
   }
- // console.log(data);
+ console.log(data);
   let status;
   switch (data.type) {
     case 'Follow':
@@ -48,6 +48,9 @@ async function handleInboxActivity(data) {
       break;
     case 'Update':
       status = await update(data.object);
+      break;
+    case 'ChatConnect':
+      status = await connect(data.actor, data.object.object.id, data.object.connect_key);
       break;
     default:
       console.log(`Unknown activity type: ${data.type}`);
