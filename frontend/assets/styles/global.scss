@@ -3,6 +3,7 @@
 @import url("https://use.fontawesome.com/releases/v5.5.0/css/all.css");
 @import url("https://use.fontawesome.com/releases/v5.5.0/css/brands.css");
 @import "common-blocks/thumbs.scss";
+@import "common-blocks/tooltips.scss";
 
 html {
   height: 100vh;
@@ -83,14 +84,20 @@ a{
 
 ::-webkit-scrollbar
 {
-  width: .5em;
+  width: .25em;
   height: .25em;
   background: none;
 }
 
 ::-webkit-scrollbar-thumb
 {
-  background: #eee;
+  background: rgba(255, 255, 255, .25);
+  opacity: 0;
+  transition: all .25s;
+}
+*:hover::-webkit-scrollbar-thumb
+{
+  opacity: 1;
 }
 .app .vue-notification {
   font-size: 1.125em;

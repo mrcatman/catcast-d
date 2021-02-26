@@ -71,6 +71,6 @@ export default class ChannelInfoBlock extends Vue {
 </script>
 <style lang="scss">
 .streams-list {
-  margin-bottom: 1em;
+
 }
 </style>

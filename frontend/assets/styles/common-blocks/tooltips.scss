@@ -1,0 +1,14 @@
+
+.tooltip {
+  font-size: .875rem;
+  position: absolute;
+  right: 2em;
+  top: -1em;
+  color: #fff;
+  text-shadow: none;
+  display: none;
+}
+
+*:hover > .tooltip {
+  display: block;
+}

@@ -25,7 +25,8 @@ export default {
       "inputs": {
         "show_password": "Показать",
         "hide_password": "Скрыть",
-      }
+      },
+      "send": "Отправить",
     },
     "weekdays_short":
     {
@@ -1634,6 +1635,7 @@ export default {
     "chat":
     {
       "_title": "Чат",
+      "users": "Пользователи",
       "groups":
       {
         "admins": "Администраторы",
