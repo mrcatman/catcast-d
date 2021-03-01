@@ -78,7 +78,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 import Channel from '~/types/Channel'
 import { Prop } from '~/node_modules/vue-property-decorator'
 import SubscribeBlock from '~/components/layout/channel-page/SubscribeBlock.vue'
-import { ChannelPermissions } from '~/helpers/channelPermissions'
+import { UserChannelPermissions } from '~/helpers/permissions'
 import StreamInfoModal from '~/components/layout/channel-page/StreamInfoModal.vue'
 
   @Component({
@@ -99,10 +99,10 @@ import StreamInfoModal from '~/components/layout/channel-page/StreamInfoModal.vu
     }
 
     get canEditStreamInfo() {
-      return this.permissions.includes(ChannelPermissions.EDIT_STREAM_INFO);
+      return this.permissions.includes(UserChannelPermissions.EDIT_STREAM_INFO);
     }
 
     @Prop({default: null}) readonly channel!: Channel
-    @Prop({required: true}) readonly permissions!: Array<ChannelPermissions>
+    @Prop({required: true}) readonly permissions!: Array<UserChannelPermissions>
   }
 </script>

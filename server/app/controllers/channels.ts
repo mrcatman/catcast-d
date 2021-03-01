@@ -2,18 +2,29 @@ import { remoteSearch } from '../federation/remoteSearch'
 
 import { Channel } from '../models/Channel';
 import {ServerInstance} from "../types";
-import { checkPermissionsOrFail, getPermissions } from '../helpers/checkPermissions'
+
+import { UserPermissions } from '../models/UserPermissions'
+import { checkPermissionsOrFail, getPermissions } from '../helpers/permissions/check'
+import { UserChannelPermissions } from '../helpers/permissions/list'
+
 import { getBaseChannelValidators, getFollowConditions } from '../helpers/channels'
 import {generateKeys} from "../federation/crypto";
 import { Follower } from '../models/Follower'
 import {Like} from "typeorm";
 import { Follow, Unfollow } from '../federation/activities/Follow'
 import { Update, UpdateActor } from '../federation/activities/Create'
-import { ChannelPermissions } from '../helpers/channelPermissions'
+
 import { Stream } from '../models/Stream'
+
+import { config } from '../config'
+import { User } from '../models/User'
+import { getActorByHandle } from '../federation/remoteActor'
+import { CancelOffer, Offer } from '../federation/activities/Team'
 
 const NotEmptyValidator = require('../validation/validators/NotEmptyValidator');
 const MaxLengthValidator = require('../validation/validators/MaxLengthValidator');
+const ArrayValidator = require('../validation/validators/ArrayValidator');
+const BooleanValidator = require('../validation/validators/BooleanValidator');
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -97,7 +108,7 @@ async function routes (fastify: ServerInstance, options) {
         preValidation: [fastify.authenticate]
     }, async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
-        await checkPermissionsOrFail(req.user, channel, [ChannelPermissions.EDIT_STREAM_INFO]);
+        await checkPermissionsOrFail(req.user, channel, [UserChannelPermissions.EDIT_STREAM_INFO]);
         let data = await fastify.validate(req, getBaseChannelValidators());
         channel.fill(data);
         await channel.save();
@@ -198,7 +209,7 @@ async function routes (fastify: ServerInstance, options) {
         preValidation: [fastify.authenticate]
     }, async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner', 'current_stream']});
-        await checkPermissionsOrFail(req.user, channel, [ChannelPermissions.EDIT_STREAM_INFO]);
+        await checkPermissionsOrFail(req.user, channel, [UserChannelPermissions.EDIT_STREAM_INFO]);
         let data = await fastify.validate(req, {
             name: [new NotEmptyValidator()],
             description: [new MaxLengthValidator(500)],
@@ -227,6 +238,118 @@ async function routes (fastify: ServerInstance, options) {
         res.send({
             streams
         });
+    })
+
+    fastify.get('/:id/team', async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        let team = (await UserPermissions.find({
+            where: {
+                channel: {
+                    id: req.params.id
+                }
+            },
+            relations: ['user']
+        })).filter(permission => permission.user);
+        let owner = channel.owner;
+        res.send({
+            team,
+            owner
+        });
+    })
+
+    fastify.post('/:id/team', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        await checkPermissionsOrFail(req.user, channel, [], true);
+        let data = await fastify.validate(req, {
+            user: [new NotEmptyValidator()],
+            full: [new BooleanValidator()],
+            permissions: [new ArrayValidator()],
+            comment: [new MaxLengthValidator(255)],
+        });
+        if (!data.full && data.permissions.length === 0) {
+            throw {
+                status: 422,
+                errors: {
+                    user: ['dashboard.team._errors.select_rights']
+                }
+            };
+        }
+        let user;
+        let handleInfo = data.user.split('@');
+        if (handleInfo.length === 1 || handleInfo[1] === config('server.domain')) {
+            user = await User.findOne({
+                where: {
+                    login: handleInfo[0],
+                    domain: null
+                }
+            })
+            if (!user) {
+                throw {
+                    status: 422, errors: { user: ['dashboard.team._errors.user_not_found_local'] }
+                };
+            }
+        } else {
+            try {
+                user = await getActorByHandle(data.user);
+            } catch (e) {
+
+            }
+            if (!user || user.toObject().catcastActorType === 'Channel') {
+                throw {
+                    status: 422, errors: { user: ['dashboard.team._errors.user_not_found_remote'] }
+                };
+            }
+        }
+        if (user && user.id === channel.owner.id) {
+            throw {
+                status: 422, errors: { user: ['dashboard.team._errors.user_is_owner'] }
+            };
+        }
+        let permissions = await UserPermissions.findOne({
+            where: {
+                channel: {
+                    id: channel.id
+                },
+                user: {
+                    id: user.id
+                }
+            }
+        });
+        if (!permissions) {
+            permissions = new UserPermissions();
+            permissions.user = user;
+            permissions.channel = channel;
+        }
+        let permissionsList = data.permissions.filter(permission => Object.keys(UserChannelPermissions).indexOf(permission) !== -1);
+        permissions.fill({
+            full: data.full,
+            list_string: JSON.stringify(permissionsList)
+        })
+        await permissions.save();
+        Offer(permissions);
+        return permissions;
+    })
+
+    fastify.delete('/:id/team/:permissions_id', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        await checkPermissionsOrFail(req.user, channel, [], true);
+        let permissions = await UserPermissions.findOneOrFail({
+            id: req.params.permissions_id
+        }, {
+            relations: ['channel', 'user']
+        });
+        if (permissions.channel.id !== channel.id) {
+            throw {
+                status: 403, error: 'common.access_error'
+            };
+        }
+        await permissions.remove();
+        CancelOffer(permissions);
+        return true;
     })
 
 }

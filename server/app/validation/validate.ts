@@ -8,17 +8,21 @@ async function validate(request, rules: ValidationRules) : Promise<ValidatedData
     let hasErrors = false;
     let data = {};
     for (let key in rules) {
-        let fieldValue = (body && body[key]) ? body[key] : (query && query[key] ? query[key] : null);
-        for (let validator of rules[key]) {
-            let result = await validator.validate(fieldValue);
-            if (result instanceof ValidatorError) {
-                hasErrors = true;
-                if (!errors[key]) {
-                    errors[key] = [];
+        let fieldValue = (body && body[key] !== 'undefined') ? body[key] : (query && query[key] !== 'undefined' ? query[key] : null);
+        if (rules[key].length === 0) {
+            data[key] = fieldValue;
+        } else {
+            for (let validator of rules[key]) {
+                let result = await validator.validate(fieldValue);
+                if (result instanceof ValidatorError) {
+                    hasErrors = true;
+                    if (!errors[key]) {
+                        errors[key] = [];
+                    }
+                    errors[key].push(result.error);
+                } else {
+                    data[key] = result;
                 }
-                errors[key].push(result.error);
-            } else {
-                data[key] = result;
             }
         }
     }

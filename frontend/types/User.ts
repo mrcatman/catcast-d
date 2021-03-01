@@ -8,5 +8,6 @@ export default interface User {
   about: string;
   last_time_seen: Date;
   picture: Picture | null;
-  role_id: Role
+  role_id: Role,
+  activitypub_handle: string;
 }

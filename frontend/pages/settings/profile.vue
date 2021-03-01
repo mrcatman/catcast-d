@@ -1,9 +1,5 @@
 <template>
-  <div class="container page-form">
-    <m-box>
-      <EditProfile v-if="me" :profile="me" />
-    </m-box>
-  </div>
+  <EditProfile v-if="me" :profile="me" />
 </template>
 
 <script lang="ts">

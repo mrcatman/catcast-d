@@ -3,6 +3,7 @@ import { follow, unfollow } from './activityHandlers/Follow'
 import { getActorByUrl } from './remoteActor'
 import { create, update } from './activityHandlers/Create'
 import { connect } from './activityHandlers/Chat'
+import { cancelOffer, offer } from './activityHandlers/Team'
 
 export async function handleInbox(headers, body, path) {
   if (await verifySignature(headers, body, path)) {
@@ -16,13 +17,13 @@ async function handleInboxActivity(data) {
   if (!data['@context'] || !data.type ||  !data.id || !data.actor || !data.object) {
     return;
   }
- console.log(data);
   let status;
   switch (data.type) {
     case 'Follow':
       status = await follow(data.actor, data.object);
       break;
     case 'Undo':
+      console.log(data);
       if (!data.object.type) {
         status = false;
       }
@@ -30,7 +31,11 @@ async function handleInboxActivity(data) {
         case 'Follow':
           status = await unfollow(data.actor, data.object?.object);
           break;
+        case 'Offer':
+          status = await cancelOffer(data.actor, data.object?.object);
+          break;
         default:
+          console.log(`Unknown activity undo type: ${data.object.type}`);
           break;
       }
       break;
@@ -50,7 +55,10 @@ async function handleInboxActivity(data) {
       status = await update(data.object);
       break;
     case 'ChatConnect':
-      status = await connect(data.actor, data.object.object.id, data.object.connect_key);
+      status = await connect(data.actor, data.object.id, data.object.connect_key);
+      break;
+    case 'Offer':
+      status = await offer(data.actor, data.object);
       break;
     default:
       console.log(`Unknown activity type: ${data.type}`);

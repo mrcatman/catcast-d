@@ -102,6 +102,12 @@
   &__loading-indicator {
     margin: 0 0 -.25em .75em;
   }
+  &--positive {
+    background: var(--positive-color);
+  }
+  &--negative {
+    background: var(--negative-color);
+  }
 }
 
 </style>
@@ -144,7 +150,15 @@ import Vue, { PropOptions } from 'vue'
     to: {
       type: String,
       required: false
-    }
+    },
+    positive: {
+      type: Boolean,
+      required: false,
+    },
+    negative: {
+      type: Boolean,
+      required: false,
+    },
 	},
   computed: {
     buttonClasses() {
@@ -154,7 +168,9 @@ import Vue, { PropOptions } from 'vue'
         'button--flat': this.flat,
         'button--rounded': this.rounded,
         'button--loading': this.loading,
-        'button--disabled': this.disabled
+        'button--disabled': this.disabled,
+        'button--positive': this.positive,
+        'button--negative': this.negative
       }
     }
   },

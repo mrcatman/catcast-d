@@ -97,7 +97,9 @@ server.decorate('validate', validate);
         'stream': '/api/stream',
         'webfinger': '.well-known',
         'federation': '/api/federation',
-        'chat': '/api/chat'
+        'chat': '/api/chat',
+        'permissions': '/api/permissions',
+        'users': '/api/users'
     };
     for (let controller in controllerPaths) {
         server.register(await import('./app/controllers/' + controller), {prefix: controllerPaths[controller]})

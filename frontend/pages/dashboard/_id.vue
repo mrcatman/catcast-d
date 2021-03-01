@@ -31,6 +31,9 @@
         let id = parseInt(this.$route.params.id);
         this.channel = await ChannelGetById(id);
         this.permissions = await ChannelGetPermissions(id);
+        if (this.permissions.length === 0) {
+          this.$router.push('/dashboard');
+        }
         this.loaded = true;
       } catch (e) {
         console.log(e);

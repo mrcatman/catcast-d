@@ -1,5 +1,5 @@
 import { User } from '../models/User'
-import { createHash, createSign, createVerify } from 'crypto';
+import { createHash, createSign, createVerify, sign } from 'crypto'
 import validateUrl from './validateUrl'
 import { Channel } from '../models/Channel'
 const {parse: parseUrl} = require('url');

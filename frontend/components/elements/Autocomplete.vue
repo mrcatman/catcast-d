@@ -1,10 +1,12 @@
 <template>
 <div class="autocomplete" v-click-outside="hideAutocomplete">
 	<div class="autocomplete__input" ref="input">
-		<m-input :errors="errors"  @click="autocompleteVisible = true" @keyup="onInputChange" :placeholder="placeholder" v-model="val" />
+		<m-input :errors="errors" @click="visible = true" @keyup="onInputChange" :placeholder="placeholder" v-model="val" />
 		<i class="autocomplete__input__loading-icon" v-show="isLoading"><m-preloader stroke-width="5" circle-width="20" /></i>
-		<div :style="{'width': variantsPosition.width+'px', 'left': variantsPosition.x+'px', 'top': variantsPosition.y+'px'}" class="autocomplete__variants" v-show="autocompleteVisible">
-			<div :key="$index" v-for="(variant,$index) in autocompleteVariants" class="autocomplete__variant" @click="setVariant(variant)">{{variant[autocompleteValue]}}</div>
+		<div :style="{'width': variantsPosition.width+'px', 'left': variantsPosition.x+'px', 'top': variantsPosition.y+'px'}" class="autocomplete__variants" v-show="visible">
+			<div :key="$index" v-for="(variant,$index) in variants" class="autocomplete__variant" @click="setVariant(variant)">
+        {{variant.name}}
+      </div>
 		</div>
 	</div>
 
@@ -13,7 +15,7 @@
 <style lang="scss">
 .autocomplete {
 	position: relative;
-	flex :1;
+	flex: 1;
 	&__input {
 		position: relative;
 		&__loading-icon {
@@ -54,53 +56,41 @@ export default {
   },
 	props: {
 		errors: {
-			type: [Array, Object],
+			type: Array,
 			required: false,
 			default: ()=>{
 				return []
 			}
 		},
-		returnVariant: {
-			type: [Boolean],
-			required: false,
-			default: false,
-		},
-		autocompleteValue: {
-			type: [String],
-			required: true,
-		},
-		autocompleteKey: {
-			type: [String],
-			required: true,
-		},
-		url: {
-			type: [String],
-			required: true,
-		},
+		fn: {
+		  type: Function,
+      required: true
+    },
 		value: {
-			type: [String,Object],
+			type: String,
 			required: true,
 		},
 		placeholder:{
-			type: [String],
+			type: String,
 			required: false,
 		}
 	},
 	data() {
 		return {
-			autocompleteVisible: false,
-			autocompleteVariants: [],
+			visible: false,
+			variants: [],
 			isLoading: false,
 			val: '',
       variantsPosition: {
 			  width: 0,
         x: 0,
         y: 0,
-      }
+      },
+      timeout: null
 		}
 	},
 	watch:{
-	  autocompleteVisible(isVisible) {
+	  visible(isVisible) {
 	    if (isVisible) {
         this.setPosition();
       }
@@ -115,43 +105,33 @@ export default {
 		},
 	},
 	methods: {
-	  setPosition() {
+    setPosition() {
       let input = this.$refs.input;
       let rect = input.getBoundingClientRect();
       this.variantsPosition.width = rect.width;
       this.variantsPosition.x = rect.left;
       this.variantsPosition.y = rect.top;
     },
-		setVariant(variant) {
-			if (this.returnVariant) {
-				this.$emit('input',variant);
-			}
-			this.$emit('getvariant',variant);
-			this.val = variant[this.autocompleteValue];
-			this.autocompleteVisible = false;
-		},
-		hideAutocomplete() {
-			this.autocompleteVisible = false;
-		},
-		onInputChange() {
-	    this.$emit('change');
-			if (!this.isLoading) {
-				setTimeout(()=>{
-					if (!this.isLoading) {
-						this.isLoading = true;
-						this.$axios.post('/'+this.url,{autocomplete:this.val}).then(res=>{
-							this.autocompleteVisible = true;
-							this.isLoading = false;
-							if (res.data.data && res.data.data.list) {
-                this.autocompleteVariants = res.data.data.list;
-              } else {
-                this.autocompleteVariants = res.data.list;
-              }
-						})
-					}
-				},500)
-			}
-		}
-	}
+    setVariant(variant) {
+      this.val = variant.id;
+      this.visible = false;
+    },
+    hideAutocomplete() {
+      this.visible = false;
+    },
+    onInputChange() {
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        if (!this.isLoading) {
+          this.isLoading = true;
+          this.fn(this.val).then(res => {
+            this.visible = true;
+            this.isLoading = false;
+            this.variants = res;
+          })
+        }
+      }, 250)
+    }
+  }
 }
 </script>

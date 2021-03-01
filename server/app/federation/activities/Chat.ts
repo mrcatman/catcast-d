@@ -8,9 +8,7 @@ export async function Connect(connectKey: string, user: User, channel: Channel):
   await sendActivityPubRequest('ChatConnect', {
     id: user.getActorUrl(`#chat_connect/${channel.id}`),
     object: {
-      object: {
-        id: channel.getActorUrl(),
-      },
+      id: channel.getActorUrl(),
       connect_key: connectKey
     }
   }, user, [channel]);

@@ -1,5 +1,5 @@
 <template>
-  <component :is="to ? 'router-link' : 'div'" :to="to" class="list-item" :class="{'list-item--link': to}">
+  <component :is="to ? 'router-link' : 'div'" :to="to" class="list-item" :class="{'list-item--link': to, 'list-item--transparent': transparent}">
     <slot></slot>
   </component>
 </template>
@@ -9,12 +9,13 @@
     justify-content: space-between;
     align-items: center;
     text-decoration: none;
-    height: 3em;
+    min-height: 3em;
     font-size: 1em;
     padding: .875em;
     border-bottom: 1px solid rgba(255, 255, 255, .1);
     transition: all .25s;
     position: relative;
+
     &--link {
       &:hover {
         background: rgba(255, 255, 255, .05);
@@ -26,6 +27,10 @@
   import Vue from 'vue';
   export default Vue.extend({
     props: {
+      transparent: {
+        type: Boolean,
+        required: false
+      },
       to: {
         type: String,
         required: false

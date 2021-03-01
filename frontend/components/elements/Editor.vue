@@ -74,6 +74,7 @@
 </style>
 <script>
 import { quillEditor } from 'vue-quill-editor'
+import ErrorsContainer from '@/components/elements/ErrorsContainer'
 
 
 let defaultToolbar = [
@@ -96,6 +97,7 @@ let simpleToolbar = [
 
 export default {
   components: {
+    ErrorsContainer,
     quillEditor
   },
 	props:{

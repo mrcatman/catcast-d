@@ -33,7 +33,7 @@
 import { Component, Vue } from 'nuxt-property-decorator'
 import Channel from '~/types/Channel'
 import { Prop } from '~/node_modules/vue-property-decorator'
-import { ChannelPermissions } from '~/helpers/channelPermissions'
+import { UserChannelPermissions } from '~/helpers/permissions'
 import { ChatConnect, ChatSendMessage } from '~/api/modules/chat'
 import { ChatUpdateType, ChatUserInfo, ChatMessage } from '~/types/chat'
 import { getReadableTime } from '~/helpers/time'
@@ -42,7 +42,7 @@ import { getReadableTime } from '~/helpers/time'
 export default class Chat extends Vue {
 
   @Prop({required: true}) readonly channel!: Channel
-  @Prop({required: true}) readonly permissions!: Array<ChannelPermissions>
+  @Prop({required: true}) readonly permissions!: Array<UserChannelPermissions>
   showUsersList: boolean = false;
   ready: boolean = false;
 

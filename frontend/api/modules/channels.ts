@@ -1,8 +1,10 @@
 import api from "../index";
 import Channel from '~/types/Channel'
 import Paginator from '~/types/Paginator'
-import { ChannelPermissions } from '~/helpers/channelPermissions'
+import { UserChannelPermissions } from '~/helpers/permissions'
 import Stream from '~/types/Stream'
+import User from '~/types/User'
+import UserPermissions from '~/types/UserPermissions'
 
 const BASE_PATH = "channels";
 
@@ -53,7 +55,7 @@ export const ChannelGetByUrl = async (url: string): Promise<Channel> => {
 
 export const ChannelGetPermissions = async (id: number): Promise<Array<string>> => {
   const res = await api.get(`${BASE_PATH}/${id}/permissions`);
-  return res.data.permissions as Array<ChannelPermissions>;
+  return res.data.permissions as Array<UserChannelPermissions>;
 };
 
 export const ChannelSubscribe = async (id: number): Promise<boolean> => {
@@ -80,8 +82,26 @@ export const ChannelSetStreamSettings = async (id: number, data: any): Promise<a
   return true;
 };
 
-
 export const ChannelGetStreams = async (id: number, page: number): Promise<Paginator<Stream>> => {
   const res = await api.get(`${BASE_PATH}/${id}/streams?page=${page}`);
   return res.data.streams as Paginator<Stream>;
+};
+
+interface GetTeamResponse {
+  owner: User,
+  team: Array<any>
+}
+
+export const ChannelGetTeam = async (id: number): Promise<GetTeamResponse> => {
+  const res = await api.get(`${BASE_PATH}/${id}/team`);
+  return res.data as GetTeamResponse;
+};
+
+export const ChannelAddUserToTeam = async (id: number, data: any): Promise<UserPermissions> => {
+  const res = await api.post(`${BASE_PATH}/${id}/team`, data);
+  return res.data as UserPermissions;
+};
+export const ChannelRemoveUserFromTeam = async (id: number, permissions_id: number): Promise<boolean> => {
+  await api.delete(`${BASE_PATH}/${id}/team/${permissions_id}`);
+  return true;
 };

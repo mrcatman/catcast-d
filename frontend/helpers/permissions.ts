@@ -1,4 +1,4 @@
-export enum ChannelPermissions {
+export enum UserChannelPermissions {
   FULL_ADMIN = 'FULL_ADMIN',
   MODERATE_CHAT = 'MODERATE_CHAT',
   EDIT_STREAM_INFO = 'EDIT_STREAM_INFO',

@@ -4,7 +4,7 @@ import {
     Column,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToOne, JoinColumn, OneToMany,
+    OneToOne, JoinColumn, OneToMany, AfterLoad,
 } from 'typeorm'
 import {Picture} from "./Picture";
 import {BaseModel} from "./BaseModel";
@@ -16,6 +16,7 @@ import { SHARED_INBOX_URL } from '../federation/constants'
 import { Follower } from './Follower'
 
 import { Role } from '../helpers/roles'
+import { StreamSettings } from '../types'
 
 @Entity('users')
 export class User extends BaseModel {
@@ -153,6 +154,13 @@ export class User extends BaseModel {
 
     isAdmin() : boolean {
         return this.role_id === Role.ADMIN;
+    }
+
+    activitypub_handle: String;
+
+    @AfterLoad()
+    setComputed() {
+        this.activitypub_handle = `${this.login}@${this.domain || config('server.domain')}`;
     }
 
 }

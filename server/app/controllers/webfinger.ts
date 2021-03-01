@@ -1,9 +1,8 @@
 import {ServerInstance} from "../types";
-import getChannelFromNginxRequest from "../helpers/getChannelFromNginxRequest";
 import {CHANNEL_ACTOR_PREFIX} from "../federation/constants";
 import {Channel} from "../models/Channel";
 import {User} from "../models/User";
-const { pipeline } = require('stream')
+import { config } from '../config'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -15,9 +14,9 @@ async function routes (fastify: ServerInstance, options) {
             })
         }
         let [account, domain] = resource.replace('acct:', '').split('@');
-        if (domain !== fastify.config.domain) {
+        if (domain !== config('server.domain')) {
             res.code(400).send({
-                error: `The user does not belong to ${fastify.config.domain} domain`
+                error: `The user does not belong to ${config('server.domain')} domain`
             })
         }
         if (account.startsWith(CHANNEL_ACTOR_PREFIX)) {

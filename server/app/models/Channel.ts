@@ -89,8 +89,11 @@ export class Channel extends BaseModel {
 
     stream_settings: StreamSettings;
 
+    activitypub_handle: String;
+
     @AfterLoad()
     setComputed() {
+        this.activitypub_handle = `${this.url}@${this.domain || config('server.domain')}`;
         if (this.current_stream) {
             this.current_stream.channel = undefined; // prevent circular JSON
         }

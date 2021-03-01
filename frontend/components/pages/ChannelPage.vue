@@ -19,14 +19,14 @@
   import ChannelInfo from '~/components/layout/channel-page/ChannelInfo.vue'
   import Chat from '~/components/layout/channel-page/Chat.vue'
   import StreamsList from '~/components/layout/channel-page/StreamsList.vue'
-  import { ChannelPermissions } from '~/helpers/channelPermissions'
+  import { UserChannelPermissions } from '~/helpers/UserChannelPermissions'
 
   @Component({
     components: { ChannelInfo, Chat, LivePlayer, StreamsList },
   })
   export default class ChannelPage extends Vue {
     @Prop({required: true}) readonly channel!: Channel
-    @Prop({required: true}) readonly permissions!: Array<ChannelPermissions>
+    @Prop({required: true}) readonly permissions!: Array<UserChannelPermissions>
   }
 </script>
 <style lang="scss">

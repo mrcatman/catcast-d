@@ -4,6 +4,7 @@
 @import url("https://use.fontawesome.com/releases/v5.5.0/css/brands.css");
 @import "common-blocks/thumbs.scss";
 @import "common-blocks/tooltips.scss";
+@import "common-blocks/tags.scss";
 
 html {
   height: 100vh;
@@ -44,7 +45,7 @@ body{
   padding: 0;
   font-family: Montserrat, sans-serif;
   font-weight: 300;
-  font-size: 18px;
+  font-size: 16px;
   overflow: hidden;
   scrollbar-color: #eee rgba(0, 0, 0, 0);
   scrollbar-width: thin;

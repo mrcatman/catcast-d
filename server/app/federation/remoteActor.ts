@@ -5,19 +5,67 @@ import { MAX_PAGES_TO_FETCH } from './constants'
 import { Picture } from '../models/Picture'
 import { config } from '../config'
 import { create } from './activityHandlers/Create'
+import { canFederateWith } from './canFederateWith'
+
 const {parse: parseUrl} = require('url');
 
-export async function getActorByWebfinger(domain: string, resource: string) {
-  const protocol = domain.indexOf('localhost') !== -1 ? 'http' : 'https';
-  const webfingerUrl = `${protocol}://${domain}/.well-known/webfinger?resource=acct:${resource}@${domain}`;
-  let res = (await axios.get(webfingerUrl)).data;
-  if (res.links && res.links.length > 0) {
-    let link = res.links.filter(link => link.rel === 'self')[0];
-    if (link) {
-      return await getRemoteActor(link.href);
+
+export async function getActorByHandle(handle: string, webfingerOnly: boolean = false): Promise<Channel | User | null> {
+  if (handle.indexOf('@') === -1 && handle.indexOf('/') === -1) {
+    return;
+  }
+  let domain, resource;
+  if (handle.indexOf('@') !== -1) {
+    let splitted = handle.split('@');
+    resource = splitted[0];
+    domain = splitted[1];
+  } else {
+    if (!webfingerOnly) {
+      let parsedUrl = parseUrl(handle);
+      if (parsedUrl && parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+        handle = `https://${handle}`;
+      }
+      parsedUrl = parseUrl(handle);
+      domain = parsedUrl.host;
+      resource = `channel_${parsedUrl.pathname.substring(1)}`;
     }
   }
+  if (!canFederateWith(domain)) {
+    return;
+  }
+  if (!domain || !resource) {
+    return;
+  }
+  return await getActorByWebfinger(domain, resource);
 }
+
+export async function createActor(url: string, host: string) {
+  let remoteActor = await getRemoteActor(url);
+  let actor;
+  if (remoteActor.catcastActorType === 'Channel') {
+    actor = await Channel.findOne({
+      url: remoteActor.name,
+      domain: host
+    })
+  } else {
+    actor = await User.findOne({
+      login: remoteActor.name,
+      domain: host
+    })
+  }
+  if (!actor) {
+    if (remoteActor.catcastActorType === 'Channel') {
+      actor = new Channel();
+    } else {
+      actor = new User();
+    }
+    actor.actor_id = url;
+    actor.domain = host;
+    actor.key_id = remoteActor.publicKey.id;
+    await fetchCommonInfo(remoteActor, actor);
+  }
+}
+
 
 export async function getActorByUrl(url: string): Promise<Channel | User | null> {
   let parsed = parseUrl(url);
@@ -61,6 +109,19 @@ export async function getActorByUrl(url: string): Promise<Channel | User | null>
     }
     return actor;
   }
+}
+
+export async function getActorByWebfinger(domain: string, resource: string): Promise<Channel | User | null> {
+  const protocol = domain.indexOf('localhost') !== -1 ? 'http' : 'https';
+  const webfingerUrl = `${protocol}://${domain}/.well-known/webfinger?resource=acct:${resource}@${domain}`;
+  let res = (await axios.get(webfingerUrl)).data;
+  if (res.links && res.links.length > 0) {
+    let link = res.links.filter(link => link.rel === 'self')[0];
+    if (link) {
+      return await getActorByUrl(link.href);
+    }
+  }
+  return null;
 }
 
 export async function getRemoteActor(url: string): Promise<any> {

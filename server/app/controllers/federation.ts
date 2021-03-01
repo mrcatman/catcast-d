@@ -6,6 +6,7 @@ import { Follower } from '../models/Follower'
 import { Stream } from '../models/Stream'
 import { context } from '../federation/context'
 import { handleInbox } from '../federation/handleInbox'
+import { config } from '../config'
 
 async function routes (fastify: ServerInstance, options) {
 
@@ -66,9 +67,9 @@ async function routes (fastify: ServerInstance, options) {
             const pagesCount = Math.ceil(followsCount / ITEMS_ON_PAGE);
             return {
                 '@context': context,
-                id: `https://${fastify.config.domain}${url}`,
-                prev: page > 1 ? `https://${fastify.config.domain}${url}?page=${page - 1}` : undefined,
-                next: page < pagesCount ? `https://${fastify.config.domain}${url}?page=${page + 1}` : undefined,
+                id: `https://${config('server.domain')}${url}`,
+                prev: page > 1 ? `https://${config('server.domain')}${url}?page=${page - 1}` : undefined,
+                next: page < pagesCount ? `https://${config('server.domain')}${url}?page=${page + 1}` : undefined,
                 type: 'OrderedCollectionPage',
                 totalItems: followsCount,
                 orderedItems: actorUrls
@@ -76,8 +77,8 @@ async function routes (fastify: ServerInstance, options) {
         } else {
             return {
                 '@context': context,
-                id: `https://${fastify.config.domain}${url}`,
-                first: `https://${fastify.config.domain}${url}?page=1`,
+                id: `https://${config('server.domain')}${url}`,
+                first: `https://${config('server.domain')}${url}?page=1`,
                 type: 'OrderedCollection',
                 totalItems: followsCount,
             }
@@ -104,9 +105,9 @@ async function routes (fastify: ServerInstance, options) {
             const pagesCount = Math.ceil(streamsCount / ITEMS_ON_PAGE);
             return {
                 '@context': context,
-                id: `https://${fastify.config.domain}${url}`,
-                prev: page > 1 ? `https://${fastify.config.domain}${url}?page=${page - 1}` : undefined,
-                next: page < pagesCount ? `https://${fastify.config.domain}${url}?page=${page + 1}` : undefined,
+                id: `https://${config('server.domain')}${url}`,
+                prev: page > 1 ? `https://${config('server.domain')}${url}?page=${page - 1}` : undefined,
+                next: page < pagesCount ? `https://${config('server.domain')}${url}?page=${page + 1}` : undefined,
                 type: 'OrderedCollectionPage',
                 totalItems: streamsCount,
                 orderedItems: items
@@ -114,8 +115,8 @@ async function routes (fastify: ServerInstance, options) {
         } else {
             return {
                 '@context': context,
-                id: `https://${fastify.config.domain}${url}`,
-                first: `https://${fastify.config.domain}${url}?page=1`,
+                id: `https://${config('server.domain')}${url}`,
+                first: `https://${config('server.domain')}${url}?page=1`,
                 type: 'OrderedCollection',
                 totalItems: streamsCount,
             }
