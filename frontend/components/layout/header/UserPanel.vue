@@ -17,7 +17,7 @@
 </template>
 <style lang="scss">
   .auth-panel {
-    margin: 0 0 0 1em;
+    margin: 0 .5em 0 1em;
   }
 </style>
 <script lang="ts">

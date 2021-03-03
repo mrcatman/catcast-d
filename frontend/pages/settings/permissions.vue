@@ -13,8 +13,8 @@
               {{item.channel.activitypub_handle}}
             </m-list-item-sub>
             <UserPermissionsView :permissions="item" />
-            <m-button positive :loading="item._approving" icon="person_add">{{$t('permissions.approve')}}</m-button>
-            <m-button negative :loading="item._rejecting" icon="person_remove">{{$t('permissions.reject')}}</m-button>
+            <m-button v-if="!item.confirmed && !item.rejected" @click="confirm(item)" positive :loading="item.confirming" icon="person_add">{{$t('permissions.confirm')}}</m-button>
+            <m-button v-if="!item.confirmed && !item.rejected" @click="reject(item)" negative :loading="item._rejecting" icon="person_remove">{{$t('permissions.reject')}}</m-button>
           </m-list-item-texts>
         </m-list-item>
       </m-list>
@@ -25,7 +25,7 @@
 import { Component } from 'nuxt-property-decorator'
 import { BaseFormComponent } from '~/components/types/BaseFormComponent'
 import UserPermissions from '~/types/UserPermissions'
-import { PermissionsGetMy } from '~/api/modules/permissions'
+import { PermissionsConfirm, PermissionsGetMy, PermissionsReject } from '~/api/modules/permissions'
 import UserPermissionsView from '~/components/layout/UserPermissionsView.vue'
 @Component({
   components: { UserPermissionsView },
@@ -41,17 +41,35 @@ export default class ChannelTeamPage extends BaseFormComponent {
     return [
       {
         name: this.$t('permissions.requests_list'),
-        list: this.permissions.filter(item => !item.approved && !item.rejected)
+        list: this.permissions.filter(item => !item.confirmed && !item.rejected)
       },
       {
-        name: this.$t('permissions.approved_list'),
-        list: this.permissions.filter(item => item.approved)
+        name: this.$t('permissions.confirmed_list'),
+        list: this.permissions.filter(item => item.confirmed)
       },
       {
         name: this.$t('permissions.rejected_list'),
         list: this.permissions.filter(item => item.rejected)
       }
     ]
+  }
+
+  async confirm(teamMember: UserPermissions) {
+    this.$set(teamMember, '_confirming', true);
+    try {
+      await PermissionsConfirm(teamMember.id!);
+      this.$set(teamMember, 'confirmed', true);
+    } catch (e) {}
+    this.$set(teamMember, '_confirming', false);
+  }
+
+  async reject(teamMember: UserPermissions) {
+    this.$set(teamMember, '_rejecting', true);
+    try {
+      await PermissionsReject(teamMember.id!);
+      this.$set(teamMember, 'rejected', true);
+    } catch (e) {}
+    this.$set(teamMember, '_rejecting', false);
   }
 
 }

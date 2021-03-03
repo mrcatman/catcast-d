@@ -31,11 +31,11 @@ module.exports = {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    { src: '~/plugins/notifications.js'},
     { src: '~/plugins/load-locales.js'},
     { src: '~/plugins/global-components.js'},
     { src: '~/plugins/portal-vue.js'},
     { src: '~/plugins/init-store.js'},
+    { src: '~/plugins/notifications.js'},
   ],
   /*
    ** Nuxt.js dev-modules

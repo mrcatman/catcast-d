@@ -12,3 +12,13 @@ export const PermissionsGetMy = async(): Promise<Array<UserPermissions>> => {
   const res = await api.get(`${BASE_PATH}/my`);
   return res.data.permissions;
 };
+
+export const PermissionsConfirm = async(id: number): Promise<Boolean> => {
+  await api.post(`${BASE_PATH}/${id}/confirm`);
+  return true;
+};
+
+export const PermissionsReject = async(id: number): Promise<Boolean> => {
+  await api.post(`${BASE_PATH}/${id}/reject`);
+  return true;
+};

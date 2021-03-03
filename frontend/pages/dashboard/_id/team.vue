@@ -1,8 +1,6 @@
 <template>
   <div class="container page-form dashboard__team">
-    <m-box :no-padding="true">
-      <template v-slot:heading>{{$t('dashboard.team._title')}}</template>
-      <template v-slot:default>
+    <h1 class="controls-page__heading">{{$t('dashboard.team._title')}}</h1>
         <div class="dashboard__team__form">
           <div class="dashboard__team__form__top">
             <m-autocomplete :placeholder="$t('dashboard.team.search')" class="dashboard__team__user-input" v-model="form.user" :fn="findUsers" :errors="errors.user" />
@@ -40,15 +38,14 @@
               <m-list-item-sub v-if="!member.confirmed">
                 {{$t('dashboard.team.waiting_for_confirmation')}}
               </m-list-item-sub>
+              <UserPermissionsView :permissions="member" />
             </m-list-item-texts>
             <m-list-item-buttons>
               <m-button negative :loading="member._removing" @click="removeMember(member)" icon="person_remove">{{$t('common.delete')}}</m-button>
             </m-list-item-buttons>
           </m-list-item>
         </m-list>
-      </template>
 
-    </m-box>
   </div>
 </template>
 <style lang="scss">
@@ -95,8 +92,10 @@ import Channel from '~/types/Channel'
 import { UsersSearch } from '~/api/modules/users'
 import { BaseFormComponent } from '~/components/types/BaseFormComponent'
 import UserPermissions from '~/types/UserPermissions'
-
-@Component
+import UserPermissionsView from '~/components/layout/UserPermissionsView.vue'
+@Component({
+  components: { UserPermissionsView },
+})
 export default class ChannelTeamPage extends BaseFormComponent {
   @Prop() readonly channel!: Channel
 
@@ -147,10 +146,10 @@ export default class ChannelTeamPage extends BaseFormComponent {
     return ChannelAddUserToTeam(this.channel.id!, form);
   }
 
-  removeMember(teamMember: UserPermissions) {
+  async removeMember(teamMember: UserPermissions) {
     this.$set(teamMember, '_removing', true);
     try {
-      ChannelRemoveUserFromTeam(this.channel.id!, teamMember.id!);
+      await ChannelRemoveUserFromTeam(this.channel.id!, teamMember.id!);
       this.team.splice(this.team.indexOf(teamMember), 1);
     } catch (e) {
 

@@ -317,14 +317,12 @@ export default {
           "returned": "Вы вернулись в команду канала"
         }
       },
-      "links":
+      "menu":
       {
-        "main": "Главная",
-        "info": "Информация",
-        "premium": "Премиум",
+        "common": "Информация о канале",
         "broadcast": "Вещание",
         "design": "Дизайн",
-        "team": "Команда",
+        "team": "Команда канала",
         "donate": "Донаты",
         "banlist": "Бан-лист",
         "videos": "Видео",
@@ -2393,9 +2391,9 @@ export default {
     "permissions":
     {
       "requests_list": "Заявки на добавление в команду канала",
-      "approved_list": "Принятые заявки",
+      "confirmed_list": "Принятые заявки",
       "rejected_list": "Отклоненные заявки",
-      "approve": "Принять",
+      "confirm": "Принять",
       "reject": "Отклонить",
       "full": "Полные администраторские права",
       "list": {

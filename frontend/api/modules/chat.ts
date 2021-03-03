@@ -16,6 +16,6 @@ export const ChatConnect = async(id: number): Promise<string> => {
 };
 
 
-export const ChatSendMessage = (socket: WebSocket, message: ChatMessage): void => {
+export const ChatSendMessage = (socket: WebSocket, message: Partial<ChatMessage>): void => {
   sendUpdate(socket, 'SEND_MESSAGE', message);
 };

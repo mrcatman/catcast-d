@@ -10,7 +10,7 @@ import { UserChannelPermissions } from '../helpers/permissions/list'
 import { getBaseChannelValidators, getFollowConditions } from '../helpers/channels'
 import {generateKeys} from "../federation/crypto";
 import { Follower } from '../models/Follower'
-import {Like} from "typeorm";
+import {Like, In} from "typeorm";
 import { Follow, Unfollow } from '../federation/activities/Follow'
 import { Update, UpdateActor } from '../federation/activities/Create'
 
@@ -58,9 +58,17 @@ async function routes (fastify: ServerInstance, options) {
     fastify.get('/my', {
         preValidation: [fastify.authenticate]
     }, async (req, res) => {
-        let channels = await Channel.paginate({owner: {
-            id: req.user.id
-        }}, req);
+        let channelIdsWithPermissions = (await UserPermissions.find({
+            where: { user: { id: req.user.id} },
+            relations: ['channel']
+        })).map(permission => permission.channel.id);
+        console.log(channelIdsWithPermissions);
+        let channels = await Channel.paginate({
+            where: [
+                {id: In(channelIdsWithPermissions)},
+                {owner: { id: req.user.id }}
+            ]
+        }, req);
         res.send(channels);
     })
 

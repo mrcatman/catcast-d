@@ -11,7 +11,8 @@ const OnResponseFailure = (error: any): Promise<FormErrors | null> => {
   if (errors) {
     return Promise.reject(errors as FormErrors);
   }
-  const errorText = error?.response?.data?.text;
+  const errorText = error?.response?.data?.text || error?.response?.data?.error;
+
   notifyErrors([errorText ? errorText : `Error ${httpStatus}`]);
   return Promise.reject(null);
 };

@@ -37,12 +37,7 @@ async function routes (fastify: ServerInstance, options) {
         if (!user) {
             user = keysStorage.get(req.query.connect_key);
         }
-        if (user) {
-            chatManager.addUser(channelId, user, connection.socket);
-        } else {
-            connection.socket.close();
-            connection.socket.terminate();
-        }
+        chatManager.addUser(channelId, user, connection.socket);
     })
 
 }

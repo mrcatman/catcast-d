@@ -22,7 +22,12 @@
 
     subscribersCount: number = 0;
     isSubscribed: boolean = false;
-    loading: boolean = true
+    loading: boolean = true;
+
+
+    get me() {
+      return this.$accessor.modules.auth.me;
+    }
 
     async load() {
       let data = await ChannelGetSubscribersCount(this.channel.id!);
@@ -36,10 +41,17 @@
     }
 
     async subscribe(): Promise<void> {
+      if (!this.me) {
+        return;
+      }
       this.loading = true;
       let action = this.isSubscribed ? ChannelUnsubscribe : ChannelSubscribe;
-      await action(this.channel.id!);
-      await this.load();
+      try {
+        await action(this.channel.id!);
+        await this.load();
+      } catch (e) {
+        this.loading = false;
+      }
     }
   }
 </script>

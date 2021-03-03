@@ -1,7 +1,7 @@
 <template>
   <div>
     <m-input :warnings="warnings.name" :errors="errors.name" v-model="form.name" :title="$t('channels.forms.name')" />
-    <m-input prepend="https://catcast.tv/" :warnings="warnings.url" :errors="errors.url" v-model="form.url" :title="$t('channels.forms.url')" />
+    <m-input :prepend="'https://' + domain + '/'" :warnings="warnings.url" :errors="errors.url" v-model="form.url" :title="$t('channels.forms.url')" />
     <m-input :warnings="warnings.description" :errors="errors.description" type="textarea" v-model="form.description" :title="$t('channels.forms.description')" />
 
     <m-picture-uploader v-model="form.logo" :title="$t('channels.forms.logo')" />
@@ -27,6 +27,10 @@
 
     fields: any = ['name', 'url', 'description'];
     form = {} as Channel;
+
+    get domain() {
+      return this.$accessor.modules.site?.config?.domain;
+    }
 
     mounted() {
       if (this.channel) {

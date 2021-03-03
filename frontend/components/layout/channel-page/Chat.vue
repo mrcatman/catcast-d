@@ -15,14 +15,14 @@
       </div>
     </div>
     <div class="chat__input">
-      <m-input type="textarea" v-model="form.content" title="" class="chat__input__el" />
+      <m-input v-if="me" type="textarea" v-model="form.content" title="" class="chat__input__el" />
       <div class="chat__input__bottom">
-        <m-button @click="sendMessage()" :disabled="form.content.length === 0">{{$t('common.send')}}</m-button>
+        <m-button v-if="me" @click="sendMessage()" :disabled="form.content.length === 0">{{$t('common.send')}}</m-button>
         <div class="chat__controls">
           <a @click="showUsersList = !showUsersList" class="chat__control" :class="{'chat__control--active': showUsersList}">
             <span class="tooltip">{{$t('chat.users')}}</span>
             <i class="material-icons">supervisor_account</i>
-            <span class="chat__control__number">{{users.length}}</span>
+            <span class="chat__control__number">{{membersCount}}</span>
           </a>
         </div>
       </div>
@@ -35,7 +35,7 @@ import Channel from '~/types/Channel'
 import { Prop } from '~/node_modules/vue-property-decorator'
 import { UserChannelPermissions } from '~/helpers/permissions'
 import { ChatConnect, ChatSendMessage } from '~/api/modules/chat'
-import { ChatUpdateType, ChatUserInfo, ChatMessage } from '~/types/chat'
+import { ChatMessage, ChatUpdateType, ChatUserInfo } from '~/types/chat'
 import { getReadableTime } from '~/helpers/time'
 
 @Component({})
@@ -52,6 +52,11 @@ export default class Chat extends Vue {
   form = {
     content: ''
   };
+  membersCount = 0;
+
+  get me() {
+    return this.$accessor.modules.auth.me;
+  }
 
   beforeDestroy() {
     this.socket.close();
@@ -59,7 +64,7 @@ export default class Chat extends Vue {
 
   async mounted() {
     let connectKey;
-    if (this.channel.domain) {
+    if (this.me && this.channel.domain) {
       const localStorageKeyDataId = 'connect_key_' + this.channel.id;
       if (localStorage.getItem(localStorageKeyDataId)) {
         let keyData = JSON.parse(localStorage.getItem(localStorageKeyDataId));
@@ -70,7 +75,6 @@ export default class Chat extends Vue {
         }
       }
       connectKey = await ChatConnect(this.channel.id!);
-      console.log(connectKey);
       localStorage.setItem(localStorageKeyDataId, JSON.stringify({
         key: connectKey,
         ts: (new Date()).getTime(),
@@ -96,8 +100,17 @@ export default class Chat extends Vue {
       case ChatUpdateType.USERS_LIST:
         this.users = payload.users;
         break;
+      case ChatUpdateType.USER_JOINED:
+        this.users.push(payload);
+        break;
+      case ChatUpdateType.USER_LEFT:
+        this.users = this.users.filter(user => user.login !== payload.login || user.domain !== payload.domain);
+        break;
       case ChatUpdateType.NEW_MESSAGE:
         this.messages.push(payload);
+        break;
+      case ChatUpdateType.MEMBERS_COUNT:
+        this.membersCount = parseInt(payload.count);
         break;
     }
   }
@@ -140,16 +153,20 @@ export default class Chat extends Vue {
   &__input {
     background: var(--box-footer-color);
     padding: .5em;
+
     &__el {
       margin: 0 0 .5em;
     }
+
     &__bottom {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
   }
-
+  &__controls {
+    margin-left: auto;
+  }
  &__control {
    position: relative;
    cursor: pointer;
@@ -199,8 +216,6 @@ export default class Chat extends Vue {
       font-size: 1.0625em;
       margin: 0 0 0 .5em;
     }
-
-
   }
 }
 </style>

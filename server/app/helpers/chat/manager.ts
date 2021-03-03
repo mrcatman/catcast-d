@@ -21,29 +21,14 @@ export type UsersList = {
 export type MessagesList = {
   [key: number]: Array<ChatMessage>;
 }
+
+export type GuestsList = {
+  [key: number]: Array<any>;
+}
 export enum ChatClientUpdateType {
   SEND_MESSAGE = 'SEND_MESSAGE',
 }
 
-function sendUpdate(socket: any, type: String, payload: any = null) {
-  socket.send(JSON.stringify({
-    type,
-    payload
-  }))
-}
-
-function sendUpdateToRoom(users: Array<ChatUserInfo>, type: String, payload: any = null) {
-  users.forEach(user => {
-    if (user.sockets) {
-      user.sockets.forEach(socket => {
-        socket.send(JSON.stringify({
-          type,
-          payload
-        }))
-      })
-    }
-  })
-}
 
 
 function createUserInfoObject(user: User): ChatUserInfo {
@@ -57,53 +42,120 @@ function createUserInfoObject(user: User): ChatUserInfo {
 
 class ChatManager {
   users = {} as UsersList;
+  guests = {} as GuestsList;
   messages = {} as MessagesList;
 
-  addUser(channelId: number, user: User, socket: any) {
-    let userInfo = createUserInfoObject(user);
-    if (!this.users[channelId]) {
-      this.users[channelId] = [];
-    }
-    let existingUser = this.users[channelId].filter(user => user.id === userInfo.id)[0];
-    if (existingUser) {
-      existingUser.sockets.push(socket);
-    } else {
-      userInfo.sockets = [socket];
-      this.users[channelId].push(userInfo);
-    }
-    sendUpdate(socket, 'CONNECTED');
-    sendUpdate(socket, 'MESSAGES_LIST', {messages: this.getMessages(channelId)});
-    sendUpdate(socket, 'USERS_LIST', {users: this.getUsers(channelId)});
+  sendUpdate(socket: any, type: String, payload: any = null) {
+    socket.send(JSON.stringify({
+      type,
+      payload
+    }))
+  }
 
-    socket.on('message', (data) => {
-      data = JSON.parse(data);
+  sendUpdateToRoom(channelId: number, type: String, payload: any = null) {
+    let sockets = this.getSockets(channelId);
 
-      if (data && data.type) {
-        this.handleUpdate(channelId, user, {type: data.type, payload: data.payload});
+    sockets.forEach(socket => {
+      socket.send(JSON.stringify({
+        type,
+        payload
+      }))
+    })
+  }
+
+  addUser(channelId: number, user: User | null, socket: any): ChatUserInfo | null {
+    let userInfo;
+    if (user) {
+      userInfo = createUserInfoObject(user);
+      if (!this.users[channelId]) {
+        this.users[channelId] = [];
       }
-    });
-    socket.on('close', () => {
+      let existingUser = this.users[channelId].filter(user => user.id === userInfo.id)[0];
+      if (existingUser) {
+        existingUser.sockets.push(socket);
+      } else {
+        userInfo.sockets = [socket];
+        this.users[channelId].push(userInfo);
+      }
+      this.sendUpdateToRoom(channelId, 'USER_JOINED', this.getVisibleUserInfo(userInfo));
+    } else {
+      if (!this.guests[channelId]) {
+        this.guests[channelId] = [];
+      }
+      this.guests[channelId].push(socket);
+    }
 
-      this.deleteUser(channelId, user);
-    });
+    this.sendUpdate(socket, 'CONNECTED');
+    this.sendUpdate(socket, 'MESSAGES_LIST', {messages: this.getMessages(channelId)});
 
+    let users = this.getUsers(channelId);
+    this.sendUpdate(socket, 'USERS_LIST', {users});
+    this.sendUpdatedMembersCount(socket, channelId);
+
+    if (user) {
+      socket.on('message', (data) => {
+        data = JSON.parse(data);
+
+        if (data && data.type) {
+          this.handleUpdate(channelId, user, { type: data.type, payload: data.payload });
+        }
+      });
+      socket.on('close', () => {
+        this.deleteUser(channelId, userInfo);
+      });
+    } else {
+      socket.on('close', () => {
+        this.deleteGuest(channelId, socket);
+      });
+    }
     return userInfo;
   }
 
-  deleteUser(channelId: number, user: User) {
-    let userInfo = createUserInfoObject(user);
+  sendUpdatedMembersCount(socket: any, channelId: number): void {
+    let count = (this.users[channelId] ? this.users[channelId].length : 0) + (this.guests[channelId] ? this.guests[channelId].length : 0);
+    this.sendUpdate(socket, 'MEMBERS_COUNT', {count});
+  }
+
+  deleteUser(channelId: number, userInfo: ChatUserInfo): void {
     this.users[channelId] = this.users[channelId].filter(user => user.id !== userInfo.id)
+    this.sendUpdateToRoom(channelId, 'USER_LEFT', this.getVisibleUserInfo(userInfo));
+  }
+
+  deleteGuest(channelId: number, userSocket: any): void {
+    this.guests[channelId] = this.guests[channelId].filter(socket => socket.id !== userSocket.id)
+  }
+
+  getVisibleUserInfo(user: ChatUserInfo): any {
+    return {
+      id: user.id,
+      login: user.login,
+      domain: user.domain,
+      avatar: user.avatar
+    };
   }
 
   getUsers(channelId: number): Array<ChatUserInfo> {
     return this.users[channelId] ? this.users[channelId].map(user => {
-        return {
-            id: user.id,
-            login: user.login,
-            domain: user.domain,
-            avatar: user.avatar
-        }
+        return this.getVisibleUserInfo(user)
     }) : [];
+  }
+
+  getSockets(channelId: number): Array<any> {
+      let sockets = [];
+
+      if (this.users[channelId]) {
+          this.users[channelId].forEach(user => {
+              user.sockets.forEach(socket => {
+                  sockets.push(socket);
+              })
+          })
+      }
+      if (this.guests[channelId]) {
+          this.guests[channelId].forEach(socket => {
+              sockets.push(socket);
+          })
+      }
+      return sockets;
   }
 
   addMessage(channelId: number, user: User, {content}: {content: string}) {
@@ -120,7 +172,7 @@ class ChatManager {
       content
     }
     this.messages[channelId].push(message);
-    sendUpdateToRoom(this.users[channelId], 'NEW_MESSAGE', message);
+    this.sendUpdateToRoom(channelId, 'NEW_MESSAGE', message);
     return message;
   }
 

@@ -18,6 +18,7 @@ import { ChannelsSearch } from '~/api/modules/channels'
 import ChannelThumb from '~/components/layout/thumbs/Channel.vue'
 import Channel from '~/types/Channel'
 import { Watch } from '~/node_modules/vue-property-decorator'
+import Paginator from '~/types/Paginator'
 
 @Component({
   components: {

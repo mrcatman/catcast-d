@@ -4,8 +4,8 @@ import {
     PrimaryGeneratedColumn,
     Column,
     OneToOne,
-    JoinColumn, AfterLoad,
-} from "typeorm";
+    JoinColumn, AfterLoad, ManyToOne,
+} from 'typeorm'
 import { User } from "./User";
 import { Channel } from "./Channel";
 import { BaseModel } from "./BaseModel";
@@ -25,7 +25,7 @@ export class StreamKey extends BaseModel {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
-    @OneToOne(type => Channel)
+    @ManyToOne(type => Channel)
     @JoinColumn({ name: 'channel_id' })
     channel: Channel;
 

@@ -1,13 +1,49 @@
 <template>
-  <div class="dashboard-page__outer">
-    <div class="dashboard-page" v-if="loaded">
-      <nuxt-child :channel="channel"></nuxt-child>
+  <div class="controls-page dashboard">
+    <div class="controls-page__menu">
+      <div class="controls-page__menu__inner">
+        <a target="_blank" class="dashboard__channel" :to="channel.full_url">
+          <div class="dashboard__channel__texts">
+            <div class="dashboard__channel__name">{{channel.name}}</div>
+            <div class="dashboard__channel__ap-handle">{{channel.activitypub_handle}}</div>
+          </div>
+          <div class="dashboard__channel__logo" v-if="channel.logo" :style="{backgroundImage: `url(${channel.logo.full_url})`}"></div>
+        </a>
+        <nuxt-link class="controls-page__menu__item" :to="`/dashboard/${channel.id}/main`">{{$t('dashboard.menu.common')}}</nuxt-link>
+        <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.FULL_ADMIN) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/team`">{{$t('dashboard.menu.team')}}</nuxt-link>
+        <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.BROADCAST) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/broadcast`">{{$t('dashboard.menu.broadcast')}}</nuxt-link>
+      </div>
+    </div>
+    <div class="controls-page__content">
+      <div class="controls-page__content__inner" v-if="loaded">
+        <nuxt-child :channel="channel" :permissions="permissions"></nuxt-child>
+      </div>
     </div>
   </div>
 </template>
 <style lang="scss">
   .dashboard {
+    &__channel {
+      margin: 0 0 1em;
+      font-weight: 300;
+      display: inline-flex;
+      align-items: center;
+      text-align: right;
 
+      &__logo {
+        width: 4em;
+        height: 4em;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        margin: 0 0 0 1em;
+      }
+
+      &__name {
+        font-size: 1.25em;
+        font-weight: 400;
+      }
+    }
   }
 </style>
 <script lang="ts">
@@ -15,12 +51,12 @@
 
   import Channel from '~/types/Channel'
   import { ChannelGetById, ChannelGetPermissions } from '~/api/modules/channels'
-
+  import { UserChannelPermissions } from '~/helpers/permissions'
   @Component({
     middleware: 'auth',
   })
   export default class DashboardContainerPage extends Vue {
-
+    UserChannelPermissions = UserChannelPermissions;
     channel: Channel = {} as Channel;
     permissions: Array<string> = [] as Array<string>;
     error = null;

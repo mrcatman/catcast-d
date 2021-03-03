@@ -19,9 +19,14 @@
   }
 </style>
 <script lang="ts">
+  declare const window: any;
+
   import Vue from 'vue'
   import HeaderNav from '~/components/layout/header/HeaderNav.vue'
   export default Vue.extend({
     components: { HeaderNav },
+    mounted() {
+      window.$t = this.$t; // non-elegant but working
+    }
   })
 </script>
