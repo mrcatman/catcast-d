@@ -23,3 +23,17 @@ export async function CancelOffer(permissions: UserPermissions): Promise<any> {
     }
   }, permissions.channel, [permissions.user]);
 }
+
+export async function Accept(permissions: UserPermissions): Promise<any> {
+  await sendActivityPubRequest('Accept', {
+    id: permissions.user.getActorUrl(`/permissions/${permissions.channel.activitypub_handle}/accept`),
+    object: permissions.toObject()
+  }, permissions.user, [permissions.channel]);
+}
+
+export async function Reject(permissions: UserPermissions): Promise<any> {
+  await sendActivityPubRequest('Reject', {
+    id: permissions.user.getActorUrl(`/permissions/${permissions.channel.activitypub_handle}/reject`),
+    object: permissions.toObject()
+  }, permissions.user, [permissions.channel]);
+}

@@ -38,6 +38,9 @@ export class UserPermissions extends BaseModel {
     @Column({default: false})
     full: boolean;
 
+    @Column({default: false})
+    hidden: boolean;
+
     @Column({nullable: true, default: JSON.stringify([])})
     list_string: string;
 
@@ -47,7 +50,7 @@ export class UserPermissions extends BaseModel {
     @Column({nullable: true})
     comment: string;
 
-    list: Array<keyof UserChannelPermissions>;
+    list: Array<string>;
 
     @AfterLoad()
     setComputed() {
@@ -64,6 +67,7 @@ export class UserPermissions extends BaseModel {
         this.setComputed();
         return {
             type: 'Note',
+            from: this.channel.getActorUrl(),
             to: this.user.getActorUrl(),
             id: this.channel.getActorUrl(`/permissions/${this.user.activitypub_handle}`),
             url: this.channel.getActorUrl(`/permissions/${this.user.activitypub_handle}`),
@@ -73,7 +77,8 @@ export class UserPermissions extends BaseModel {
             catcastObjectType: 'UserPermissions',
             list: this.list,
             full: this.full,
-            comment: this.comment || null
+            comment: this.comment || null,
+            hidden: this.hidden,
         }
     }
 

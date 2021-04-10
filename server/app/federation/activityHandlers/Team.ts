@@ -1,5 +1,4 @@
 import { getActorByUrl } from '../remoteActor'
-import { Follower } from '../../models/Follower'
 import { Channel } from '../../models/Channel'
 import { UserPermissions } from '../../models/UserPermissions'
 import { User } from '../../models/User'
@@ -7,14 +6,14 @@ import { User } from '../../models/User'
 export async function offer(channelUrl: string, object: any): Promise<boolean> {
   let channel = await getActorByUrl(channelUrl) as Channel;
   let user = await getActorByUrl(object.to) as User;
-  if (!channel || !user) {
+  if (!channel || !user || user.domain) {
     return false;
   }
   if (object.catcastObjectType !== 'UserPermissions') {
-    return;
+    return false;
   }
   if (!object.full && (!object.list || object.list.length === 0)) {
-    return;
+    return false;
   }
   let permissions = await UserPermissions.findOne({
     channel: {
@@ -31,7 +30,7 @@ export async function offer(channelUrl: string, object: any): Promise<boolean> {
     permissions.confirmed = false;
   }
   permissions.full = !!object.full;
-  permissions.list = object.list ? object.list : [];
+  permissions.list_string = JSON.stringify(object.list ? object.list : []);
   permissions.comment = object.comment;
   permissions.created_at = object.published;
   await permissions.save();
@@ -42,7 +41,7 @@ export async function offer(channelUrl: string, object: any): Promise<boolean> {
 export async function cancelOffer(channelUrl: string, userUrl: string): Promise<boolean> {
   let channel = await getActorByUrl(channelUrl) as Channel;
   let user = await getActorByUrl(userUrl) as User;
-  if (!channel || !user) {
+  if (!channel || !user || user.domain) {
     return false;
   }
   let permissions = await UserPermissions.findOne({
@@ -55,6 +54,57 @@ export async function cancelOffer(channelUrl: string, userUrl: string): Promise<
   });
   if (permissions) {
     await permissions.remove();
+    return true;
+  }
+  return false;
+}
+
+export async function accept(userUrl: string, object: any): Promise<boolean> {
+  let channel = await getActorByUrl(object.from) as Channel;
+  let user = await getActorByUrl(userUrl) as User;
+  if (!channel || !user || channel.domain) {
+    return false;
+  }
+  if (object.catcastObjectType !== 'UserPermissions') {
+    return false;
+  }
+  let permissions = await UserPermissions.findOne({
+    channel: {
+      id: channel.id
+    },
+    user: {
+      id: user.id
+    }
+  });
+  if (permissions) {
+    permissions.hidden = !!object.hidden;
+    permissions.confirmed = true;
+    await permissions.save();
+    return true;
+  }
+  return false;
+}
+
+export async function reject(userUrl: string, object: any): Promise<boolean> {
+  let channel = await getActorByUrl(object.from) as Channel;
+  let user = await getActorByUrl(userUrl) as User;
+  if (!channel || !user || channel.domain) {
+    return false;
+  }
+  if (object.catcastObjectType !== 'UserPermissions') {
+    return false;
+  }
+  let permissions = await UserPermissions.findOne({
+    channel: {
+      id: channel.id
+    },
+    user: {
+      id: user.id
+    }
+  });
+  if (permissions) {
+    permissions.rejected = true;
+    await permissions.save();
     return true;
   }
   return false;

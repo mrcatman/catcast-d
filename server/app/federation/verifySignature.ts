@@ -32,6 +32,7 @@ export async function verifySignature(headers: any, body: string, path: string):
   if(!keyDomain || !idDomain || keyDomain !== idDomain) {
     return false;
   }
+
   let actor = await User.findOne({key_id: signatureData.keyId});
   if(!actor) {
     try {

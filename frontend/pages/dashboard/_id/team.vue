@@ -6,11 +6,11 @@
             <m-autocomplete :placeholder="$t('dashboard.team.search')" class="dashboard__team__user-input" v-model="form.user" :fn="findUsers" :errors="errors.user" />
             <m-button class="dashboard__team__form__add" :disabled="form.user.length === 0" @click="sendForm" :loading="formIsSubmitting">{{$t('common.add')}}</m-button>
           </div>
-          <div class="dashboard__team__form__full">
+          <div class="dashboard__team__form__full" v-show="userIsLocal">
             <m-checkbox v-model="form.full" :title="$t('permissions.full')"></m-checkbox>
           </div>
           <div class="dashboard__team__form__list" v-show="!form.full">
-            <m-checkbox v-for="permission in permissions" :key="permission" v-model="form.permissions[permission]" :title="$t('permissions.list.' + permission.toLowerCase())"></m-checkbox>
+            <m-checkbox v-show="remoteAvailable.indexOf(permission) !== -1 || userIsLocal" v-for="permission in permissions" :key="permission" v-model="form.permissions[permission]" :title="$t('permissions.list.' + permission.toLowerCase())"></m-checkbox>
           </div>
           <m-input :title="$t('dashboard.team.comment')" v-model="form.comment" />
         </div>
@@ -32,9 +32,7 @@
               <m-list-item-title>
                 {{member.user.activitypub_handle}}
               </m-list-item-title>
-              <m-list-item-sub v-if="member.comment">
-                {{member.comment}}
-              </m-list-item-sub>
+
               <m-list-item-sub v-if="!member.confirmed">
                 {{$t('dashboard.team.waiting_for_confirmation')}}
               </m-list-item-sub>
@@ -100,6 +98,7 @@ export default class ChannelTeamPage extends BaseFormComponent {
   @Prop() readonly channel!: Channel
 
   permissions = [] as Array<String>;
+  remoteAvailable = [] as Array<String>;
   owner: User | null = null;
   team: Array<any> = [];
   form = {
@@ -107,6 +106,10 @@ export default class ChannelTeamPage extends BaseFormComponent {
     comment: '',
     permissions: {},
     full: false
+  }
+
+  get userIsLocal() {
+    return this.form.user.indexOf('@') === -1;
   }
 
   async findUsers(query: string) {
@@ -125,7 +128,9 @@ export default class ChannelTeamPage extends BaseFormComponent {
   }
 
   async fetch() {
-    this.permissions = await PermissionsGetList();
+    let data = await PermissionsGetList();
+    this.permissions = data.permissions;
+    this.remoteAvailable = data.remote;
     let teamData = await ChannelGetTeam(this.channel.id!);
     this.owner = teamData.owner;
     this.team = teamData.team;

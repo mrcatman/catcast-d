@@ -33,7 +33,6 @@ export default {
       padding: .5em .75em;
       border-bottom: 1px solid rgba(255,255,255,.1);
       background: var(--box-header-color);
-      color: var(--active-color);
       &:empty {
         display: none;
       }

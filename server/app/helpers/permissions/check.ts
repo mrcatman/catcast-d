@@ -11,6 +11,8 @@ export async function getPermissions(user: User, channel: Channel): Promise<Arra
     } else {
         let permissions = await UserPermissions.findOne({
             where: {
+                confirmed: true,
+                rejected: false,
                 channel: {
                     id: channel.id
                 },

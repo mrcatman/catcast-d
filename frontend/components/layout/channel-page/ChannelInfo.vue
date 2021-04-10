@@ -8,6 +8,12 @@
         <div class="channel-info__texts__top">
           <h1 class="channel-info__stream-name" v-if="channelData.is_online && channelData.current_stream">{{channelData.current_stream.name}}</h1>
           <h2 class="channel-info__name">{{channelData.name}}<m-button v-if="canEditStreamInfo" @click="streamInfoModalVisible = true" class="channel-info__edit-stream" flat icon="edit"></m-button></h2>
+          <div class="channel-info__owner" v-if="channelData.owner">{{$t('channels.created_by')}}
+            <UserLink class="channel-info__owner__link" :user="channelData.owner">
+              <div  class="channel-info__owner__avatar" v-if="channelData.owner.avatar" :style="{backgroundImage: `url(${channelData.owner.avatar.full_url})`}"></div>
+              {{channelData.owner.activitypub_handle}}
+            </UserLink>
+          </div>
           <a v-if="channelData.domain" class="channel-info__remote-url" target="_blank" :href="`https://${channelData.domain}/${channelData.url}`">{{channelData.url}}@{{channelData.domain}}</a>
         </div>
         <SubscribeBlock :channel="channel" />
@@ -71,6 +77,27 @@
         padding: 1em;
       }
     }
+    &__owner {
+      display: flex;
+      align-items: center;
+      font-size: .9375em;
+
+      &__link {
+        margin: 0 0 0 .5em;
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+
+        &__avatar {
+          width: 1.75em;
+          height: 1.75em;
+          background-size: contain;
+          background-position: center;
+          background-repeat: no-repeat;
+          margin: 0 .25em 0 0;
+        }
+      }
+    }
   }
 </style>
 <script lang="ts">
@@ -80,9 +107,10 @@ import { Prop } from '~/node_modules/vue-property-decorator'
 import SubscribeBlock from '~/components/layout/channel-page/SubscribeBlock.vue'
 import { UserChannelPermissions } from '~/helpers/permissions'
 import StreamInfoModal from '~/components/layout/channel-page/StreamInfoModal.vue'
+import UserLink from '~/components/layout/UserLink.vue'
 
   @Component({
-    components: { StreamInfoModal, SubscribeBlock },
+    components: { StreamInfoModal, SubscribeBlock, UserLink },
   })
   export default class ChannelInfoBlock extends Vue {
     streamInfoModalVisible: boolean = false;

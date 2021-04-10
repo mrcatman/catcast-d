@@ -18,7 +18,7 @@ const OnResponseFailure = (error: any): Promise<FormErrors | null> => {
 };
 
 const instance: Readonly<AxiosInstance> = axios.create({
-  baseURL: 'http://localhost:4002/api/',
+  baseURL: localStorage.getItem('backend_url') ? localStorage.getItem('backend_url')! :  'http://localhost:4002/api/',
   timeout: 10000,
   withCredentials: true
 });

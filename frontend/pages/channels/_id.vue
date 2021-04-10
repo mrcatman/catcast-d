@@ -7,13 +7,14 @@
   import Channel from '~/types/Channel'
   import { ChannelGetById, ChannelGetByUrl, ChannelGetPermissions } from '~/api/modules/channels'
   import ChannelPage from '~/components/pages/ChannelPage.vue'
+  import UserPermissions from '~/types/UserPermissions'
 
   @Component({
     components: { ChannelPage },
   })
   export default class ChannelUrlPage extends Vue {
     channel: Channel = {} as Channel;
-    permissions: [];
+    permissions: UserPermissions = [];
     error = null;
     loaded: boolean = false
 

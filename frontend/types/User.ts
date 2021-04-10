@@ -1,8 +1,8 @@
 import Picture from '~/types/Picture'
 import { Role } from '~/helpers/roles'
 
-
 export default interface User {
+  id: number;
   email: string;
   login: string;
   about: string;

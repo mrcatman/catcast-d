@@ -90,6 +90,10 @@ export class User extends BaseModel {
     @Column({nullable: true})
     key_id: string;
 
+    @Column({nullable: true})
+    web_url: string;
+
+
     getJWTPayload() {
         return {
             id: this.id,

@@ -134,6 +134,7 @@ export default {
       },
       "user":
       {
+
         "_errors":
         {
           "username_taken": "Это имя пользователя уже занято",
@@ -154,6 +155,7 @@ export default {
       }
     },
     "channels": {
+      "created_by": "Создано: ",
       "forms": {
         "name": "Название вашего канала",
         "url": "URL",
@@ -178,7 +180,12 @@ export default {
       "name": "Название стрима",
       "description": "Описание стрима"
     },
-
+    "users": {
+      "teams": {
+        "_title": "Каналы, в команде которых состоит пользователь",
+        "owner": "Создатель канала"
+      },
+    },
     "comments":
     {
       "title": "Комментарии",
@@ -213,7 +220,10 @@ export default {
     {
       "subscribe": "Подписаться",
       "unsubscribe": "Отписаться",
-      "show_all": "Показать всех"
+      "show_all": "Показать всех",
+      "errors": {
+        "cannot_subscribe_to_self": "Ошибка: невозможно подписаться на себя"
+      }
     },
     "search":
     {
@@ -1645,6 +1655,7 @@ export default {
       "bots": "Боты",
       "message_deleted": "Сообщение удалено",
       "disabled": "Чат выключен",
+      "settings": "Настройки",
       "you_are_banned": "Вы забанены в этом чате",
       "your_ip_is_banned": "Ваш IP забанен в этом чате",
       "your_account_is_banned": "Ваш аккаунт забанен в этом чате",
@@ -2698,7 +2709,6 @@ export default {
     "activity_feed": "Лента активности",
     "like_button": "Мне нравится",
     "success": "Успех!",
-    "users": "Пользователи",
     "onsite": "На сайте",
     "was_online": "Был(а) в сети",
     "was_online_m": "Был в сети",

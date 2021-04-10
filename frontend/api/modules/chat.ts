@@ -15,7 +15,10 @@ export const ChatConnect = async(id: number): Promise<string> => {
   return res.data.data.connect_key;
 };
 
-
 export const ChatSendMessage = (socket: WebSocket, message: Partial<ChatMessage>): void => {
   sendUpdate(socket, 'SEND_MESSAGE', message);
+};
+
+export const ChatDeleteMessage = (socket: WebSocket, message: Partial<ChatMessage>): void => {
+  sendUpdate(socket, 'DELETE_MESSAGE', message);
 };

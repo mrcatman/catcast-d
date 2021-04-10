@@ -8,7 +8,7 @@
       <m-popup-menu class="popup-menu-bottom popup-menu-bottom-left">
         <m-popup-menu-item  v-if="isAdmin" to="/admin">{{$t('auth.menu.admin_panel')}}</m-popup-menu-item>
         <m-popup-menu-item to="/dashboard">{{$t('auth.menu.dashboard')}}</m-popup-menu-item>
-        <m-popup-menu-item :to="`/user/${id}`" >{{$t('auth.menu.profile')}}</m-popup-menu-item>
+        <m-popup-menu-item :to="`/users/${id}`" >{{$t('auth.menu.profile')}}</m-popup-menu-item>
         <m-popup-menu-item to="/settings/profile">{{$t('auth.menu.settings')}}</m-popup-menu-item>
         <m-popup-menu-item @click="logout()" >{{$t('auth.menu.logout')}}</m-popup-menu-item>
       </m-popup-menu>

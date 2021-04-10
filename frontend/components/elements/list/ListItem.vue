@@ -5,6 +5,7 @@
 </template>
 <style lang="scss">
   .list-item {
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -17,6 +18,18 @@
     position: relative;
 
     &--link {
+      &:hover {
+        background: rgba(255, 255, 255, .05);
+      }
+    }
+    &__inner-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex: 1;
+      text-decoration: none;
+      margin: -.875em;
+      padding: .875em;
       &:hover {
         background: rgba(255, 255, 255, .05);
       }

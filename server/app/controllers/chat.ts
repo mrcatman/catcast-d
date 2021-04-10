@@ -28,16 +28,16 @@ async function routes (fastify: ServerInstance, options) {
         }
     })
 
-    fastify.get('/:id/realtime', {
+    fastify.get('/:url/realtime', {
         preValidation: [fastify.authenticate_optional],
         websocket: true
-    }, (connection, req) => {
-        let channelId = parseInt(req.params.id);
+    }, async (connection, req) => {
+        let channel = await Channel.findOneOrFail({url: req.params.url}, {relations: ['owner']});
         let user = req.user;
         if (!user) {
             user = keysStorage.get(req.query.connect_key);
         }
-        chatManager.addUser(channelId, user, connection.socket);
+        await chatManager.addUser(channel, user, connection.socket);
     })
 
 }

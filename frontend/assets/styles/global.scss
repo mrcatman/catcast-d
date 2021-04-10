@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Montserrat:200,300,500,700,900");
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;500;700&display=swap');
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import url("https://use.fontawesome.com/releases/v5.5.0/css/all.css");
 @import url("https://use.fontawesome.com/releases/v5.5.0/css/brands.css");
@@ -9,7 +9,7 @@
 
 html {
   height: 100vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Raleway', sans-serif;
   --shadow-big: 0px 0px rgba(0, 0, 0, 0);
   --link-color: #fff;
   --main-bg: #0a151d;
@@ -22,7 +22,7 @@ html {
   --text-color: #fff;
   --text-sub-color: #ddd;
   --border-color: #ddd;
-  --box-header-color: #ffffff;
+  --box-header-color: #020f17;
   --box-footer-color: #041019;
   --box-color: #0e1e27;
   --menu-color: #0b3658;
@@ -41,10 +41,9 @@ html {
   --negative-color: #d04310;
   --disabled-color: #777;
 }
-body{
+body {
   margin: 0;
   padding: 0;
-  font-family: Montserrat, sans-serif;
   font-weight: 300;
   font-size: 16px;
   overflow: hidden;
@@ -52,6 +51,7 @@ body{
   scrollbar-width: thin;
   background: var(--main-bg);
   color: var(--text-color);
+  letter-spacing: .2px;
   @media screen and (max-width: 1610px) {
     & {
       font-size: 16px;
@@ -117,4 +117,8 @@ a{
 }
 .page-form {
   margin: 1em auto;
+}
+
+.material-icons {
+  font-size: 1.5em;
 }

@@ -3,7 +3,7 @@ import { follow, unfollow } from './activityHandlers/Follow'
 import { getActorByUrl } from './remoteActor'
 import { create, update } from './activityHandlers/Create'
 import { connect } from './activityHandlers/Chat'
-import { cancelOffer, offer } from './activityHandlers/Team'
+import { accept, cancelOffer, offer, reject } from './activityHandlers/Team'
 
 export async function handleInbox(headers, body, path) {
   if (await verifySignature(headers, body, path)) {
@@ -60,8 +60,15 @@ async function handleInboxActivity(data) {
     case 'Offer':
       status = await offer(data.actor, data.object);
       break;
+    case 'Accept':
+      status = await accept(data.actor, data.object);
+      break;
+    case 'Reject':
+      status = await reject(data.actor, data.object);
+      break;
     default:
       console.log(`Unknown activity type: ${data.type}`);
+      console.log(data);
       break;
   }
   return status;

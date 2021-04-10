@@ -42,7 +42,7 @@ export default class IndexPage extends Vue {
     box-shadow: .5em .5em 1.75em var(--active-color);
 
     &__text {
-      margin: -1em 0;
+
     }
   }
 }

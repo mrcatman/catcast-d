@@ -5,9 +5,11 @@ import {ServerInstance} from "../types";
 
 import { UserPermissions } from '../models/UserPermissions'
 import { checkPermissionsOrFail, getPermissions } from '../helpers/permissions/check'
-import { UserChannelPermissions } from '../helpers/permissions/list'
+import { RemoteAvailableChannelPermissions, UserChannelPermissions } from '../helpers/permissions/list'
 
-import { getBaseChannelValidators, getFollowConditions } from '../helpers/channels'
+import { getBaseChannelValidators } from '../helpers/channels'
+import {getFollowConditionsChannel} from '../helpers/follow'
+
 import {generateKeys} from "../federation/crypto";
 import { Follower } from '../models/Follower'
 import {Like, In} from "typeorm";
@@ -128,14 +130,14 @@ async function routes (fastify: ServerInstance, options) {
 
     fastify.get('/:id', async (req, res) => {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {
-            relations: ['current_stream']
+            relations: ['current_stream', 'owner']
         });
         res.send({channel});
     });
 
     fastify.get('/get-by-url/:url', async (req, res) => {
         let channel = await Channel.findOneOrFail({url: req.params.url}, {
-            relations: ['current_stream']
+            relations: ['current_stream', 'owner']
         });
         res.send({channel});
     });
@@ -166,7 +168,7 @@ async function routes (fastify: ServerInstance, options) {
         })
         if (!subscription) {
             subscription = new Follower();
-            subscription.fill(getFollowConditions(req.user, channel));
+            subscription.fill(getFollowConditionsChannel(req.user, channel));
             await subscription.save();
         }
         if (channel.domain) {
@@ -182,7 +184,7 @@ async function routes (fastify: ServerInstance, options) {
     }, async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({id: req.params.id});
 
-        let subscription = await Follower.findOne(getFollowConditions(req.user, channel))
+        let subscription = await Follower.findOne(getFollowConditionsChannel(req.user, channel))
         if (subscription) {
             await subscription.remove();
         }
@@ -206,7 +208,7 @@ async function routes (fastify: ServerInstance, options) {
         if (channel.followers_count) {
             subscribers_count+= channel.followers_count;
         }
-        let is_subscribed = req.user ? !!(await Follower.findOne(getFollowConditions(req.user, channel))) : false;
+        let is_subscribed = req.user ? !!(await Follower.findOne(getFollowConditionsChannel(req.user, channel))) : false;
         res.send({
             subscribers_count,
             is_subscribed
@@ -250,6 +252,7 @@ async function routes (fastify: ServerInstance, options) {
 
     fastify.get('/:id/team', async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        await checkPermissionsOrFail(req.user, channel, [], true);
         let team = (await UserPermissions.find({
             where: {
                 channel: {
@@ -331,9 +334,13 @@ async function routes (fastify: ServerInstance, options) {
             permissions.channel = channel;
         }
         let permissionsList = data.permissions.filter(permission => Object.keys(UserChannelPermissions).indexOf(permission) !== -1);
+        if (user.domain) {
+            permissionsList = permissionsList.filter(permission => RemoteAvailableChannelPermissions.indexOf(permission) !== -1);
+        }
         permissions.fill({
-            full: data.full,
-            list_string: JSON.stringify(permissionsList)
+            full: !user.domain ? data.full : false,
+            list_string: JSON.stringify(permissionsList),
+            comment: data.comment
         })
         await permissions.save();
         Offer(permissions);
@@ -358,6 +365,27 @@ async function routes (fastify: ServerInstance, options) {
         await permissions.remove();
         CancelOffer(permissions);
         return true;
+    })
+
+    fastify.get('/:id/team/public', async (req, res): Promise<any> => {
+        let team = (await UserPermissions.find({
+            where: {
+                channel: {
+                    id: req.params.id
+                },
+                confirmed: true,
+                hidden: false
+            },
+            relations: ['user']
+        })).filter(permission => permission.user).map(permission => {
+            return {
+                user: permission.user,
+                comment: permission.comment
+            }
+        });
+        res.send({
+            team,
+        });
     })
 
 }

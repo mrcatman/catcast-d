@@ -83,8 +83,20 @@ export async function getActorByUrl(url: string): Promise<Channel | User | null>
       });
     }
   } else {
-    let remoteActor = await getRemoteActor(url);
     let actor;
+    actor = await Channel.findOne({
+      actor_id: url
+    });
+    if (actor) {
+      return actor;
+    }
+    actor = await User.findOne({
+      actor_id: url
+    });
+    if (actor) {
+      return actor;
+    }
+    let remoteActor = await getRemoteActor(url);
     if (remoteActor.catcastActorType === 'Channel') {
       actor = await Channel.findOne({
         url: remoteActor.name,
@@ -107,6 +119,7 @@ export async function getActorByUrl(url: string): Promise<Channel | User | null>
       actor.key_id = remoteActor.publicKey.id;
       await fetchCommonInfo(remoteActor, actor);
     }
+
     return actor;
   }
 }
@@ -118,7 +131,13 @@ export async function getActorByWebfinger(domain: string, resource: string): Pro
   if (res.links && res.links.length > 0) {
     let link = res.links.filter(link => link.rel === 'self')[0];
     if (link) {
-      return await getActorByUrl(link.href);
+      let actor = await getActorByUrl(link.href);
+      let profilePage = res.links.filter(link => link.rel === 'http://webfinger.net/rel/profile-page')[0];
+      if (profilePage) {
+        actor.web_url = profilePage.href;
+        await actor.save();
+      }
+      return actor;
     }
   }
   return null;

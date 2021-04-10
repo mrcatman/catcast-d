@@ -26,7 +26,7 @@ import EditableItemsList from '@/components/elements/EditableItemsList'
 import Editor from '@/components/elements/Editor'
 import Pager from '@/components/elements/Pager'
 import Autocomplete from '@/components/elements/Autocomplete'
-
+import Colorpicker from '@/components/elements/Colorpicker'
 
 Vue.component('m-button', Button)
 Vue.component('m-modal', Modal)
@@ -46,6 +46,7 @@ Vue.component('m-popup-menu-item', PopupMenuItem)
 Vue.component('m-editable-items-list', EditableItemsList)
 Vue.component('m-pager', Pager)
 Vue.component('m-autocomplete', Autocomplete)
+Vue.component('m-colorpicker', Colorpicker)
 
 Vue.component('m-list', List)
 Vue.component('m-list-item', ListItem)

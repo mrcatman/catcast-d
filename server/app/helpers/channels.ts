@@ -17,12 +17,4 @@ export function getBaseChannelValidators(): ValidationRules {
     };
 }
 
-export function getFollowConditions(user: User, channel: Channel) {
-    return {
-        follower: {
-            id: user.id
-        },
-        actor_id: channel.id,
-        actor_type: Follower.TYPE_CHANNEL
-    }
-}
+

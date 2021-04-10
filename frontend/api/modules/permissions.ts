@@ -3,12 +3,17 @@ import UserPermissions from '~/types/UserPermissions'
 
 const BASE_PATH = "permissions";
 
-export const PermissionsGetList = async(): Promise<Array<String>> => {
+interface PermissionsResponse {
+  permissions: Array<string>,
+  remote: Array<string>,
+}
+export const PermissionsGetList = async(): Promise<PermissionsResponse> => {
   const res = await api.get(`${BASE_PATH}`);
-  return res.data.permissions;
+  return res.data as PermissionsResponse;
 };
 
-export const PermissionsGetMy = async(): Promise<Array<UserPermissions>> => {
+
+export const PermissionsGetMy = async(): Promise<PermissionsResponse> => {
   const res = await api.get(`${BASE_PATH}/my`);
   return res.data.permissions;
 };

@@ -13,12 +13,15 @@
 <script lang="ts">
   import { Component, Vue } from 'nuxt-property-decorator'
   import Channel from '~/types/Channel'
+  import User from '~/types/User'
   import { ChannelGetSubscribersCount, ChannelSubscribe, ChannelUnsubscribe } from '~/api/modules/channels'
+  import { UserGetSubscribersCount, UserSubscribe, UserUnsubscribe } from '~/api/modules/users'
   import { Prop } from '~/node_modules/vue-property-decorator'
 
   @Component({})
   export default class SubscribeBlock extends Vue {
     @Prop({default: null}) readonly channel!: Channel
+    @Prop({default: null}) readonly user!: User
 
     subscribersCount: number = 0;
     isSubscribed: boolean = false;
@@ -30,7 +33,7 @@
     }
 
     async load() {
-      let data = await ChannelGetSubscribersCount(this.channel.id!);
+       let data = await (this.channel ? ChannelGetSubscribersCount(this.channel.id!) : UserGetSubscribersCount(this.user.id!));
       this.subscribersCount = data.subscribers_count;
       this.isSubscribed = data.is_subscribed;
       this.loading = false;
@@ -45,9 +48,9 @@
         return;
       }
       this.loading = true;
-      let action = this.isSubscribed ? ChannelUnsubscribe : ChannelSubscribe;
+      let action = this.channel ? (this.isSubscribed ? ChannelUnsubscribe : ChannelSubscribe) : (this.isSubscribed ? UserUnsubscribe : UserSubscribe);
       try {
-        await action(this.channel.id!);
+        await action(this.channel ? this.channel.id! : this.user.id!);
         await this.load();
       } catch (e) {
         this.loading = false;
