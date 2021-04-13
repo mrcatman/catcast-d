@@ -7,7 +7,7 @@
 </template>
 <style lang="scss">
   .list {
-    background: rgba(0,0,0,.1);
+    background: rgba(0,0,0,.25);
     flex: 1;
     position: relative;
     display: flex;

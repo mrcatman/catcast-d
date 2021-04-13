@@ -7,7 +7,9 @@ export enum ChatUpdateType {
   USER_LEFT = 'USER_LEFT',
   MEMBERS_COUNT = 'MEMBERS_COUNT',
   MESSAGE_DELETED = 'MESSAGE_DELETED',
-  CHAT_SETTINGS = 'CHAT_SETTINGS'
+  CHAT_SETTINGS = 'CHAT_SETTINGS',
+  SET_USER_COLOR = 'SET_USER_COLOR',
+  CHAT_CLEARED = 'CHAT_CLEARED',
 }
 export type ChatUserInfo = {
   id: number;
@@ -17,6 +19,7 @@ export type ChatUserInfo = {
   isAdmin?: boolean;
   isModerator?: boolean;
   webUrl?: boolean;
+  color?: string;
 }
 
 export type ChatMessage = {
@@ -24,6 +27,7 @@ export type ChatMessage = {
   timestamp: number,
   author: ChatUserInfo,
   content: string,
+  color?: string;
 }
 
 export type ChatSettings = {

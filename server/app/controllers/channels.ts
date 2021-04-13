@@ -64,10 +64,10 @@ async function routes (fastify: ServerInstance, options) {
             where: { user: { id: req.user.id} },
             relations: ['channel']
         })).map(permission => permission.channel.id);
-        console.log(channelIdsWithPermissions);
         let channels = await Channel.paginate({
             where: [
                 {id: In(channelIdsWithPermissions)},
+                {domain: null},
                 {owner: { id: req.user.id }}
             ]
         }, req);
@@ -252,7 +252,7 @@ async function routes (fastify: ServerInstance, options) {
 
     fastify.get('/:id/team', async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
-        await checkPermissionsOrFail(req.user, channel, [], true);
+        //await checkPermissionsOrFail(req.user, channel, [], true);
         let team = (await UserPermissions.find({
             where: {
                 channel: {

@@ -14,13 +14,15 @@ export type ChatUserInfo = {
   isAdmin: boolean;
   roleName?: string;
   webUrl?: string;
+  color?: string;
 }
 
 export type ChatMessageInfo = {
-  id: number,
-  timestamp: number,
-  author: ChatUserInfo,
-  content: String,
+  id: number;
+  timestamp: number;
+  author: ChatUserInfo;
+  content: String;
+  color?: String;
 }
 
 export type UsersList = {
@@ -37,7 +39,10 @@ export type GuestsList = {
 }
 export enum ChatClientUpdateType {
   SEND_MESSAGE = 'SEND_MESSAGE',
-  DELETE_MESSAGE = 'DELETE_MESSAGE'
+  DELETE_MESSAGE = 'DELETE_MESSAGE',
+  SET_COLOR = 'SET_COLOR',
+  UPDATE_SETTINGS = 'UPDATE_SETTINGS',
+  CLEAR_CHAT = 'CLEAR_CHAT'
 }
 
 
@@ -79,7 +84,7 @@ class ChatManager {
       isModerator,
       isAdmin,
       roleName,
-      webUrl
+      webUrl,
     }
   }
 
@@ -128,7 +133,7 @@ class ChatManager {
 
     let users = this.getUsers(channelId);
     this.sendUpdate(socket, 'USERS_LIST', {users});
-    this.sendUpdatedMembersCount(socket, channelId);
+    this.sendMembersCount(channelId);
 
     if (user) {
       socket.on('message', (data) => {
@@ -149,18 +154,21 @@ class ChatManager {
     return userInfo;
   }
 
-  sendUpdatedMembersCount(socket: any, channelId: number): void {
+  sendMembersCount(channelId: number): void {
     let count = (this.users[channelId] ? this.users[channelId].length : 0) + (this.guests[channelId] ? this.guests[channelId].length : 0);
-    this.sendUpdate(socket, 'MEMBERS_COUNT', {count});
+    this.sendUpdateToRoom(channelId, 'MEMBERS_COUNT', {count});
   }
 
   deleteUser(channelId: number, userInfo: ChatUserInfo): void {
     this.users[channelId] = this.users[channelId].filter(user => user.id !== userInfo.id)
     this.sendUpdateToRoom(channelId, 'USER_LEFT', {user: this.getVisibleUserInfo(userInfo)});
+    this.sendMembersCount(channelId);
   }
 
   deleteGuest(channelId: number, userSocket: any): void {
-    this.guests[channelId] = this.guests[channelId].filter(socket => socket.id !== userSocket.id)
+    this.guests[channelId] = this.guests[channelId].filter(socket => socket.id !== userSocket.id);
+    console.log('guests count', this.guests[channelId]);
+    this.sendMembersCount(channelId);
   }
 
   getVisibleUserInfo(user: ChatUserInfo): any {
@@ -172,7 +180,8 @@ class ChatManager {
       isModerator: user.isModerator,
       isAdmin: user.isAdmin,
       roleName: user.roleName,
-      webUrl: user.webUrl
+      webUrl: user.webUrl,
+      color: user.color
     };
   }
 
@@ -220,13 +229,19 @@ class ChatManager {
   }
 
   async addMessage(channel: Channel, user: ChatUserInfo, {content}: {content: string}) {
+    let settingsInstance = await this.getSettings(channel.id);
+    if (settingsInstance.disabled) {
+      return;
+    }
     const date = new Date();
+    const color = user.color || '#fff';
     const timestamp = date.getTime();
     let messageInDb = new ChatMessage();
     messageInDb.fill({
       author_id: user.id,
       channel_id: channel.id,
       content,
+      color,
       created_at: date
     })
     await messageInDb.save();
@@ -234,7 +249,8 @@ class ChatManager {
       id: messageInDb.id,
       timestamp,
       author: this.getVisibleUserInfo(user),
-      content
+      content,
+      color,
     }
     this.messages[channel.id].push(message);
     this.sendUpdateToRoom(channel.id, 'NEW_MESSAGE', {message});
@@ -300,12 +316,48 @@ class ChatManager {
           id: message.id,
           timestamp: message.created_at.getTime(),
           author: this.getVisibleUserInfo(author),
-          content: message.content
+          content: message.content,
+          color: message.color,
         } as ChatMessageInfo;
         this.messages[channel.id].push(messageInfo);
       }
     }
     return this.messages[channel.id];
+  }
+
+  setUserColor(channel: Channel, user: ChatUserInfo, color: string) {
+    user.color = color;
+    this.users[channel.id].forEach(userInfo => {
+      if (user.id === userInfo.id) {
+        userInfo.color = color;
+      }
+    })
+    this.sendUpdateToRoom(channel.id, 'SET_USER_COLOR', {
+      id: user.id,
+      color: color
+    });
+  }
+
+  async clearChat(channel: Channel, user: ChatUserInfo) {
+    if (!user.isModerator && !user.isAdmin) {
+      return;
+    }
+    //this.messages[channel.id] = [];
+   // await ChatMessage.delete({
+   //   channel_id: channel.id
+   // })
+    this.sendUpdateToRoom(channel.id, 'CHAT_CLEARED');
+  }
+
+  async updateSettings(channel: Channel, user: ChatUserInfo, settings: Partial<ChatSettings>) {
+    if (!user.isModerator && !user.isAdmin) {
+      return;
+    }
+    let settingsInstance = await this.getSettings(channel.id);
+    settingsInstance.motd = settings.motd || '';
+    settingsInstance.disabled = !!settings.disabled;
+    await settingsInstance.save();
+    this.sendUpdateToRoom(channel.id, 'CHAT_SETTINGS', {settings: settingsInstance});
   }
 
   handleUpdate(channel: Channel, user: ChatUserInfo, {type, payload}: {type: ChatClientUpdateType, payload: any}) {
@@ -315,6 +367,15 @@ class ChatManager {
         break;
       case ChatClientUpdateType.DELETE_MESSAGE:
         this.deleteMessage(channel, user, payload);
+        break;
+      case ChatClientUpdateType.SET_COLOR:
+        this.setUserColor(channel, user, payload);
+        break;
+      case ChatClientUpdateType.CLEAR_CHAT:
+        this.clearChat(channel, user);
+        break;
+      case ChatClientUpdateType.UPDATE_SETTINGS:
+        this.updateSettings(channel, user, payload);
         break;
       default:
         break;

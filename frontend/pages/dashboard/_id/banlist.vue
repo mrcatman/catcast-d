@@ -1,31 +1,13 @@
 <template>
   <div class="container page-form dashboard__team">
-    <h1 class="controls-page__heading">{{$t('dashboard.team._title')}}</h1>
+    <h1 class="controls-page__heading">{{$t('dashboard.banlist._title')}}</h1>
         <div class="dashboard__team__form">
           <div class="dashboard__team__form__top">
-            <m-autocomplete :placeholder="$t('dashboard.team.search')" class="dashboard__team__user-input" v-model="form.user" :fn="findUsers" :errors="errors.user" />
+            <m-autocomplete :placeholder="$t('dashboard.banlist.search')" class="dashboard__team__user-input" v-model="form.user" :fn="findUsers" :errors="errors.user" />
             <m-button class="dashboard__team__form__add" :disabled="form.user.length === 0" @click="sendForm" :loading="formIsSubmitting">{{$t('common.add')}}</m-button>
           </div>
-          <div class="dashboard__team__form__full" v-show="userIsLocal">
-            <m-checkbox v-model="form.full" :title="$t('permissions.full')"></m-checkbox>
-          </div>
-          <div class="dashboard__team__form__list" v-show="!form.full">
-            <m-checkbox v-show="remoteAvailable.indexOf(permission) !== -1 || userIsLocal" v-for="permission in permissions" :key="permission" v-model="form.permissions[permission]" :title="$t('permissions.list.' + permission.toLowerCase())"></m-checkbox>
-          </div>
-          <m-input :title="$t('dashboard.team.comment')" v-model="form.comment" />
         </div>
         <m-list>
-          <m-list-item v-if="owner">
-            <m-list-item-picture v-if="owner.avatar" :picture="owner.avatar" />
-            <m-list-item-texts>
-              <m-list-item-title>
-                {{owner.activitypub_handle}}
-              </m-list-item-title>
-              <m-list-item-sub>
-                {{$t('dashboard.team.owner')}}
-              </m-list-item-sub>
-            </m-list-item-texts>
-          </m-list-item>
           <m-list-item v-for="member in team" :key="member.id" :transparent="!member.confirmed">
             <m-list-item-picture v-if="member.user.avatar" :picture="member.user.avatar" />
             <m-list-item-texts>

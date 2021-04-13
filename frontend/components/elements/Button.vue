@@ -39,6 +39,7 @@
 		cursor: default;
 		background: var(--disabled-color);
     box-shadow: none;
+    opacity: .5;
 		&:hover{
 			filter: brightness(1);
 			box-shadow: none;

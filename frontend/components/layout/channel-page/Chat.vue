@@ -1,17 +1,52 @@
 <template>
   <div class="chat">
-    <div class="chat__users" v-show="showUsersList">
-      <div class="chat__users__title">{{$t('chat.users')}}</div>
-      <div class="chat__user" v-for="user in users">
-        <span class="chat__user__avatar" v-if="user.avatar" :style="{backgroundImage: `url(${user.avatar})`}"></span>
-        <span class="chat__user__name">{{user.login}}</span>
+
+    <div class="chat__block chat__users" v-show="showUsersList">
+      <div class="chat__block__title">
+        {{$t('chat.users')}}
+        <m-button @click="showUsersList = false" icononly rounded flat icon="close" />
       </div>
+
+      <a :target="user.webUrl ? '_blank' : null" :href="user.webUrl"  class="chat__user" v-for="user in users">
+        <span class="chat__user__avatar" v-if="user.avatar" :style="{backgroundImage: `url(${user.avatar})`}"></span>
+        <span class="chat__user__name" :style="{color: user.color}">{{getUserHandle(user)}}</span>
+      </a>
     </div>
+    <div class="chat__block chat__settings" v-if="showSettings">
+      <div class="chat__block__title">
+        {{$t('chat.user_settings')}}
+        <m-button @click="showSettings = false" icononly rounded flat icon="close" />
+      </div>
+      <div class="chat__settings__input chat__settings__input--inline">
+        <label class="chat__settings__input__label">{{$t('chat.color')}}</label>
+        <m-colorpicker v-model="color" />
+      </div>
+      <div v-if="me && (me.isAdmin || me.isModerator)">
+        <div class="chat__block__delimiter"></div>
+        <div class="chat__block__title">
+          {{$t('chat.settings')}}
+        </div>
+        <div class="chat__settings__input">
+          <m-checkbox v-model="formSettings.disabled" :title="$t('chat.disable')"></m-checkbox>
+        </div>
+        <div class="chat__settings__input">
+          <m-input :title="$t('chat.motd')" v-model="formSettings.motd" />
+        </div>
+        <m-button @click="saveSettings()">{{$t('forms.save')}}</m-button>
+        <div class="chat__block__delimiter"></div>
+        <m-button big @click="clearChat()">{{$t('chat.clear')}}</m-button>
+      </div>
+
+    </div>
+
+    <div class="chat__motd" v-if="settings && settings.motd">
+      {{settings.motd}}
+    </div>
+
     <div class="chat__messages">
-      <!--<m-colorpicker v-model="color" /> -->
       <div class="chat__message" v-for="message in messages" :key="message.id">
         <span class="chat__message__time">{{ getReadableTime(message.timestamp) }}</span>
-        <a v-if="message.author" :target="message.author.webUrl ? '_blank' : null" :href="message.author.webUrl" class="chat__message__user">{{ getMessageAuthorName(message) }}</a>
+        <a v-if="message.author" :target="message.author.webUrl ? '_blank' : null" :href="message.author.webUrl" class="chat__message__user" :style="{color: message.color}">{{ getUserHandle(message.author) }}</a>
         {{message.content}}
         <span class="chat__message__delete" v-if="canEditMessage(message)" @click="deleteMessage(message)">
           <i class="material-icons">clear</i>
@@ -41,9 +76,16 @@
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 import Channel from '~/types/Channel'
-import { Prop } from '~/node_modules/vue-property-decorator'
+import { Prop, Watch } from '~/node_modules/vue-property-decorator'
 import { UserChannelPermissions } from '~/helpers/permissions'
-import { ChatConnect, ChatDeleteMessage, ChatSendMessage } from '~/api/modules/chat'
+import {
+  ChatClear,
+  ChatConnect,
+  ChatDeleteMessage,
+  ChatSendMessage,
+  ChatSetColor,
+  ChatUpdateSettings,
+} from '~/api/modules/chat'
 import { ChatMessage, ChatSettings, ChatUpdateType, ChatUserInfo } from '~/types/chat'
 import { getReadableTime } from '~/helpers/time'
 
@@ -67,6 +109,8 @@ export default class Chat extends Vue {
     disabled: true,
     motd: ''
   } as ChatSettings;
+  formSettings = JSON.parse(JSON.stringify(this.settings)) as ChatSettings;
+
   membersCount = 0;
   color = localStorage.catcast_chat_color || '#0f0';
 
@@ -75,7 +119,7 @@ export default class Chat extends Vue {
   }
 
   beforeDestroy() {
-    this.socket.close();
+    this.socket && this.socket.close();
   }
 
   async mounted() {
@@ -105,11 +149,18 @@ export default class Chat extends Vue {
     }
   }
 
+  @Watch('color')
+  onChangeColor(color: string){
+    ChatSetColor(this.socket, color);
+    localStorage.catcast_chat_color = color;
+  }
+
   handleUpdate({type, payload}: {type: ChatUpdateType, payload: any}) {
     switch (type) {
       case ChatUpdateType.CONNECTED:
         this.ready = true;
         this.me = payload.user;
+        ChatSetColor(this.socket, this.color);
         break;
       case ChatUpdateType.MESSAGES_LIST:
         this.messages = payload.messages;
@@ -135,6 +186,17 @@ export default class Chat extends Vue {
         break;
       case ChatUpdateType.CHAT_SETTINGS:
         this.settings = payload.settings;
+        this.formSettings = JSON.parse(JSON.stringify(payload.settings));
+        break;
+      case ChatUpdateType.SET_USER_COLOR:
+        this.users.forEach(user => {
+          if (user.id === payload.id) {
+            user.color = payload.color;
+          }
+        })
+        break;
+      case ChatUpdateType.CHAT_CLEARED:
+        this.messages = [];
         break;
     }
   }
@@ -148,6 +210,16 @@ export default class Chat extends Vue {
   sendMessage() {
     ChatSendMessage(this.socket, this.form);
     this.form.content = '';
+  }
+
+  saveSettings() {
+    ChatUpdateSettings(this.socket, this.formSettings);
+    this.showSettings = false;
+  }
+
+  clearChat() {
+    ChatClear(this.socket);
+    this.showSettings = false;
   }
 
   canEditMessage(message: ChatMessage): boolean {
@@ -170,14 +242,14 @@ export default class Chat extends Vue {
 
   getReadableTime = getReadableTime;
 
-  getMessageAuthorName (message: ChatMessage): string {
-    if (!message.author) {
+  getUserHandle (user: ChatUserInfo): string {
+    if (!user) {
       return '';
     }
-    if (message.author.domain) {
-      return `${message.author.login}@${message.author.domain}`;
+    if (user.domain) {
+      return `${user.login}@${user.domain}`;
     }
-    return message.author.login;
+    return user.login;
   }
 }
 </script>
@@ -189,38 +261,93 @@ export default class Chat extends Vue {
   display: flex;
   flex-direction: column;
   position: relative;
+  &__block {
+    position: absolute;
+    left: .25em;
+    top: .25em;
+    z-index: 10000;
+    padding: .5em 1em;
+    background: var(--main-bg);
+    width: calc(100% - .5em);
+    box-sizing: border-box;
+    &__delimiter {
+      width: 100%;
+      height: 1px;
+      background: var(--border-color);
+      margin: .75em 0;
+    }
+    &__title {
+      font-size: 1.25em;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .25em 0;
+
+      .button {
+        font-size: .5em;
+      }
+    }
+  }
+  &__motd {
+    border-left: .25em solid var(--active-color);
+    margin: .5em .5em 0;
+    padding: .5em;
+    background: var(--box-footer-color);
+    font-weight: 400;
+  }
+  &__settings {
+    &__input {
+      padding: .5em 0;
+      margin: -.5em 0;
+      &--inline {
+        display: flex;
+        align-items: center;
+      }
+      &__label {
+        margin: 0 .5em 0 0;
+      }
+    }
+
+
+  }
   &__messages {
     flex: 1;
     overflow: auto;
     padding: .25em .75em;
     box-sizing: border-box;
+    position: relative;
   }
+
   &__message {
     position: relative;
     margin: .5em 0;
     font-size: .9375em;
+
     &__user {
       color: var(--active-color);
       font-weight: 400;
       font-size: .875em;
     }
+
     &__time {
       font-weight: bold;
       font-size: .875em;
     }
-   &__delete {
-     position: absolute;
-     top: .25em;
-     right: 0;
-     font-size: .75em;
-     cursor: pointer;
-     opacity: .5;
-     transition: all .25s;
 
-     &:hover {
-       opacity: .75;
-     }
-   }
+    &__delete {
+      position: absolute;
+      top: .25em;
+      right: 0;
+      font-size: .75em;
+      cursor: pointer;
+      opacity: .5;
+      transition: all .25s;
+
+      &:hover {
+        opacity: .75;
+      }
+    }
   }
   &__input {
     background: var(--box-footer-color);
@@ -266,12 +393,6 @@ export default class Chat extends Vue {
    }
  }
   &__users {
-    position: absolute;
-    top: .5em;
-    left: .5em;
-    background: var(--main-bg);
-    width: calc(100% - 1em);
-    box-shadow: 0 0 1em var(--active-color);
     padding: 1em;
     box-sizing: border-box;
     &__title {
@@ -283,6 +404,7 @@ export default class Chat extends Vue {
   &__user {
     display: flex;
     align-items: center;
+    text-decoration: none;
 
     &__avatar {
       width: 2em;

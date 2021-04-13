@@ -1642,27 +1642,17 @@ export default {
         "user_left": "вышел из чата",
         "user_changed_nickname": "сменил ник на"
       },
-      "menu":
-      {
-        "change_guest_username": "Сменить ник",
-        "clear_chat": "Очистить чат",
-        "disable_chat": "Выключить чат",
-        "enable_chat": "Включить чат",
-        "change_motd": "Сообщение дня",
-        "allow_guests": "Включить гостей",
-        "disallow_guests": "Отключить гостей"
-      },
+
+      "color": "Цвет ника в чате",
       "bots": "Боты",
       "message_deleted": "Сообщение удалено",
       "disabled": "Чат выключен",
-      "settings": "Настройки",
+      "user_settings": "Настройки пользователя",
+      "settings": "Настройки чата",
       "you_are_banned": "Вы забанены в этом чате",
-      "your_ip_is_banned": "Ваш IP забанен в этом чате",
-      "your_account_is_banned": "Ваш аккаунт забанен в этом чате",
-      "new_guest_username": "Новый ник",
-      "new_motd": "Новое сообщение дня",
-      "ban_guest": "Забанить",
-      "unban_guest": "Разбанить",
+      "motd": "Сообщение дня",
+      "disable": "Выключить чат",
+      "clear": "Очистить чат",
       "ban_user": "Забанить",
       "unban_user": "Разбанить",
       "smiles": {
