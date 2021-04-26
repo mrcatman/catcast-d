@@ -53,7 +53,10 @@
   }
 
   &__form {
-    margin: 0 0 -1em;
+    background: var(--box-color);
+    padding: 1em;
+    margin: 0 0 1em;
+    padding: 1em 1em 1px;
     &__top {
       display: flex;
       align-items: flex-start;
@@ -108,7 +111,11 @@ export default class ChannelTeamPage extends BaseFormComponent {
   }
 
   get userIsLocal() {
-    return this.form.user.indexOf('@') === -1;
+    if (this.form.user.indexOf('@') !== -1) {
+      let domain = this.form.user.split('@')[1];
+      return domain === this.$accessor.modules.site?.config?.domain;
+    }
+    return true;
   }
 
   async findUsers(query: string) {

@@ -34,6 +34,9 @@
     font-size: 1.75em;
     font-weight: bold;
   }
+  &__description {
+    margin: -1.75em 0 1.75em;
+  }
   &__content {
     flex: 2;
     padding: 1.325em 2em;

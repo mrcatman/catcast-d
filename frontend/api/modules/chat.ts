@@ -34,3 +34,12 @@ export const ChatUpdateSettings = (socket: WebSocket, settings: Partial<ChatSett
 export const ChatClear = (socket: WebSocket): void => {
   sendUpdate(socket, 'CLEAR_CHAT');
 };
+
+export const ChatBanUser = (socket: WebSocket, userId: number): void => {
+  sendUpdate(socket, 'BAN_USER', { userId });
+};
+
+
+export const ChatUnbanUser = (socket: WebSocket, userId: number): void => {
+  sendUpdate(socket, 'UNBAN_USER', { userId });
+};

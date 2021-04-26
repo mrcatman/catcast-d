@@ -4,6 +4,8 @@ import { UserChannelPermissions } from '../permissions/list'
 import { UserPermissions } from '../../models/UserPermissions'
 import { ChatMessage } from '../../models/ChatMessage'
 import { ChatSettings } from '../../models/ChatSettings'
+import { UserBan } from '../../models/UserBan'
+import { ban, unban } from '../ban'
 export type ChatUserInfo = {
   id: number;
   login: string;
@@ -12,6 +14,7 @@ export type ChatUserInfo = {
   sockets?: Array<any>;
   isModerator: boolean;
   isAdmin: boolean;
+  isBlocked: boolean;
   roleName?: string;
   webUrl?: string;
   color?: string;
@@ -42,7 +45,9 @@ export enum ChatClientUpdateType {
   DELETE_MESSAGE = 'DELETE_MESSAGE',
   SET_COLOR = 'SET_COLOR',
   UPDATE_SETTINGS = 'UPDATE_SETTINGS',
-  CLEAR_CHAT = 'CLEAR_CHAT'
+  CLEAR_CHAT = 'CLEAR_CHAT',
+  BAN_USER = 'BAN_USER',
+  UNBAN_USER = 'UNBAN_USER'
 }
 
 
@@ -72,6 +77,12 @@ class ChatManager {
         confirmed: true, rejected: false, channel: { id: channel.id }, user: { id: user.id }
       }
     })
+    let ban =  await UserBan.findOne({
+      where: {
+        channel: { id: channel.id }, user: { id: user.id }
+      }
+    })
+    const isBlocked = !!ban;
     isModerator = permissions && permissions.list.indexOf(UserChannelPermissions.MODERATE_CHAT) !== -1;
     roleName = permissions ? permissions.comment : '';
 
@@ -83,6 +94,7 @@ class ChatManager {
       avatar: user.avatar ? user.avatar.full_url : null,
       isModerator,
       isAdmin,
+      isBlocked,
       roleName,
       webUrl,
     }
@@ -179,6 +191,7 @@ class ChatManager {
       avatar: user.avatar,
       isModerator: user.isModerator,
       isAdmin: user.isAdmin,
+      isBlocked: user.isBlocked,
       roleName: user.roleName,
       webUrl: user.webUrl,
       color: user.color
@@ -229,6 +242,9 @@ class ChatManager {
   }
 
   async addMessage(channel: Channel, user: ChatUserInfo, {content}: {content: string}) {
+    if (user.isBlocked) {
+      return;
+    }
     let settingsInstance = await this.getSettings(channel.id);
     if (settingsInstance.disabled) {
       return;
@@ -342,10 +358,10 @@ class ChatManager {
     if (!user.isModerator && !user.isAdmin) {
       return;
     }
-    //this.messages[channel.id] = [];
-   // await ChatMessage.delete({
-   //   channel_id: channel.id
-   // })
+    this.messages[channel.id] = [];
+    await ChatMessage.delete({
+      channel_id: channel.id
+    })
     this.sendUpdateToRoom(channel.id, 'CHAT_CLEARED');
   }
 
@@ -358,6 +374,39 @@ class ChatManager {
     settingsInstance.disabled = !!settings.disabled;
     await settingsInstance.save();
     this.sendUpdateToRoom(channel.id, 'CHAT_SETTINGS', {settings: settingsInstance});
+  }
+
+  async banUser(channel: Channel, user: ChatUserInfo, {userId}: {userId: number}) {
+    if (!user.isModerator && !user.isAdmin) {
+      return;
+    }
+    let userToBan = await User.findOne(userId);
+    let me = await User.findOne(user.id);
+    await ban(channel, userToBan, me, {});
+    this.changeUserInfo(channel.id, userId, {
+      isBlocked: true
+    });
+  }
+
+  async unbanUser(channel: Channel, user: ChatUserInfo, {userId}: {userId: number}) {
+    if (!user.isModerator && !user.isAdmin) {
+      return;
+    }
+    let userToUnban = await User.findOne(userId);
+    await unban(channel, userToUnban);
+    this.changeUserInfo(channel.id, userId, {
+      isBlocked: false
+    });
+  }
+
+  changeUserInfo(channelId: number, userId: number, newInfo: Partial<ChatUserInfo>) {
+    if (this.users[channelId]) {
+      let userInfo = this.users[channelId].filter(user => user.id === userId)[0];
+      if (userInfo) {
+        userInfo = {...userInfo, ...newInfo};
+        this.sendUpdateToRoom(channelId, 'USER_INFO_CHANGED', { id: userId, info: this.getVisibleUserInfo(userInfo) });
+      }
+    }
   }
 
   handleUpdate(channel: Channel, user: ChatUserInfo, {type, payload}: {type: ChatClientUpdateType, payload: any}) {
@@ -376,6 +425,12 @@ class ChatManager {
         break;
       case ChatClientUpdateType.UPDATE_SETTINGS:
         this.updateSettings(channel, user, payload);
+        break;
+      case ChatClientUpdateType.BAN_USER:
+        this.banUser(channel, user, payload);
+        break;
+      case ChatClientUpdateType.UNBAN_USER:
+        this.unbanUser(channel, user, payload);
         break;
       default:
         break;

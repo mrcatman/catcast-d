@@ -22,6 +22,9 @@ import { config } from '../config'
 import { User } from '../models/User'
 import { getActorByHandle } from '../federation/remoteActor'
 import { CancelOffer, Offer } from '../federation/activities/Team'
+import { UserBan } from '../models/UserBan'
+import { chatManager } from '../helpers/chat/manager'
+import { ban, unban } from '../helpers/ban'
 
 const NotEmptyValidator = require('../validation/validators/NotEmptyValidator');
 const MaxLengthValidator = require('../validation/validators/MaxLengthValidator');
@@ -72,6 +75,59 @@ async function routes (fastify: ServerInstance, options) {
             ]
         }, req);
         res.send(channels);
+    })
+
+    fastify.get('/favorite', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res) => {
+        let subscriptions = await Follower.find({
+            follower: {
+                id: req.user.id
+            },
+        })
+        let foundChannelIds = [];
+        let foundUserChannelIds = [];
+        let channelSubscriptions = subscriptions.filter(subscription => subscription.actor_type === Follower.TYPE_CHANNEL);
+        let userSubscriptions = subscriptions.filter(subscription => subscription.actor_type === Follower.TYPE_USER);
+        let channels = ((await Stream.find({
+            where: {
+                ended_at: null,
+                channel_id: In(channelSubscriptions.map(subscription => subscription.actor_id))
+            },
+            relations: ['channel', 'broadcaster']
+        })).filter(stream => stream.channel).filter(stream => {
+            if (foundChannelIds.indexOf(stream.channel_id) === -1) {
+                foundChannelIds.push(stream.channel_id);
+                return true;
+            }
+            return false;
+        }).map(stream => {
+            let streamCopy = JSON.parse(JSON.stringify(stream));
+            streamCopy.channel = undefined;
+            let channel = stream.channel;
+            channel.current_stream = streamCopy;
+            return stream.channel;
+        }));
+        let userChannels = (await Stream.find({
+            where: {
+                ended_at: null,
+                broadcaster_id: In(userSubscriptions.map(subscription => subscription.actor_id))
+            },
+            relations: ['channel', 'broadcaster']
+        })).filter(stream => stream.channel).filter(stream => {
+            if (foundUserChannelIds.indexOf(stream.channel_id) === -1) {
+                foundUserChannelIds.push(stream.channel_id);
+                return true;
+            }
+            return false;
+        }).map(stream => {
+            let streamCopy = JSON.parse(JSON.stringify(stream));
+            streamCopy.channel = undefined;
+            let channel = stream.channel;
+            channel.current_stream = streamCopy;
+            return stream.channel;
+        });
+        res.send({ channels, userChannels });
     })
 
     fastify.get('/search', async (req, res) => {
@@ -250,9 +306,11 @@ async function routes (fastify: ServerInstance, options) {
         });
     })
 
-    fastify.get('/:id/team', async (req, res): Promise<any> => {
+    fastify.get('/:id/team', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
         let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
-        //await checkPermissionsOrFail(req.user, channel, [], true);
+        await checkPermissionsOrFail(req.user, channel, [], true);
         let team = (await UserPermissions.find({
             where: {
                 channel: {
@@ -298,7 +356,7 @@ async function routes (fastify: ServerInstance, options) {
             })
             if (!user) {
                 throw {
-                    status: 422, errors: { user: ['dashboard.team._errors.user_not_found_local'] }
+                    status: 422, errors: { user: ['dashboard._errors.user_not_found_local'] }
                 };
             }
         } else {
@@ -309,7 +367,7 @@ async function routes (fastify: ServerInstance, options) {
             }
             if (!user || user.toObject().catcastActorType === 'Channel') {
                 throw {
-                    status: 422, errors: { user: ['dashboard.team._errors.user_not_found_remote'] }
+                    status: 422, errors: { user: ['dashboard._errors.user_not_found_remote'] }
                 };
             }
         }
@@ -342,8 +400,14 @@ async function routes (fastify: ServerInstance, options) {
             list_string: JSON.stringify(permissionsList),
             comment: data.comment
         })
+        permissions.added_by = req.user;
         await permissions.save();
         Offer(permissions);
+        if (permissionsList.indexOf(UserChannelPermissions.MODERATE_CHAT) !== -1) {
+            chatManager.changeUserInfo(channel.id, user.id, {
+                isModerator: true
+            });
+        }
         return permissions;
     })
 
@@ -361,6 +425,11 @@ async function routes (fastify: ServerInstance, options) {
             throw {
                 status: 403, error: 'common.access_error'
             };
+        }
+        if (permissions.list.indexOf(UserChannelPermissions.MODERATE_CHAT) !== -1) {
+            chatManager.changeUserInfo(channel.id, permissions.user.id, {
+                isModerator: false
+            });
         }
         await permissions.remove();
         CancelOffer(permissions);
@@ -386,6 +455,79 @@ async function routes (fastify: ServerInstance, options) {
         res.send({
             team,
         });
+    })
+
+    fastify.get('/:id/blocklist', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        await checkPermissionsOrFail(req.user, channel, [UserChannelPermissions.MODERATE_CHAT]);
+        let blocklist = (await UserBan.find({
+            where: {
+                channel: {
+                    id: req.params.id
+                }
+            },
+            relations: ['user', 'blocked_by']
+        })).filter(ban => ban.user);
+        res.send({
+            blocklist,
+        });
+    })
+
+    fastify.post('/:id/blocklist', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        await checkPermissionsOrFail(req.user, channel, [UserChannelPermissions.MODERATE_CHAT]);
+        let data = await fastify.validate(req, {
+            user: [new NotEmptyValidator()],
+            comment: [new MaxLengthValidator(255)],
+        });
+        let user;
+        let handleInfo = data.user.split('@');
+        if (handleInfo.length === 1 || handleInfo[1] === config('server.domain')) {
+            user = await User.findOne({
+                where: {
+                    login: handleInfo[0],
+                    domain: null
+                }
+            })
+            if (!user) {
+                throw {
+                    status: 422, errors: { user: ['dashboard._errors.user_not_found_local'] }
+                };
+            }
+        } else {
+            try {
+                user = await getActorByHandle(data.user);
+            } catch (e) {
+
+            }
+            if (!user || user.toObject().catcastActorType === 'Channel') {
+                throw {
+                    status: 422, errors: { user: ['dashboard._errors.user_not_found_remote'] }
+                };
+            }
+        }
+        let banInstance = await ban(channel, user, req.user, data);
+        chatManager.changeUserInfo(channel.id, user.id, {
+            isBlocked: true
+        });
+        return banInstance;
+    })
+
+    fastify.delete('/:id/blocklist/:user_id', {
+        preValidation: [fastify.authenticate]
+    }, async (req, res): Promise<any> => {
+        let channel = await Channel.findOneOrFail({id: req.params.id}, {relations: ['owner']});
+        await checkPermissionsOrFail(req.user, channel, [UserChannelPermissions.MODERATE_CHAT]);
+        let user = await User.findOneOrFail(req.params.user_id);
+        await unban(channel, user);
+        chatManager.changeUserInfo(channel.id, user.id, {
+            isBlocked: false
+        });
+        return true;
     })
 
 }

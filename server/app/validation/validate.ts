@@ -9,6 +9,9 @@ async function validate(request, rules: ValidationRules) : Promise<ValidatedData
     let data = {};
     for (let key in rules) {
         let fieldValue = (body && body[key] !== 'undefined') ? body[key] : (query && query[key] !== 'undefined' ? query[key] : null);
+        if (typeof fieldValue === 'string') {
+            fieldValue = fieldValue.trim();
+        }
         if (rules[key].length === 0) {
             data[key] = fieldValue;
         } else {

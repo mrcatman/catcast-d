@@ -1,15 +1,23 @@
 <template>
-  <div class="dashboard">
-    <m-list>
-      <m-list-item :to="`/dashboard/${channel.id}/main`" v-for="channel in channels.list" :key="channel.id">
-        <m-list-item-picture :picture="channel.logo" />
-        <m-list-item-texts>
-          <m-list-item-title>
-            {{channel.name}}
-          </m-list-item-title>
-        </m-list-item-texts>
-      </m-list-item>
-    </m-list>
+  <div class="container dashboard-index">
+    <Box no-padding>
+      <div slot="heading" class="box__heading__row">
+        {{ $t('dashboard.index.my_channels') }}
+        <div class="box__heading__buttons">
+          <m-button to="/dashboard/create">{{$t('dashboard.index.create_channel')}}</m-button>
+        </div>
+      </div>
+      <m-list>
+        <m-list-item :to="`/dashboard/${channel.id}/main`" v-for="channel in channels.list" :key="channel.id">
+          <m-list-item-picture :picture="channel.logo" />
+          <m-list-item-texts>
+            <m-list-item-title>
+              {{channel.name}}
+            </m-list-item-title>
+          </m-list-item-texts>
+        </m-list-item>
+      </m-list>
+    </Box>
   </div>
 </template>
 
@@ -20,9 +28,11 @@
   import ChannelThumb from '~/components/layout/thumbs/Channel.vue'
   import Channel from '~/types/Channel'
   import Paginator from '~/types/Paginator'
+  import Box from '~/components/elements/Box.vue'
 
   @Component({
     components: {
+      Box,
       ChannelThumb,
     },
   })
@@ -35,5 +45,7 @@
 </script>
 
 <style>
-
+.dashboard-index {
+  margin-top: 1em;
+}
 </style>

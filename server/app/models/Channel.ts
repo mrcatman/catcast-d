@@ -131,6 +131,7 @@ export class Channel extends BaseModel {
     toObject() {
         return {
             id: this.getActorUrl(),
+            actor: this.owner ? this.owner.getActorUrl() : undefined,
             type: 'Group', // maybe change to something better?
             catcastActorType: 'Channel',
             following: this.getActorUrl('/following'),

@@ -21,7 +21,7 @@ export class StreamKey extends BaseModel {
     @Column()
     key: string;
 
-    @OneToOne(type => User)
+    @ManyToOne(type => User)
     @JoinColumn({ name: 'user_id' })
     user: User;
 

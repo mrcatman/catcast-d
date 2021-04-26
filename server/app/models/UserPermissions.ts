@@ -25,6 +25,10 @@ export class UserPermissions extends BaseModel {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
+    @ManyToOne(type => User)
+    @JoinColumn({ name: 'added_by_id' })
+    added_by: User;
+
     @ManyToOne(() => Channel)
     @JoinColumn({ name: 'channel_id' })
     channel: Channel;
@@ -52,6 +56,9 @@ export class UserPermissions extends BaseModel {
 
     list: Array<string>;
 
+    @Column({nullable: true})
+    added_by_id: number;
+
     @AfterLoad()
     setComputed() {
         if (this.list_string) {
@@ -69,12 +76,14 @@ export class UserPermissions extends BaseModel {
             type: 'Note',
             from: this.channel.getActorUrl(),
             to: this.user.getActorUrl(),
+
             id: this.channel.getActorUrl(`/permissions/${this.user.activitypub_handle}`),
             url: this.channel.getActorUrl(`/permissions/${this.user.activitypub_handle}`),
             published: this.created_at || null,
 
             // custom properties
             catcastObjectType: 'UserPermissions',
+            addedBy: this.added_by ? this.added_by.getActorUrl() : undefined,
             list: this.list,
             full: this.full,
             comment: this.comment || null,

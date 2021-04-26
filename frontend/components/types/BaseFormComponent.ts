@@ -23,6 +23,7 @@ const BaseFormComponent = Vue.extend({
     },
     sendForm() {
       this.formIsSubmitting = true;
+      this.errors = {};
       this.submit().then((res: any)  => {
         this.formIsSubmitting = false;
         this.onSubmit(res);

@@ -6,6 +6,10 @@ import { User } from '../../models/User'
 export async function offer(channelUrl: string, object: any): Promise<boolean> {
   let channel = await getActorByUrl(channelUrl) as Channel;
   let user = await getActorByUrl(object.to) as User;
+  let addedBy;
+  if (object.addedBy) {
+    addedBy = await getActorByUrl(object.addedBy) as User;
+  }
   if (!channel || !user || user.domain) {
     return false;
   }
@@ -28,6 +32,9 @@ export async function offer(channelUrl: string, object: any): Promise<boolean> {
     permissions.user = user;
     permissions.channel = channel;
     permissions.confirmed = false;
+  }
+  if (addedBy) {
+    permissions.added_by = addedBy;
   }
   permissions.full = !!object.full;
   permissions.list_string = JSON.stringify(object.list ? object.list : []);

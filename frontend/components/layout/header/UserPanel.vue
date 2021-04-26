@@ -17,6 +17,7 @@
 </template>
 <style lang="scss">
   .auth-panel {
+    position: relative;
     margin: 0 .5em 0 1em;
   }
 </style>

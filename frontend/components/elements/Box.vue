@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <div class="box__heading">
-      <slot name="heading"></slot>
+      <slot name="heading" ></slot>
     </div>
     <div class="box__content" :class="{'box__content--no-padding': noPadding}">
       <slot></slot>
@@ -36,6 +36,15 @@ export default {
       &:empty {
         display: none;
       }
+      &__row {
+        display: flex;
+        align-items: center;
+      }
+      &__buttons {
+        margin-left: auto;
+        font-size: .9375em;
+      }
+
     }
     &__content {
       padding: 1em;

@@ -7,9 +7,12 @@
         <m-button @click="showUsersList = false" icononly rounded flat icon="close" />
       </div>
 
-      <a :target="user.webUrl ? '_blank' : null" :href="user.webUrl"  class="chat__user" v-for="user in users">
+      <a :target="user.webUrl ? '_blank' : null" :href="user.webUrl"  class="chat__user" :class="{'chat__user--blocked': user.isBlocked}" v-for="user in users">
         <span class="chat__user__avatar" v-if="user.avatar" :style="{backgroundImage: `url(${user.avatar})`}"></span>
         <span class="chat__user__name" :style="{color: user.color}">{{getUserHandle(user)}}</span>
+        <div class="chat__user__buttons" v-if="canEditUser(user)">
+          <m-button @click="ban(user)">{{user.isBlocked ? $t('chat.unban_user') : $t('chat.ban_user')}}</m-button>
+        </div>
       </a>
     </div>
     <div class="chat__block chat__settings" v-if="showSettings">
@@ -54,10 +57,11 @@
       </div>
     </div>
     <div class="chat__input">
-      <m-input v-if="me && !settings.disabled" type="textarea" v-model="form.content" title="" class="chat__input__el" />
+      <m-input v-if="me && !settings.disabled && !me.isBlocked" type="textarea" v-model="form.content" title="" class="chat__input__el" />
       <div class="chat__input__disabled" v-else-if="settings.disabled">{{$t('chat.disabled')}}</div>
+      <div class="chat__input__blocked" v-else-if="me.isBlocked">{{$t('chat.blocked')}}</div>
       <div class="chat__input__bottom">
-        <m-button v-if="me && !settings.disabled" @click="sendMessage()" :disabled="form.content.length === 0">{{$t('common.send')}}</m-button>
+        <m-button v-if="me && !settings.disabled && !me.isBlocked" @click="sendMessage()" :disabled="form.content.length === 0">{{$t('common.send')}}</m-button>
         <div class="chat__controls">
           <a @click="showUsersList = !showUsersList" class="chat__control" :class="{'chat__control--active': showUsersList}">
             <span class="tooltip">{{$t('chat.users')}}</span>
@@ -79,6 +83,8 @@ import Channel from '~/types/Channel'
 import { Prop, Watch } from '~/node_modules/vue-property-decorator'
 import { UserChannelPermissions } from '~/helpers/permissions'
 import {
+  ChatBanUser,
+  ChatUnbanUser,
   ChatClear,
   ChatConnect,
   ChatDeleteMessage,
@@ -198,6 +204,16 @@ export default class Chat extends Vue {
       case ChatUpdateType.CHAT_CLEARED:
         this.messages = [];
         break;
+      case ChatUpdateType.USER_INFO_CHANGED:
+        this.users.forEach((user, index) => {
+          if (payload.id === user.id) {
+            this.$set(this.users, index, {...user, ...payload.info});
+          }
+        })
+        if (payload.id === this.me.id) {
+          this.me = {...this.me, ...payload.info};
+        }
+        break;
     }
   }
 
@@ -222,6 +238,10 @@ export default class Chat extends Vue {
     this.showSettings = false;
   }
 
+  ban(user) {
+    return !user.isBlocked ? ChatBanUser(this.socket, user.id) : ChatUnbanUser(this.socket, user.id);
+  }
+
   canEditMessage(message: ChatMessage): boolean {
     const me = this.me;
     const author = message.author;
@@ -237,8 +257,23 @@ export default class Chat extends Vue {
     if (me.isModerator && !author.isModerator && !author.isAdmin) {
       return true;
     }
-    return true;
+    return false;
   }
+
+  canEditUser(user: ChatUserInfo) {
+    const me = this.me;
+    if (!me) {
+      return false;
+    }
+    if (me.isModerator && (!user.isModerator && !user.isAdmin)) {
+      return true;
+    }
+    if (me.isAdmin && !user.isAdmin) {
+      return true;
+    }
+    return false;
+  }
+
 
   getReadableTime = getReadableTime;
 
@@ -368,6 +403,20 @@ export default class Chat extends Vue {
       align-items: center;
       justify-content: space-between;
     }
+    &__blocked {
+      display: flex;
+      align-items: center;
+      background: var(--negative-color);
+      padding: .5em;
+      margin: 0 0 .5em;
+
+      &:before {
+        content: "!";
+        font-weight: bold;
+        font-size: 1.25em;
+        margin: 0 .5em 0 0;
+      }
+    }
   }
   &__controls {
     margin-left: auto;
@@ -416,6 +465,14 @@ export default class Chat extends Vue {
     &__name {
       font-size: 1.0625em;
       margin: 0 0 0 .5em;
+    }
+    &__buttons {
+      margin-left: auto;
+      font-size: .75em;
+    }
+    &--blocked &__avatar, &--blocked &__name {
+      text-decoration: line-through;
+      opacity: .5;
     }
   }
 }

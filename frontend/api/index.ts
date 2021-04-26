@@ -24,5 +24,8 @@ const instance: Readonly<AxiosInstance> = axios.create({
 });
 
 instance.interceptors.response.use(OnResponseSuccess, OnResponseFailure);
-
+instance.interceptors.request.use((config: AxiosRequestConfig) => {
+  //console.log(config);
+  return config;
+})
 export default instance;

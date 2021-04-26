@@ -167,7 +167,6 @@ export async function fetchCommonInfo(remoteObject, localActor: Channel | User) 
       about: remoteObject.summary,
     })
   }
-
   await localActor.save();
   if (remoteObject.icon && remoteObject.icon.url) {
     let picture = new Picture();
@@ -214,6 +213,13 @@ export async function fetchCommonInfo(remoteObject, localActor: Channel | User) 
           }
         }
       }
+    }
+  }
+  if (localActor instanceof Channel && remoteObject.actor) {
+    let user = await getActorByUrl(remoteObject.actor) as User;
+    if (user) {
+      localActor.owner = user;
+      await localActor.save();
     }
   }
 }

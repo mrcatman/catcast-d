@@ -12,6 +12,8 @@
         <nuxt-link class="controls-page__menu__item" :to="`/dashboard/${channel.id}/main`">{{$t('dashboard.menu.common')}}</nuxt-link>
         <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.FULL_ADMIN) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/team`">{{$t('dashboard.menu.team')}}</nuxt-link>
         <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.BROADCAST) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/broadcast`">{{$t('dashboard.menu.broadcast')}}</nuxt-link>
+        <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.MODERATE_CHAT) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/blocklist`">{{$t('dashboard.menu.blocklist')}}</nuxt-link>
+
       </div>
     </div>
     <div class="controls-page__content">

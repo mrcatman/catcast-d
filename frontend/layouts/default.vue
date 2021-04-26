@@ -3,6 +3,7 @@
     <HeaderNav />
     <div class="app__container">
       <nuxt/>
+      <Sidebar />
     </div>
     <notifications group="all"  position="bottom left" />
     <portal-target name="modals"></portal-target>
@@ -12,19 +13,24 @@
   @import "~/assets/styles/global.scss";
   .app {
     &__container {
+      display: flex;
       margin-top: 3.5em;
       height: calc(100vh - 3.5em);
       overflow: auto;
+      > * {
+        flex: 1;
+      }
     }
   }
 </style>
 <script lang="ts">
+  import Sidebar from '~/components/layout/Sidebar.vue'
   declare const window: any;
 
   import Vue from 'vue'
   import HeaderNav from '~/components/layout/header/HeaderNav.vue'
   export default Vue.extend({
-    components: { HeaderNav },
+    components: { Sidebar, HeaderNav },
     mounted() {
       window.$t = this.$t; // non-elegant but working
     }

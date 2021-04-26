@@ -40,6 +40,10 @@ export class Stream extends BaseModel {
 
     @Column({ nullable: true })
     channel_id: number;
+
+    @Column({ nullable: true })
+    broadcaster_id: number;
+
     @ManyToOne(() => Channel, channel => channel.streams)
     @JoinColumn({ name: 'channel_id' })
     channel: Channel;

@@ -6,11 +6,13 @@
     </nuxt-link>
     <SearchBox />
     <UserPanel />
+    <SidebarOpener />
   </div>
 </template>
 <script>
   import UserPanel from './UserPanel'
   import SearchBox from '~/components/layout/header/SearchBox'
+  import SidebarOpener from '@/components/layout/header/SidebarOpener'
   export default{
     name: 'HeaderNav',
     computed: {
@@ -18,7 +20,7 @@
         return this.$accessor.modules.site?.config || {};
       },
     },
-    components: { SearchBox, UserPanel }
+    components: { SidebarOpener, SearchBox, UserPanel }
   }
 </script>
 <style lang="scss">

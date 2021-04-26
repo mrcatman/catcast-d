@@ -22,7 +22,7 @@ async function routes (fastify: ServerInstance, options) {
 
     fastify.get('/channels/:url', async (req, res): Promise<any> => { // get actor for a channel
         let channel = await Channel.findOneOrFail({ url: req.params.url }, {
-            relations: ['logo']
+            relations: ['logo', 'owner']
         });
         res.header('Content-Type', 'application/activity+json').send({
             '@context': context,
@@ -101,7 +101,7 @@ async function routes (fastify: ServerInstance, options) {
                 where: conditions,
                 relations: ['channel', 'broadcaster']
             });
-            let items = streams.map(stream => stream.toActivity('create'))
+            let items = streams.map(stream => stream.toActivity('Create'))
             const pagesCount = Math.ceil(streamsCount / ITEMS_ON_PAGE);
             return {
                 '@context': context,

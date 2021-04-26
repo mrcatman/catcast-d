@@ -5,6 +5,7 @@ import { UserChannelPermissions } from '~/helpers/permissions'
 import Stream from '~/types/Stream'
 import User from '~/types/User'
 import UserPermissions from '~/types/UserPermissions'
+import UserBan from '~/types/UserBan'
 
 const BASE_PATH = "channels";
 
@@ -104,4 +105,28 @@ export const ChannelAddUserToTeam = async (id: number, data: any): Promise<UserP
 export const ChannelRemoveUserFromTeam = async (id: number, permissions_id: number): Promise<boolean> => {
   await api.delete(`${BASE_PATH}/${id}/team/${permissions_id}`);
   return true;
+};
+
+
+export const ChannelGetBlocklist = async (id: number): Promise<Array<UserBan>> => {
+  const res = await api.get(`${BASE_PATH}/${id}/blocklist`);
+  return res.data.blocklist as Array<UserBan>;
+};
+
+export const ChannelAddUserToBlocklist = async (id: number, data: any): Promise<UserBan> => {
+  const res = await api.post(`${BASE_PATH}/${id}/blocklist`, data);
+  return res.data as UserBan;
+};
+export const ChannelRemoveUserFromBlocklist = async (id: number, userId: number): Promise<boolean> => {
+  await api.delete(`${BASE_PATH}/${id}/blocklist/${userId}`);
+  return true;
+};
+
+interface GetFavoriteChannelsResponse {
+  channels: Array<Channel>
+  userChannels: Array<Channel>
+}
+export const ChannelsGetFavorite = async (): Promise<GetFavoriteChannelsResponse> => {
+  const res = await api.get(`${BASE_PATH}/favorite`);
+  return res.data as GetFavoriteChannelsResponse;
 };

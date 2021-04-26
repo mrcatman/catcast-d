@@ -10,6 +10,7 @@ export enum ChatUpdateType {
   CHAT_SETTINGS = 'CHAT_SETTINGS',
   SET_USER_COLOR = 'SET_USER_COLOR',
   CHAT_CLEARED = 'CHAT_CLEARED',
+  USER_INFO_CHANGED = 'USER_INFO_CHANGED'
 }
 export type ChatUserInfo = {
   id: number;

@@ -64,7 +64,7 @@ export class User extends BaseModel {
     owned_channels: Channel[];
 
     @OneToMany(() => Stream, stream => stream.broadcaster)
-    streams: Channel[];
+    streams: Stream[];
 
     @Column({type: 'text'})
     public_key: string;
