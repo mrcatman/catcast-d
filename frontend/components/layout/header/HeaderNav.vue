@@ -6,7 +6,7 @@
     </nuxt-link>
     <SearchBox />
     <UserPanel />
-    <SidebarOpener />
+    <SidebarOpener v-if="isLoggedIn" />
   </div>
 </template>
 <script>
@@ -19,6 +19,9 @@
       config() {
         return this.$accessor.modules.site?.config || {};
       },
+      isLoggedIn() {
+        return this.$accessor.modules.auth.isLoggedIn;
+      }
     },
     components: { SidebarOpener, SearchBox, UserPanel }
   }

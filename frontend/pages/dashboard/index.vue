@@ -1,6 +1,6 @@
 <template>
   <div class="container dashboard-index">
-    <Box no-padding>
+    <m-box no-padding>
       <div slot="heading" class="box__heading__row">
         {{ $t('dashboard.index.my_channels') }}
         <div class="box__heading__buttons">
@@ -17,7 +17,7 @@
           </m-list-item-texts>
         </m-list-item>
       </m-list>
-    </Box>
+    </m-box>
   </div>
 </template>
 
@@ -28,11 +28,9 @@
   import ChannelThumb from '~/components/layout/thumbs/Channel.vue'
   import Channel from '~/types/Channel'
   import Paginator from '~/types/Paginator'
-  import Box from '~/components/elements/Box.vue'
 
   @Component({
     components: {
-      Box,
       ChannelThumb,
     },
   })

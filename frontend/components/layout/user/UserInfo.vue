@@ -1,7 +1,7 @@
 <template>
-  <div class="user-info" v-if="user">
+  <m-box class="user-info" v-if="user">
     <div class="user-info__top">
-      <div class="user-info__avatar" v-if="user.avatar" :style="{backgroundImage: `url(${user.avatar.full_url})`}"></div>
+      <PictureBlock class="user-info__avatar" :data="user.avatar" defaultFromConfig="user_default_avatar"></PictureBlock>
       <div class="user-info__texts">
         <div class="user-info__texts__top">
           <h1 class="user-info__login">{{user.login}}</h1>
@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="user-info__about">{{user.about}}</div>
-  </div>
+  </m-box>
 </template>
 <style lang="scss">
   .user-info {
@@ -62,9 +62,10 @@ import SubscribeBlock from '~/components/layout/channel-page/SubscribeBlock.vue'
 import StreamInfoModal from '~/components/layout/channel-page/StreamInfoModal.vue'
 import UserLink from '~/components/layout/UserLink.vue'
 import User from '~/types/User'
+import PictureBlock from '~/components/layout/PictureBlock.vue'
 
   @Component({
-    components: { StreamInfoModal, SubscribeBlock, UserLink },
+    components: { PictureBlock, StreamInfoModal, SubscribeBlock, UserLink },
   })
   export default class ChannelInfoBlock extends Vue {
     streamInfoModalVisible: boolean = false;

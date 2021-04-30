@@ -16,6 +16,9 @@
     border-bottom: 1px solid rgba(255, 255, 255, .1);
     transition: all .25s;
     position: relative;
+    @media screen and (max-width: 768px) {
+      flex-wrap: wrap;
+    }
 
     &--link {
       &:hover {

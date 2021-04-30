@@ -37,6 +37,15 @@
   font-weight: 300;
   cursor: pointer;
   position: relative;
+  @media screen and (max-width: 1200px) {
+    width: calc(33% - .5em);
+  }
+  @media screen and (max-width: 800px) {
+    width: calc(50% - .5em);
+  }
+  @media screen and (max-width: 480px) {
+    width: 100%;
+  }
   &__picture {
     padding-top: 60%;
     background-color: #000;

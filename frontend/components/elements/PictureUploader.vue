@@ -92,12 +92,10 @@
     font-size: 1.25em;
   }
 
-
-
   &__texts {
+    max-width: calc(100% - 8em);
     margin: 0 0 0 1em;
   }
-
 
   &__formats {
     font-size: .875em;

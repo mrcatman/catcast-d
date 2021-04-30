@@ -5,6 +5,7 @@
     <div v-else class="auth-panel__inner">
       <div class="auth-panel__avatar" v-if="avatar" :style="{backgroundImage: `url(${avatar})`}"></div>
       <div class="auth-panel__username">{{username}}</div>
+      <i class="material-icons">expand_more</i>
       <m-popup-menu class="popup-menu-bottom popup-menu-bottom-left">
         <m-popup-menu-item  v-if="isAdmin" to="/admin">{{$t('auth.menu.admin_panel')}}</m-popup-menu-item>
         <m-popup-menu-item to="/dashboard">{{$t('auth.menu.dashboard')}}</m-popup-menu-item>

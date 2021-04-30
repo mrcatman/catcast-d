@@ -3,7 +3,7 @@
     <StreamInfoModal @saved="onStreamInfoSaved" :channel="channelData" v-model="streamInfoModalVisible" />
 
     <div class="channel-info__top">
-      <div class="channel-info__logo" v-if="channelData.logo" :style="{backgroundImage: `url(${channelData.logo.full_url})`}"></div>
+      <PictureBlock class="channel-info__logo" :data="channel.logo" defaultFromConfig="channel_default_logo"></PictureBlock>
       <div class="channel-info__texts">
         <div class="channel-info__texts__top">
           <h1 class="channel-info__stream-name" v-if="channelData.is_online && channelData.current_stream">{{channelData.current_stream.name}}</h1>
@@ -30,6 +30,15 @@
   .channel-info {
     margin: 1em 0 0;
     position: relative;
+    .subscribe-block {
+      position: absolute;
+      top: 0;
+      right: 0;
+      @media screen and (max-width: 768px) {
+        margin: 1em 0 0;
+        position: unset;
+      }
+    }
     &__top {
       display: flex;
       align-items: flex-start;
@@ -108,9 +117,10 @@ import SubscribeBlock from '~/components/layout/channel-page/SubscribeBlock.vue'
 import { UserChannelPermissions } from '~/helpers/permissions'
 import StreamInfoModal from '~/components/layout/channel-page/StreamInfoModal.vue'
 import UserLink from '~/components/layout/UserLink.vue'
+import PictureBlock from '~/components/layout/PictureBlock.vue'
 
   @Component({
-    components: { StreamInfoModal, SubscribeBlock, UserLink },
+    components: { PictureBlock, StreamInfoModal, SubscribeBlock, UserLink },
   })
   export default class ChannelInfoBlock extends Vue {
     streamInfoModalVisible: boolean = false;

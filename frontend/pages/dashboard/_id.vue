@@ -1,21 +1,18 @@
 <template>
   <div class="controls-page dashboard">
-    <div class="controls-page__menu">
-      <div class="controls-page__menu__inner">
-        <ChannelLink :channel="channel" class="dashboard__channel">
-          <div class="dashboard__channel__texts">
-            <div class="dashboard__channel__name">{{channel.name}}</div>
-            <div class="dashboard__channel__ap-handle">{{channel.activitypub_handle}}</div>
-          </div>
-          <div class="dashboard__channel__logo" v-if="channel.logo" :style="{backgroundImage: `url(${channel.logo.full_url})`}"></div>
-        </ChannelLink>
-        <nuxt-link class="controls-page__menu__item" :to="`/dashboard/${channel.id}/main`">{{$t('dashboard.menu.common')}}</nuxt-link>
-        <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.FULL_ADMIN) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/team`">{{$t('dashboard.menu.team')}}</nuxt-link>
-        <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.BROADCAST) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/broadcast`">{{$t('dashboard.menu.broadcast')}}</nuxt-link>
-        <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.MODERATE_CHAT) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/blocklist`">{{$t('dashboard.menu.blocklist')}}</nuxt-link>
-
-      </div>
-    </div>
+    <ControlsPageMenu>
+      <ChannelLink :channel="channel" class="dashboard__channel">
+        <div class="dashboard__channel__texts">
+          <div class="dashboard__channel__name">{{channel.name}}</div>
+          <div class="dashboard__channel__ap-handle">{{channel.activitypub_handle}}</div>
+        </div>
+        <div class="dashboard__channel__logo" v-if="channel.logo" :style="{backgroundImage: `url(${channel.logo.full_url})`}"></div>
+      </ChannelLink>
+      <nuxt-link class="controls-page__menu__item" :to="`/dashboard/${channel.id}/main`">{{$t('dashboard.menu.common')}}</nuxt-link>
+      <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.FULL_ADMIN) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/team`">{{$t('dashboard.menu.team')}}</nuxt-link>
+      <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.BROADCAST) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/broadcast`">{{$t('dashboard.menu.broadcast')}}</nuxt-link>
+      <nuxt-link v-if="permissions.indexOf(UserChannelPermissions.MODERATE_CHAT) !== -1" class="controls-page__menu__item" :to="`/dashboard/${channel.id}/blocklist`">{{$t('dashboard.menu.blocklist')}}</nuxt-link>
+    </ControlsPageMenu>
     <div class="controls-page__content">
       <div class="controls-page__content__inner" v-if="loaded">
         <nuxt-child :channel="channel" :permissions="permissions"></nuxt-child>
@@ -55,9 +52,11 @@
   import Channel from '~/types/Channel'
   import { ChannelGetById, ChannelGetPermissions } from '~/api/modules/channels'
   import { UserChannelPermissions } from '~/helpers/permissions'
+  import ControlsPageMenu from '~/components/layout/controls-page/ControlsPageMenu.vue'
   @Component({
     middleware: 'auth',
     components: {
+      ControlsPageMenu,
       ChannelLink
     }
   })

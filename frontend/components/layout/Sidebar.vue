@@ -74,6 +74,11 @@ export default class Sidebar extends Vue {
     transition: all .25s;
     display: none;
     flex: unset!important;
+    @media screen and (max-width: 768px) {
+      z-index: 1000000;
+      position: fixed;
+      right: 0;
+    }
     &--opened {
       display: block;
     }

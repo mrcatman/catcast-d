@@ -1,13 +1,11 @@
 <template>
   <div class="subscribe-block">
-    <m-button @click="subscribe" :loading="loading" :count="subscribersCount" :flat="isSubscribed" :icon="isSubscribed ? 'favorite' : 'favorite_border'">{{isSubscribed ? $t('subscribe_block.unsubscribe') : $t('subscribe_block.subscribe') }}</m-button>
+    <m-button @click="subscribe" :loading="loading" :count="subscribersCount" :flat="isSubscribed" :icon="isSubscribed ? 'person_remove' : 'person_add'">{{isSubscribed ? $t('subscribe_block.unsubscribe') : $t('subscribe_block.subscribe') }}</m-button>
   </div>
 </template>
 <style lang="scss">
 .subscribe-block {
-  position: absolute;
-  top: 0;
-  right: 0;
+  margin: 1em 0 0;
 }
 </style>
 <script lang="ts">

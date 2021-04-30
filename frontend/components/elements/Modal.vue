@@ -168,6 +168,7 @@
   @media screen and (max-width: 768px) {
     & {
       &__box {
+        max-width: 100%;
         width: 100%;
         min-width: 0;
       }
