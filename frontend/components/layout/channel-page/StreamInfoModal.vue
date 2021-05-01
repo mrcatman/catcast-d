@@ -14,7 +14,7 @@
   import Channel from '~/types/Channel'
   import { notifySuccess } from '~/helpers/notifications'
 
-  @Component()
+  @Component({})
   export default class StreamInfoModal extends BaseFormComponent {
     @Prop({required: true})
     public channel!: Channel;
@@ -25,26 +25,30 @@
     public visible: boolean = false;
 
     @Watch('value')
-    onValueChange(value) {
+    onValueChange(value: boolean) {
       this.visible = value;
     }
     @Watch('visible')
-    onVisibleChange(value) {
+    onVisibleChange(value: boolean) {
       this.$emit('input', value);
     }
 
     fields: any = ['name', 'description'];
-    form = {
-      name: this.channel.stream_settings.name || '',
-      description: this.channel.stream_settings.description || ''
-    }
+    form = this.channel.stream_settings ? {
+      name: this.channel.stream_settings.name,
+      description: this.channel.stream_settings.description
+    } : {
+      name: '',
+      description: ''
+    };
+
     onSubmit() {
       notifySuccess(this.$t('common.saved').toString());
       this.visible = false;
       this.$emit('saved', this.form);
     }
     submit() {
-      return ChannelSetStreamSettings(this.channel.id, this.form);
+      return ChannelSetStreamSettings(this.channel.id!, this.form);
     }
     validateField(field: string, value: string) : Array<Warning> | null {
       if (field === 'name') {

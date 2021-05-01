@@ -7,7 +7,9 @@
         <m-input :warnings="warnings['frontend.site_name']" :errors="errors['frontend.site_name']" v-model="form.frontend.site_name" :title="$t('admin.config.frontend.site_name')" />
         <m-editor :warnings="warnings['frontend.site_description']" :errors="errors['frontend.site_description']" v-model="form.frontend.site_description" :title="$t('admin.config.frontend.site_description')" />
         <m-input :warnings="warnings['frontend.site_contact_email']" :errors="errors['frontend.site_contact_email']" v-model="form.frontend.site_contact_email" :title="$t('admin.config.frontend.site_contact_email')" />
-        <m-picture-uploader :returnPath="true" v-model="form.frontend.logo" :title="$t('admin.config.frontend.logo')" />
+        <m-picture-uploader :returnPath="true" v-model="form.frontend.logo" :title="$t('admin.config.frontend.logo')" default="/assets/pictures/site-logo.svg" />
+        <m-picture-uploader :returnPath="true" v-model="form.frontend.channel_default_logo" :title="$t('admin.config.frontend.channel_default_logo')" default="/assets/pictures/default-logo.svg" />
+        <m-picture-uploader :returnPath="true" v-model="form.frontend.user_default_avatar" :title="$t('admin.config.frontend.user_default_avatar')" default="/assets/pictures/default-avatar.svg" />
       </div>
       <div key="federation" v-if="form.federation" v-show="currentTab === 'federation'">
         <m-checkbox v-model="form.federation.enabled" :title="$t('admin.config.federation.enabled')" />
@@ -49,7 +51,7 @@ export default class AdminConfigPage extends BaseFormComponent {
   }
 
   fields: any = [
-    'frontend.site_name','frontend.site_description', 'frontend.site_contact_email', 'frontend.logo',
+    'frontend.site_name','frontend.site_description', 'frontend.site_contact_email', 'frontend.logo',  'frontend.channel_default_logo', 'frontend.user_default_avatar',
   ];
   tabs = [
     {id: 'frontend', name: this.$t('admin.config.tabs.frontend') as string},

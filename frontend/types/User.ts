@@ -10,4 +10,7 @@ export default interface User {
   picture: Picture | null;
   role_id: Role,
   activitypub_handle: string;
+  web_url?: string;
+  domain?: string;
 }
+

@@ -17,36 +17,24 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
-import { Watch } from 'vue-property-decorator'
+import { Prop, Watch } from 'vue-property-decorator'
 
 import ChannelThumb from '~/components/layout/thumbs/Channel.vue'
 import Channel from '~/types/Channel'
 import Paginator from '~/types/Paginator'
+import User from '~/types/User'
 
 @Component({
-  props: {
-    link: {
-      type: String,
-      required: false
-    },
-    title: {
-      type: String,
-      required: false
-    },
-    fn: {
-      type: Function,
-      required: true,
-    },
-    full: {
-      type: Boolean,
-      required: false,
-    },
-  },
   components: {
     ChannelThumb,
   },
 })
 export default class ChannelsList extends Vue {
+  @Prop({required: false}) readonly full!: boolean;
+  @Prop({required: true}) readonly fn!: Function;
+  @Prop({required: false}) readonly link!: string;
+  @Prop({required: false}) readonly title!: string;
+
   currentPage: number = 1;
 
   @Watch('currentPage')

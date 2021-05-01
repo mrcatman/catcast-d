@@ -152,15 +152,15 @@ export default class PictureUploader extends PictureUploaderProps {
 	filename: string = '';
 	extensions: Array<string> = availablePictureExtensions;
   status: uploadStatus = uploadStatus.STATUS_NOT_STARTED;
-  picture: Picture  | null = null;
-  picturePath: string | null = null;
+  picture: Picture | null = null;
+  picturePath: String | null = null;
 
   @Watch('value')
   onValueChanged(newValue: Picture | string | null) {
     if (this.returnPath) {
       this.picturePath = newValue && typeof newValue === 'object'  ? newValue!.full_url! : newValue;
     } else {
-      this.picture = newValue;
+      this.picture = newValue as Picture;
     }
   }
 

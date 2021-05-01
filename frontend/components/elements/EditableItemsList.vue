@@ -77,7 +77,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    onKeyup(e) {
+    onKeyup(e: any) {
       if (e.code === 'Enter') {
         this.add();
       }

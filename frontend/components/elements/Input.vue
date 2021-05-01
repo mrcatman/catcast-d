@@ -1,5 +1,5 @@
 <template>
-<inputBase @click="focus" class="input-base" :disabled="disabled" :autoSize="autoSize" :loading="loading" :noErrors="noErrors" :icon="icon" :inlinePlaceholder="inlinePlaceholder" :wasFocused="wasFocused" :hidePlaceholder="hidePlaceholder" :single="single" :inputValue="val" :type="type" :title="title" :placeholder="placeholder" :warnings="warnings" :errors="errors" :append="append" :prepend="prepend"  :description="description">
+<InputBase @click="focus" class="input-base" :disabled="disabled" :autoSize="autoSize" :loading="loading" :noErrors="noErrors" :icon="icon" :inlinePlaceholder="inlinePlaceholder" :wasFocused="wasFocused" :hidePlaceholder="hidePlaceholder" :single="single" :inputValue="val" :type="type" :title="title" :placeholder="placeholder" :warnings="warnings" :errors="errors" :append="append" :prepend="prepend"  :description="description">
 	<i class="material-icons input__icon" v-if="icon">{{icon}}</i>
   <div v-if="disabled" class="input__disabled-overlay"></div>
   <div class="input__element-container">
@@ -17,13 +17,13 @@
   </div>
   <div class="input__loading" v-if="loading"></div>
 
-</inputBase>
+</InputBase>
 </template>
 <script>
-import inputBase from '@/components/elements/inputBase';
+import InputBase from '@/components/elements/InputBase';
 export default {
 	components:{
-    inputBase
+    InputBase
   },
 	props: {
     autoSize: {

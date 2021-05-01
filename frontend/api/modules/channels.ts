@@ -54,7 +54,7 @@ export const ChannelGetByUrl = async (url: string): Promise<Channel> => {
   return res.data.channel as Channel;
 };
 
-export const ChannelGetPermissions = async (id: number): Promise<Array<string>> => {
+export const ChannelGetPermissions = async (id: number): Promise<Array<UserChannelPermissions>> => {
   const res = await api.get(`${BASE_PATH}/${id}/permissions`);
   return res.data.permissions as Array<UserChannelPermissions>;
 };

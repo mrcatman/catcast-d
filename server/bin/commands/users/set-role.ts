@@ -2,7 +2,13 @@ import { User } from '../../../app/models/User'
 import { Role } from '../../../app/helpers/roles'
 
 
-export default async function makeAdmin({login, role}: {login: string, role: string}) {
+export default async function setRole({login, role}: {login: string, role: string}) {
+  if (!login) {
+    console.warn('Usage: users/set-role --login=login --role=role');
+    const roles = Object.keys(Role).map(key => Role[key]).filter(value => typeof value === 'string') as string[];
+    console.warn(`Available roles: ${roles.join(', ')}`);
+    return;
+  }
   const user = await User.findOne({
     login
   });

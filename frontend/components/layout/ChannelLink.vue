@@ -4,35 +4,29 @@
   </component>
 </template>
 <script lang="ts">
-import Vue, {PropType} from 'vue';
-import Channel from '@/types/Channel'
-export default Vue.extend({
-  name: 'ChannelLink',
+import { Vue, Prop, Component } from 'vue-property-decorator'
+import Channel from '~/types/Channel'
+@Component({})
+export default class UserLink extends Vue {
+  @Prop({required: true}) readonly channel!: Channel
   mounted() {
     if (this.channel.web_url) {
-      this.$refs.link.setAttribute('href', this.channel.web_url);
-    }
-  },
-  methods: {
-    onThumbClick(e: any) {
-      this.$router.push(this.localUrl);
-      e.preventDefault();
-    }
-  },
-  computed: {
-    localUrl() {
-       if (this.channel.domain) {
-        return `/channels/${this.channel.id}`;
-      } else {
-        return `/${this.channel.url}`;
-      }
-    }
-  },
-  props: {
-    channel: {
-      type: Object as PropType<Channel>,
-      required: true
+      let link = this.$refs.link as Element;
+      link.setAttribute('href', this.channel.web_url);
     }
   }
-})
+
+  onThumbClick(e: any) {
+    this.$router.push(this.localUrl);
+    e.preventDefault();
+  }
+
+  get localUrl() {
+    if (this.channel.domain) {
+      return `/channels/${this.channel.id}`;
+    } else {
+      return `/${this.channel.url}`;
+    }
+  }
+}
 </script>

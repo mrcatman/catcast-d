@@ -30,7 +30,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 import { Watch } from 'vue-property-decorator'
 import Channel from '~/types/Channel'
 import { ChannelsGetFavorite } from '~/api/modules/channels'
-import ChannelLink from '@/components/layout/ChannelLink';
+import ChannelLink from '~/components/layout/ChannelLink.vue';
 
 @Component({components: {ChannelLink}})
 export default class Sidebar extends Vue {

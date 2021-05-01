@@ -17,10 +17,12 @@ export type ChatUserInfo = {
   login: string;
   domain?: string;
   avatar?: string;
+  isBlocked?: boolean;
   isAdmin?: boolean;
   isModerator?: boolean;
   webUrl?: boolean;
   color?: string;
+
 }
 
 export type ChatMessage = {

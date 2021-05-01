@@ -106,7 +106,7 @@ export default class ChannelTeamPage extends BaseFormComponent {
   form = {
     user: '',
     comment: '',
-    permissions: {},
+    permissions: {} as any,
     full: false
   }
 

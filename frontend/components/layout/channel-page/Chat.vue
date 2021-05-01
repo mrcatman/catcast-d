@@ -94,6 +94,7 @@ import {
 } from '~/api/modules/chat'
 import { ChatMessage, ChatSettings, ChatUpdateType, ChatUserInfo } from '~/types/chat'
 import { getReadableTime } from '~/helpers/time'
+import User from '~/types/User'
 
 @Component({})
 export default class Chat extends Vue {
@@ -107,7 +108,7 @@ export default class Chat extends Vue {
   messages = [] as Array<ChatMessage>;
   me: ChatUserInfo | null = null;
   users = [] as Array<ChatUserInfo>;
-  socket: Websocket | null = null;
+  socket: WebSocket | null = null;
   form = {
     content: ''
   };
@@ -157,7 +158,7 @@ export default class Chat extends Vue {
 
   @Watch('color')
   onChangeColor(color: string){
-    ChatSetColor(this.socket, color);
+    ChatSetColor(this.socket!, color);
     localStorage.catcast_chat_color = color;
   }
 
@@ -166,7 +167,7 @@ export default class Chat extends Vue {
       case ChatUpdateType.CONNECTED:
         this.ready = true;
         this.me = payload.user;
-        ChatSetColor(this.socket, this.color);
+        ChatSetColor(this.socket!, this.color);
         break;
       case ChatUpdateType.MESSAGES_LIST:
         this.messages = payload.messages;
@@ -210,7 +211,7 @@ export default class Chat extends Vue {
             this.$set(this.users, index, {...user, ...payload.info});
           }
         })
-        if (payload.id === this.me.id) {
+        if (this.me && payload.id === this.me.id) {
           this.me = {...this.me, ...payload.info};
         }
         break;
@@ -218,28 +219,28 @@ export default class Chat extends Vue {
   }
 
   deleteMessage(message: ChatMessage) {
-    ChatDeleteMessage(this.socket, {
+    ChatDeleteMessage(this.socket!, {
       id: message.id
     });
   }
 
   sendMessage() {
-    ChatSendMessage(this.socket, this.form);
+    ChatSendMessage(this.socket!, this.form);
     this.form.content = '';
   }
 
   saveSettings() {
-    ChatUpdateSettings(this.socket, this.formSettings);
+    ChatUpdateSettings(this.socket!, this.formSettings);
     this.showSettings = false;
   }
 
   clearChat() {
-    ChatClear(this.socket);
+    ChatClear(this.socket!);
     this.showSettings = false;
   }
 
-  ban(user) {
-    return !user.isBlocked ? ChatBanUser(this.socket, user.id) : ChatUnbanUser(this.socket, user.id);
+  ban(user: ChatUserInfo) {
+    return !user.isBlocked ? ChatBanUser(this.socket!, user.id) : ChatUnbanUser(this.socket!, user.id);
   }
 
   canEditMessage(message: ChatMessage): boolean {

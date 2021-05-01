@@ -29,6 +29,7 @@ import { Component, Vue } from 'nuxt-property-decorator'
 import Channel from '~/types/Channel'
 import { Prop, Watch } from '~/node_modules/vue-property-decorator'
 import { ChannelGetStreams } from '~/api/modules/channels'
+import Stream from '~/types/Stream'
 
 @Component({
   components: { },
@@ -43,7 +44,7 @@ export default class ChannelInfoBlock extends Vue {
     this.load();
   }
 
-  getStreamTime(stream) {
+  getStreamTime(stream: Stream) {
     let startDate = new Date(stream.started_at);
     let startDateString = startDate.toLocaleDateString();
     let startTimeString = startDate.toLocaleTimeString().replace(/(.*)\D\d+/, '$1');
@@ -62,7 +63,7 @@ export default class ChannelInfoBlock extends Vue {
   }
 
   async load() {
-    this.streams = await ChannelGetStreams(this.channel.id, this.currentPage);
+    this.streams = await ChannelGetStreams(this.channel.id!, this.currentPage);
   }
   async mounted() {
    await this.load();

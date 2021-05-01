@@ -13,7 +13,7 @@ export const PermissionsGetList = async(): Promise<PermissionsResponse> => {
 };
 
 
-export const PermissionsGetMy = async(): Promise<PermissionsResponse> => {
+export const PermissionsGetMy = async(): Promise<UserPermissions[]> => {
   const res = await api.get(`${BASE_PATH}/my`);
   return res.data.permissions;
 };

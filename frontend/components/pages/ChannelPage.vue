@@ -26,7 +26,7 @@
   import ChannelInfo from '~/components/layout/channel-page/ChannelInfo.vue'
   import Chat from '~/components/layout/channel-page/Chat.vue'
   import StreamsList from '~/components/layout/channel-page/StreamsList.vue'
-  import { UserChannelPermissions } from '~/helpers/UserChannelPermissions'
+  import { UserChannelPermissions } from '~/helpers/permissions'
 
   @Component({
     components: { ChannelInfo, Chat, LivePlayer, StreamsList },

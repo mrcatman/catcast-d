@@ -1,1 +1,1 @@
-{"type":"mysql","host":"localhost","port":3306,"username":"root","password":"meow12345","database":"catcast_d","charset":"utf8mb4_unicode_ci"}
+{"type":"mysql","host":"localhost","port":3306,"username":"catcast_d_user","password":"catcast_d_password","database":"catcast_d","charset":"utf8mb4_unicode_ci"}
