@@ -9,7 +9,7 @@
       </div>
       <m-list>
         <m-list-item :to="`/dashboard/${channel.id}/main`" v-for="channel in channels.list" :key="channel.id">
-          <m-list-item-picture :picture="channel.logo" />
+          <m-list-item-picture :picture="channel.logo" defaultFromConfig="channel_default_logo" />
           <m-list-item-texts>
             <m-list-item-title>
               {{channel.name}}

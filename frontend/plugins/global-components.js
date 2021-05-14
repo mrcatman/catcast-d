@@ -22,11 +22,14 @@ import ListItemSub from '~/components/elements/list/ListItemSub'
 import ListItemButtons from '~/components/elements/list/ListItemButtons'
 import ListBottom from '~/components/elements/list/ListBottom'
 
+
 import EditableItemsList from '@/components/elements/EditableItemsList'
 import Editor from '@/components/elements/Editor'
 import Pager from '@/components/elements/Pager'
 import Autocomplete from '@/components/elements/Autocomplete'
 import Colorpicker from '@/components/elements/Colorpicker'
+import Select from '~/components/elements/Select'
+import Table from '~/components/elements/Table'
 
 Vue.component('m-button', Button)
 Vue.component('m-modal', Modal)
@@ -47,6 +50,8 @@ Vue.component('m-editable-items-list', EditableItemsList)
 Vue.component('m-pager', Pager)
 Vue.component('m-autocomplete', Autocomplete)
 Vue.component('m-colorpicker', Colorpicker)
+Vue.component('m-table', Table)
+Vue.component('m-select', Select)
 
 Vue.component('m-list', List)
 Vue.component('m-list-item', ListItem)

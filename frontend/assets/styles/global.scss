@@ -6,6 +6,7 @@
 @import "common-blocks/tooltips.scss";
 @import "common-blocks/tags.scss";
 @import "common-blocks/controls-page.scss";
+@import "common-blocks/tables.scss";
 
 html {
   height: 100vh;
@@ -104,6 +105,10 @@ a{
 .app .vue-notification {
   font-size: 1.125em;
 }
+.app .vue-notification-group {
+  z-index: 100000000;
+}
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .3s;
 }
@@ -122,3 +127,10 @@ a{
 .material-icons {
   font-size: 1.5em;
 }
+.horizontal-delimiter {
+  margin: 0 .5em;
+  width: 1px;
+  height: 2.25em;
+  background: var(--border-color);
+}
+

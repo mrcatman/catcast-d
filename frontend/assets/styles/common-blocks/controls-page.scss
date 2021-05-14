@@ -5,6 +5,11 @@
   @media screen and (max-width: 768px) {
     overflow: auto;
   }
+  &__subheading {
+    margin: 0;
+    padding: 1em 0 .5em;
+  }
+
   &__menu {
     flex: 1;
     background: var(--title-box-color);
@@ -64,7 +69,8 @@
     margin: -1.75em 0 1.75em;
   }
   &__content {
-    flex: 2;
+    overflow: auto;
+    flex: 4;
     padding: 1.325em 2em;
     @media screen and (max-width: 768px) {
       padding: 1em 1em 1em 2.5em;

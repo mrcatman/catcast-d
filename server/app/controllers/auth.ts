@@ -19,6 +19,12 @@ async function routes (fastify: ServerInstance, options) {
         try {
             await req.jwtVerify()
             userInstance = await User.findOne({id: req.user.id});
+            if (userInstance.is_blocked) {
+                throw {
+                    statusCode: 403,
+                    text: 'auth.messages.error_user_blocked'
+                }
+            }
         } catch (e) {
 
         }
@@ -40,6 +46,12 @@ async function routes (fastify: ServerInstance, options) {
             throw {
                 statusCode: 404,
                 text: 'auth.messages.error_wrong_login'
+            }
+        }
+        if (user.is_blocked) {
+            throw {
+                statusCode: 403,
+                text: 'auth.messages.error_user_blocked'
             }
         }
         const token = await res.jwtSign(user.getJWTPayload());

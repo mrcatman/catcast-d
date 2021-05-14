@@ -130,6 +130,7 @@ const PictureUploaderProps = Vue.extend({
         return []
       }
     },
+
     value: {
       type: [Object, String],
       required: false
@@ -140,6 +141,10 @@ const PictureUploaderProps = Vue.extend({
     },
     returnPath: {
       type: Boolean,
+      required: false
+    },
+    default: {
+      type: String,
       required: false
     }
   }
@@ -189,7 +194,7 @@ export default class PictureUploader extends PictureUploaderProps {
   }
 
 
-	get path() {;
+	get path() {
     return this.returnPath ? (this.picturePath) : (this.picture ? this.picture.full_url : null);
   }
 
@@ -199,7 +204,7 @@ export default class PictureUploader extends PictureUploaderProps {
 
   reset() {
     if (this.returnPath) {
-      this.picturePath = null;
+      this.picturePath = this.default || null;
     } else {
       this.picture = null;
     }

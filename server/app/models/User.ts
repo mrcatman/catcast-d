@@ -93,6 +93,9 @@ export class User extends BaseModel {
     @Column({nullable: true})
     web_url: string;
 
+    @Column({default: false})
+    is_blocked: boolean;
+
 
     getJWTPayload() {
         return {
@@ -121,6 +124,8 @@ export class User extends BaseModel {
     }
 
     toObject() {
+        let avatar = this.avatar? this.avatar.full_url : (config('frontend.user_default_avatar') ? (config('frontend.user_default_avatar').startsWith('http') ? config('frontend.user_default_avatar') :  `https://${config('server.domain')}${config('frontend.user_default_avatar')}`) : null);
+
         return {
             id: this.getActorUrl(),
             type: 'Person',
@@ -138,11 +143,11 @@ export class User extends BaseModel {
                 owner: this.getActorUrl(),
                 publicKeyPem: this.public_key
             },
-            icon: {
+            icon: avatar ? {
                 type: 'Image',
                 mediaType: 'image/png',
-                url: this.avatar? this.avatar.full_url : `https://${config('server.domain')}/static/no-logo.png`
-            },
+                url: avatar
+            } : undefined,
             endpoints: {
                 sharedInbox: SHARED_INBOX_URL
             }
@@ -156,9 +161,6 @@ export class User extends BaseModel {
         })
     }
 
-    isAdmin() : boolean {
-        return this.role_id === Role.ADMIN;
-    }
 
     activitypub_handle: String;
 

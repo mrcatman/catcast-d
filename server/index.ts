@@ -3,6 +3,7 @@ const path = require('path');
 import { validate } from "./app/validation/validate";
 import {User} from "./app/models/User";
 import { config } from './app/config'
+import { Role } from './app/helpers/roles'
 
 interface FastifyInstanceExtended extends FastifyInstance {
     getDefaultJsonParser: Function
@@ -60,6 +61,14 @@ server.decorate("authenticate", async function(request, reply) {
     try {
         await request.jwtVerify()
         request.user = await User.findOne({id: request.user.id});
+        if (request.user.is_blocked) {
+            throw {
+                status: 403,
+                text: "access_error"
+            }
+        }
+        request.user.last_time_seen = new Date();
+        request.user.save();
     } catch (err) {
         reply.send(err)
     }
@@ -69,17 +78,40 @@ server.decorate("authenticate_optional", async function(request) {
     try {
         await request.jwtVerify()
         request.user = await User.findOne({id: request.user.id});
+        request.user.last_time_seen = new Date();
+        request.user.save();
     } catch (err) {
 
+    }
+})
+server.decorate("authenticate_moderator", async function(request, reply) {
+    try {
+        await request.jwtVerify()
+        request.user = await User.findOne({id: request.user.id});
+        if (request.user.role_id < Role.MODERATOR || request.user.is_blocked) {
+            throw {
+                status: 403,
+                text: "access_error"
+            }
+        }
+        request.user.last_time_seen = new Date();
+        request.user.save();
+    } catch (err) {
+        reply.send(err)
     }
 })
 server.decorate("authenticate_admin", async function(request, reply) {
     try {
         await request.jwtVerify()
         request.user = await User.findOne({id: request.user.id});
-        if (!request.user.isAdmin()) {
-            throw new Error("Access error");
+        if (request.user.role_id < Role.ADMIN || request.user.is_blocked) {
+            throw {
+                status: 403,
+                text: "access_error"
+            }
         }
+        request.user.last_time_seen = new Date();
+        request.user.save();
     } catch (err) {
         reply.send(err)
     }
@@ -99,7 +131,8 @@ server.decorate('validate', validate);
         'federation': '/api/federation',
         'chat': '/api/chat',
         'permissions': '/api/permissions',
-        'users': '/api/users'
+        'users': '/api/users',
+        'admin': '/api/admin'
     };
     for (let controller in controllerPaths) {
         server.register(await import('./app/controllers/' + controller), {prefix: controllerPaths[controller]})

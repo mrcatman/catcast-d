@@ -12,5 +12,6 @@ export default interface User {
   activitypub_handle: string;
   web_url?: string;
   domain?: string;
+  is_blocked?: boolean;
 }
 

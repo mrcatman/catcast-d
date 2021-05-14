@@ -84,6 +84,9 @@ export class Channel extends BaseModel {
 
     live_url: string;
 
+    @Column({default: false})
+    is_blocked: boolean;
+
     @Column({nullable: true, default: JSON.stringify(defaultStreamSettings)})
     stream_settings_value: string;
 
@@ -129,6 +132,8 @@ export class Channel extends BaseModel {
     }
 
     toObject() {
+        let logo = this.logo? this.logo.full_url : (config('frontend.channel_default_logo') ? (config('frontend.channel_default_logo').startsWith('http') ? config('frontend.channel_default_logo') :  `https://${config('server.domain')}${config('frontend.channel_default_logo')}`) : null);
+
         return {
             id: this.getActorUrl(),
             actor: this.owner ? this.owner.getActorUrl() : undefined,
@@ -147,11 +152,11 @@ export class Channel extends BaseModel {
                 owner: this.getActorUrl(),
                 publicKeyPem: this.public_key
             },
-            icon: {
+            icon: logo ? {
                 type: 'Image',
-                mediaType: 'image/png',
-                url: this.logo? this.logo.full_url : `https://${config('server.domain')}/static/no-logo.png`
-            },
+                mediaType: 'image/' + logo.split('.').pop(),
+                url: logo
+            } : undefined,
             endpoints: {
                 sharedInbox: SHARED_INBOX_URL
             }

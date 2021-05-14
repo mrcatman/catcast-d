@@ -1,4 +1,13 @@
+FROM node:12 as frontend
+WORKDIR /frontend
+COPY /frontend/ /frontend
+RUN cd /frontend
+RUN npm install
+RUN npm rebuild node-sass
+RUN npm run build
+
 FROM alpine:3.4
+
 
 ENV NGINX_VERSION 1.18.0
 ENV NGINX_RTMP_MODULE_VERSION "dev"
@@ -43,15 +52,8 @@ RUN cd /tmp/nginx-${NGINX_VERSION} && make && make install
 
 RUN rm -rf /tmp/*
 
-ADD nginx.conf /opt/nginx/nginx.conf
-
-RUN mkdir -p /data
-RUN mkdir -p /data/hls
-RUN mkdir -p /data/dash
-RUN mkdir -p /data/screens
-RUN mkdir -p /www
-
-ADD static /www/static
+RUN mkdir -p /data /data/hls /data/dash /data/screens /www
+COPY --from=frontend /frontend/dist /data/frontend
 
 EXPOSE 1935
 

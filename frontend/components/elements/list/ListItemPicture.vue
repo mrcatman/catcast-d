@@ -1,5 +1,5 @@
 <template>
-  <div class="list-item__picture" :style="{backgroundImage: `url(${(picture ? picture.full_url : null)}`}"></div>
+  <PictureBlock class="list-item__picture" :data="picture" :defaultFromConfig="defaultFromConfig"></PictureBlock>
 </template>
 <style lang="scss">
   .list-item__picture {
@@ -14,11 +14,17 @@
 <script lang="ts">
   import Vue, {PropType} from 'vue';
   import Picture from '~/types/Picture'
+  import PictureBlock from '~/components/layout/PictureBlock.vue'
   export default Vue.extend({
+    components: { PictureBlock },
     props: {
       picture: {
         type: Object as PropType<Picture>,
         required: true
+      },
+      defaultFromConfig: {
+        type: String,
+        required: false
       }
     }
   })

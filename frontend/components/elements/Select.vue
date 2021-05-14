@@ -1,10 +1,10 @@
 <template>
 <div v-click-outside="hideSelect"  ref="select" class="select" :style="{'min-width': width}">
 	<div class="select__title" v-if="title || placeholder"><span v-if="placeholder">{{placeholder}}</span><span v-else>{{title}}</span></div>
-	<div ref="current" class="select__current-variant" @click="visible=!visible">{{getCurrentVariantName}}</div>
+	<div ref="current" class="select__current-variant" @click="visible=!visible">{{getCurrentVariantTitle}}</div>
 	<div ref="variants" class="select__variants" :style="{left: variantsPosition.left+'px', top: variantsPosition.top+'px', width: variantsPosition.width+'px'}" v-show="visible">
-		<div :ref="'variant_'+$index" :key="variant.value" class="select__variant" @click="setVariant(variant)" v-for="(variant,$index) in optionsList">
-			<touch-ripple class="select__variant__inner" :speed="1" :opacity="0.25" transition="ease">{{variant.name}}</touch-ripple>
+		<div :ref="'variant_'+$index" :key="variant.id" class="select__variant" @click="setVariant(variant)" v-for="(variant,$index) in optionsList">
+			<div class="select__variant__inner" :speed="1" :opacity="0.25" transition="ease">{{variant.title}}</div>
 		</div>
 	</div>
 	<a class="select__icon-container">
@@ -34,22 +34,9 @@
     }
 
     &__current-variant{
-      .theme-default & {
-        background: #3a3a3a;
-        box-shadow: 0 2.5px 10px -3px rgba(0, 0, 0, .75);
-        padding: .5em 2.5em .5em 1em;
-        transition: all 0.35s;
-        &:hover {
-          box-shadow: 0 5px 15px -3px rgba(0, 0, 0, .75);
-          background: #3f3f3f;
-        }
-      }
-      .theme-flat & {
-        padding: .5em;
-        box-shadow: 0 .5em 1em -0.25em rgba(255, 255, 255, .125);
-        background: rgba(255, 255, 255, .125);
-        border-radius: .25em;
-      }
+      background: var(--border-color);
+      padding: .5em 2.5em .5em 1em;
+      transition: all 0.35s;
     }
 	&__errors {
 		position:absolute;
@@ -63,13 +50,7 @@
 		font-size: 1em;
 		position: fixed;
 		width:100%;
-    .theme-default & {
-      background: #2d2d2d;
-      box-shadow: 0 5px 15px -3px #000;
-    }
-    .theme-flat & {
-      background: rgba(6, 25, 39, 0.75);
-    }
+    background-color: var(--box-element-color);
 	}
 	&__variant {
 		white-space: nowrap;
@@ -82,7 +63,7 @@
 		}
 		&__inner {
 			width: 100%;
-      padding: .65em .5em;
+      padding: .75em 1em;
 		}
 	}
 
@@ -108,20 +89,20 @@ export default {
       let options = JSON.parse(JSON.stringify(this.options));
       if (this.showEmptyVariant) {
         options.unshift({
-          name: '...',
-          value: null,
+          title: '...',
+          id: null,
         });
       }
       return options;
     },
-		getCurrentVariantName() {
-			let name = "...";
+		getCurrentVariantTitle() {
+			let title = "...";
 			this.options.forEach(option=>{
-			  if (option.value == this.val) {
-					name = option.name;
+			  if (option.id == this.val) {
+					title = option.title;
 				}
 			});
-			return name;
+			return title;
 		}
 	},
 	props:{
@@ -154,7 +135,7 @@ export default {
 	},
 	mounted() {
 	  if ((this.val === undefined || this.val === null || this.val === "") && this.options && this.options[0]) {
-			this.val = this.options[0].value;
+			this.val = this.options[0].id;
 			this.setVariant(this.options[0]);
 		}
     this.setWidth();
@@ -220,10 +201,9 @@ export default {
       el.parentNode.removeChild(el);
     },
 		setVariant(variant) {
-			this.val = variant.value;
-			this.$emit('input', variant.value);
-			this.$emit('change', variant.value);
-      this.$emit('valuechange',variant);
+			this.val = variant.id;
+			this.$emit('input', variant.id);
+			this.$emit('change', variant.id);
 			this.visible = false;
 		}
 	}

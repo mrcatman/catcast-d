@@ -3,7 +3,7 @@
     <HeaderNav />
     <div class="app__container">
       <nuxt/>
-      <Sidebar />
+      <Sidebar v-if="isLoggedIn" />
     </div>
     <notifications group="all"  position="bottom left" />
     <portal-target name="modals"></portal-target>
@@ -31,6 +31,12 @@
   import HeaderNav from '~/components/layout/header/HeaderNav.vue'
   export default Vue.extend({
     components: { Sidebar, HeaderNav },
+    computed: {
+
+      isLoggedIn() {
+        return this.$accessor.modules.auth.isLoggedIn;
+      }
+    },
     mounted() {
       window.$t = this.$t; // non-elegant but working
     }

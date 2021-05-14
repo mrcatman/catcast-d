@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="permissionsCategory in permissionsSorted">
-      <h3>{{permissionsCategory.name}}</h3>
+      <h3 class="controls-page__subheading">{{permissionsCategory.name}}</h3>
       <m-list>
         <m-list-item v-for="item in permissionsCategory.list" :key="item.id">
           <m-list-item-picture v-if="item.channel.logo" :picture="item.channel.logo" />

@@ -67,7 +67,7 @@ async function routes (fastify: ServerInstance, options) {
     let user = await User.findOneOrFail({id: req.params.id});
     if (user.id === req.user.id) {
       throw {
-        statusCode: 403,
+        status: 403,
         text: 'subscribe_block.errors.cannot_subscribe_to_self'
       }
     }

@@ -1,0 +1,50 @@
+version: '3'
+services:
+
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - app-network
+  webserver:
+    build: .
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "4002:80"
+      - "443:443"
+      - "1935:1935/udp"
+      - "1935:1935/tcp"
+    volumes:
+      - ./nginx.conf:/opt/nginx/nginx.conf
+    networks:
+      - app-network
+  backend:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: backend
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ./config:/server/config
+    networks:
+      - app-network
+
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+#Volumes
+volumes:
+  db_data:
+    driver: local

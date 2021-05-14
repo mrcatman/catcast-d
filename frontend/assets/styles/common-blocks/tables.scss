@@ -1,0 +1,32 @@
+.table {
+
+  &__el {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0 0 1em;
+
+    td {
+      padding: .5em;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    thead {
+      background: var(--box-header-color);
+      font-weight: 500;
+    }
+  }
+  &__buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  &__row--strike-out &__col {
+    background: var(--border-color);
+    text-decoration: line-through;
+  }
+  &__col {
+    &--buttons {
+      text-decoration: none;
+    }
+  }
+}

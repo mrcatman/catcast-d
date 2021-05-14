@@ -131,7 +131,7 @@
     font-weight: 400;
 		transition: all 0.25s;
 		&--with-icon {
-      left:2.5em;
+
     }
 		color: var(--text-sub-color);
     &--inline {

@@ -16,7 +16,11 @@ export function config(key: string | null = null) {
   if (!configValues[namespace]) {
     let filePath = path.resolve(__dirname, `../${configFolder}/${namespace}.json`);
     if (fs.existsSync(filePath)) {
-      data = JSON.parse(fs.readFileSync(filePath));
+      try {
+        data = JSON.parse(fs.readFileSync(filePath));
+      } catch (e) {
+
+      }
       configValues[data] = data;
     }
   } else {
@@ -33,16 +37,24 @@ export function config(key: string | null = null) {
 
 export const setConfig = (config) => {
   for (let namespace in config) {
-    configValues[namespace] = config[namespace];
-    fs.writeFileSync(`${configFolder}/${namespace}.json`, JSON.stringify(configValues[namespace]));
+    setConfigNamespace(namespace, config[namespace]);
   }
+}
+
+export const setConfigNamespace = (namespace, configValuesNamespace) => {
+  configValues[namespace] = configValuesNamespace;
+  fs.writeFileSync(`${configFolder}/${namespace}.json`, JSON.stringify(configValuesNamespace));
 }
 
 
 fs.readdir(configFolder, (err, files) => {
   for (let file of files) {
     let namespace = file.split(".")[0];
-    configValues[namespace] = JSON.parse(fs.readFileSync(`${configFolder}/${file}`));
+    try {
+      configValues[namespace] = JSON.parse(fs.readFileSync(`${configFolder}/${file}`));
+    } catch (e) {
+
+    }
   }
 });
 

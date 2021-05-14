@@ -14,6 +14,7 @@ export interface ServerInstance {
     authenticate: Function,
     authenticate_optional: Function,
     authenticate_admin: Function,
+    authenticate_moderator: Function,
     config: ServerConfig,
     ws: any
 }
