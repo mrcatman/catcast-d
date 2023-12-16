@@ -3,7 +3,7 @@
      <c-box>
        <template slot="title">{{$t('profile.personal._title')}}</template>
        <template slot="main">
-         <c-form box :initialValues="userData" @response="onResponse" method="put" url="/auth/me">
+         <c-form box :initialValues="user" @response="onResponse" method="put" url="/auth/me">
            <c-row>
              <c-col>
                <c-input v-form-input="'username'" :title="$t('profile.personal.username')" :append="`@${siteDomain}`" :readonly="true" />
@@ -35,11 +35,7 @@ import {mapGetters, mapState} from "vuex";
       ...mapGetters('config', ['siteDomain']),
       ...mapState('auth', ['user']),
     },
-    data() {
-      return {
-        userData: JSON.parse(JSON.stringify(this.user)),
-      }
-    },
+
     methods: {
       onResponse(user) {
         if (!user._has_errors) {
