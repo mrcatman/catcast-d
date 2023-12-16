@@ -31,6 +31,9 @@
   &--not-confirmed {
     opacity: .75;
   }
+  &:hover {
+    background: var(--lighten-1);
+  }
   &__date-container {
     text-align: right;
   }
@@ -47,15 +50,14 @@
     text-decoration: none;
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
   }
   &__right {
     height: 100%;
     display: flex;
     align-items: center;
   }
-  &:hover {
-    background: var(--lighten-1);
-  }
+
   &--not-link {
     cursor: default;
     &:hover {
@@ -76,9 +78,7 @@
   }
   &__captions {
     overflow: hidden;
-  }
-  &__picture-container + &__captions {
-    margin-left: 1em;
+    flex: 1;
   }
   &__title {
     white-space: nowrap;
@@ -116,6 +116,7 @@
     width: 6.5em;
     height: 3.5em;
     position: relative;
+    margin-right: 1em;
     &--square {
       min-width: 3.5em;
       width: 3.5em;

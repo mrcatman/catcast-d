@@ -234,7 +234,7 @@
   import { formatPublishDate } from '@/helpers/dates.js';
   let ResizeSensor = require('css-element-queries/src/ResizeSensor');
   import ChannelThumb from '@/components/thumbs/ChannelThumb';
-  import PreloadingThumb from '@/components/thumbs/PreloadingThumb';
+  import PreloadingThumb from '@/components/preloading/PreloadingThumb';
   import VideoItem from '@/components/VideoItem';
   import RecordItemBig from "@/components/RecordItemBig";
   export default {

@@ -66,6 +66,7 @@
     align-items: center;
     height: 100%;
     text-decoration: none;
+    user-select: none;
     &:hover {
       background: var(--lighten-1);
     }

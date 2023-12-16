@@ -42,7 +42,8 @@
           infiniteScroll: true,
           noPadding: true,
           search: true,
-          hidePaginator: true
+          hidePaginator: true,
+          usePreloadingListItem: true,
         }
       }
     },
