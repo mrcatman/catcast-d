@@ -14,7 +14,7 @@
           <slot name="before_filters"></slot>
         </c-col>
         <c-col class="thumbs-list__search" v-if="config.search">
-          <c-input @change="reload()" v-model="search" :placeholder="$t('search._title')" icon="search" :debounce="true" />
+          <c-input @input="reload()" v-model="search" :placeholder="$t('search._title')" icon="search" :debounce="true" />
         </c-col>
 
         <c-col auto-width v-if="$slots.filters">
