@@ -25,9 +25,35 @@
       </c-row>
     </template>
   </c-box>
-  // todo: current/last broadcast
-  // todo: settings (category, description)
   // todo: manual recording
+
+  <c-box>
+    <template slot="main">
+      {{activeBroadcast}}
+      <c-button color="green" icon="settings" @click="editCurrentBroadcast()">{{$t('dashboard.broadcast.edit')}}</c-button>
+    </template>
+  </c-box>
+
+  <c-box no-padding>
+    <template slot="main">
+
+      <c-thumbs-list :config="listConfig">
+        <template slot="before_filters">
+          <c-button color="green" icon="fa-plus" @click="createNewBroadcast()">{{$t('dashboard.broadcast.create')}}</c-button>
+        </template>
+        <template slot="after_heading">
+          <c-tabs v-model="type" :data="types" />
+        </template>
+        <template slot="item" slot-scope="props">
+          <c-list-item>
+            <template slot="captions">
+              {{props.item}}
+            </template>
+          </c-list-item>
+        </template>
+      </c-thumbs-list>
+    </template>
+  </c-box>
 
       <!--
       <div class="box box--with-header" v-if="!channel.is_radio">
@@ -51,6 +77,8 @@
       </template>
     </c-box>
 
+
+
 </div>
 </template>
 <style lang="scss">
@@ -59,18 +87,42 @@
 <script>
 import copyTag from '@/components/global/copyTag';
 import RecordButton from "../../../components/buttons/RecordButton";
+import NotificationItem from "@/components/layout/notifications/NotificationItem.vue";
 export default {
   head() {
     return {
       title: this.$t('dashboard.broadcast._title')
     }
   },
+  computed: {
+    types() {
+      return [
+        {id: 'all', name: this.$t('dashboard.broadcast.types.all')},
+        {id: 'planned', name: this.$t('dashboard.broadcast.types.planned')},
+        {id: 'finished', name: this.$t('dashboard.broadcast.types.finished')},
+      ]
+    },
+    listConfig() {
+      return {
+        title: this.$t('dashboard.broadcast.list'),
+        url: `channels/${this.channel.id}/broadcasts?type=${this.type}`,
+        view: 'list',
+        paginate: true,
+        infiniteScroll: true,
+        noPadding: true,
+        search: true,
+        usePreloadingListItem: true,
+      }
+    }
+  },
 	async asyncData({app,params}) {
 		const key = await app.$api.get(`/channels/${params.id}/stream/key`);
     const servers = await app.$api.get(`/channels/${params.id}/stream/servers`);
-		return {key, servers};
+    const activeBroadcast = await app.$api.get(`/channels/${params.id}/broadcasts/active`);
+		return {key, servers, activeBroadcast};
 	},
 	components: {
+    NotificationItem,
     RecordButton,
 	  copyTag
   },
@@ -83,10 +135,17 @@ export default {
   data () {
     return {
       reloading: false,
+      type: 'all',
     }
   },
   methods: {
-		generateNewKey() {
+    createNewBroadcast() {
+
+    },
+    editCurrentBroadcast() {
+
+    },
+    generateNewKey() {
       this.reloading = true;
       this.$api.get(`/channels/${this.channel.id}/stream/key?generate_new_key=true`).then( key => {
         this.key = key;

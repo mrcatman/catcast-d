@@ -141,8 +141,19 @@
       window.addEventListener('mousewheel', this.onScroll);
       this.onResize();
       this.onScroll();
+      this.checkIfShouldScrollToComment();
     },
     methods: {
+      checkIfShouldScrollToComment() {
+        if (!this.$route.query.comment_id) {
+          return;
+        }
+        const commentId = this.$route.query.comment_id;
+        this.$refs.main.scrollIntoView({
+          behavior: 'smooth'
+        });
+        // todo: load needed comment
+      },
       async loadIfInViewport() {
         if (!this.loadedFirstTime) {
           const rect = this.$refs.main.getBoundingClientRect();
