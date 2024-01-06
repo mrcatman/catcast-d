@@ -11,12 +11,16 @@
     flex: 1;
   }
   .CodeMirror {
-    min-height: 6em;
-    height: 6em;
     color: #fff;
     background: var(--input-bg-color);
     border: 1px solid var(--input-border-color);
     font-size: 1em;
+    overflow: auto;
+    overflow-x: hidden;
+    min-height: unset!important;
+    &-scroll {
+      min-height: unset;
+    }
   }
 
   .editor-statusbar {

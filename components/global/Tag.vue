@@ -10,12 +10,14 @@
   margin: .25em 0 0 .5em;
   padding: .25em .5em;
   border-radius: .25em;
-  cursor: pointer;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
   background: var(--active-color);
+  &--transparent {
+    background: var(--darken-5);
+  }
   &--green{
     background: var(--green);
   }

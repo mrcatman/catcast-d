@@ -25,14 +25,41 @@
       </c-row>
     </template>
   </c-box>
-  // todo: manual recording
+
 
   <c-box>
+    <template slot="title">
+      {{$t('dashboard.broadcast.active')}}
+    </template>
     <template slot="main">
-      {{activeBroadcast}}
-      <c-button color="green" icon="settings" @click="editActiveBroadcast()">{{$t('dashboard.broadcast.edit_current')}}</c-button>
+      <active-broadcast-display :broadcast="activeBroadcast" :can-edit="true" />
     </template>
   </c-box>
+
+
+      <!--
+        // todo: manual recording
+         // todo: autoupdate channel model
+      <div class="box box--with-header" v-if="!channel.is_radio">
+        <div class="box__header">
+          {{$t('dashboard.broadcast.record._title')}}
+        </div>
+        <div class="box__inner">
+            <RecordButton :channel_id="channel.id" />
+        </div>
+      </div>
+      -->
+
+
+    <c-box>
+      <template slot="title">{{$t('dashboard.broadcast.recording._title')}}</template>
+      <template slot="main">
+        <c-form method="put" :url="`/channels/${channel.id}`" :initialValues="channel">
+          <c-checkbox :title="$t('dashboard.broadcast.recording.record_all')" v-form-input="'additional_settings.recording.record_all'" />
+          <c-checkbox v-form-show="'additional_settings.recording.record_all'" :title="$t('dashboard.broadcast.recording.records_visible')" v-form-input="'additional_settings.recording.records_visible'" />
+        </c-form>
+      </template>
+    </c-box>
 
   <c-box no-padding>
     <template slot="main">
@@ -47,11 +74,11 @@
         <template slot="item" slot-scope="props">
           <c-list-item>
             <template slot="captions">
-              <c-statistics-icons :data="getBroadcastDates(props.item)"></c-statistics-icons>
               <div class="list-item__title">
                 {{props.item.title}}
               </div>
-              <div class="list-item__under-title">
+              <c-statistics-icons :data="getBroadcastDates(props.item)"></c-statistics-icons>
+              <div class="list-item__under-title list-item__under-title--short">
                 <div v-html="props.item.display_description"></div>
               </div>
               <c-tag v-if="props.item.category">{{props.item.category.name}}</c-tag>
@@ -68,29 +95,6 @@
     </template>
   </c-box>
 
-      <!--
-      <div class="box box--with-header" v-if="!channel.is_radio">
-        <div class="box__header">
-          {{$t('dashboard.broadcast.record._title')}}
-        </div>
-        <div class="box__inner">
-            <RecordButton :channel_id="channel.id" />
-        </div>
-      </div>
-      -->
-
-  // todo: autoupdate channel model
-    <c-box>
-      <template slot="title">{{$t('dashboard.broadcast.recording._title')}}</template>
-      <template slot="main">
-        <c-form method="put" :url="`/channels/${channel.id}`" :initialValues="channel">
-          <c-checkbox :title="$t('dashboard.broadcast.recording.record_all')" v-form-input="'additional_settings.recording.record_all'" />
-          <c-checkbox v-form-show="'additional_settings.recording.record_all'" :title="$t('dashboard.broadcast.recording.records_visible')" v-form-input="'additional_settings.recording.records_visible'" />
-        </c-form>
-      </template>
-    </c-box>
-
-
 
 </div>
 </template>
@@ -103,6 +107,7 @@ import RecordButton from "../../../components/buttons/RecordButton";
 import NotificationItem from "@/components/layout/notifications/NotificationItem.vue";
 import BroadcastMetadataEditor from "@/components/dashboard/broadcast/BroadcastMetadataEditor.vue";
 import {formatFullDate, formatPublishDate} from "@/helpers/dates";
+import ActiveBroadcastDisplay from "@/components/channel/ActiveBroadcastDisplay.vue";
 export default {
   head() {
     return {
@@ -137,6 +142,7 @@ export default {
 		return {key, servers, activeBroadcast};
 	},
 	components: {
+    ActiveBroadcastDisplay,
     NotificationItem,
     RecordButton,
 	  copyTag
@@ -158,7 +164,7 @@ export default {
       return [
         broadcast.ended_at ? {
           icon: 'fa-clock',
-          value: `${formatPublishDate(broadcast.started_at)} - ${formatPublishDate(broadcast.ended_at)}`,
+          value: formatPublishDate(broadcast.started_at) === formatPublishDate(broadcast.ended_at) ? formatPublishDate(broadcast.started_at) : `${formatPublishDate(broadcast.started_at)} - ${formatPublishDate(broadcast.ended_at)}`,
           tooltip: `${formatFullDate(broadcast.started_at)} - ${formatFullDate(broadcast.ended_at)}`,
         } : {
           icon: 'fa-calendar',
@@ -202,23 +208,17 @@ export default {
         },
       })
     },
-    editActiveBroadcast() {
+    deleteBroadcast(broadcast) {
       this.$store.commit('modals/showStandardModal', {
         confirm: true,
-        component: BroadcastMetadataEditor,
-        buttonColor: '',
-        buttonText: this.$t('global.save'),
-        title: this.$t('dashboard.broadcast.edit_current'),
-        props: {planned: false},
-        formValues: {
-          ...this.activeBroadcast
-        },
-        fn: async (broadcast) => {
-          await this.$api.put(`/channels/${this.channel.id}/broadcasts/active`, broadcast);
-          this.activeBroadcast = await this.$api.get(`/channels/${this.channel.id}/broadcasts/active`);
+        title: this.$t('dashboard.broadcast.delete'),
+        fn: async () => {
+          await this.$api.delete(`broadcasts/${broadcast.id}`);
+          this.$refs.list.reload();
         },
       })
     },
+
     generateNewKey() {
       this.reloading = true;
       this.$api.get(`/channels/${this.channel.id}/stream/key?generate_new_key=true`).then( key => {

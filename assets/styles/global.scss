@@ -115,7 +115,7 @@ p {
 .buttons-row{
   display: flex;
   margin: 0 -.25em;
-  > .button {
+  > * {
     margin: 0 .25em;
   }
 }

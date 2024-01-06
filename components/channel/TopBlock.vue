@@ -11,15 +11,7 @@
           <subscribe-button entity-type="channels" :entity-id="channel.id" />
         </div>
       </div>
-      <div class="channel-layout__broadcast-title" v-if="activeBroadcast">
-        <c-icon icon="chevron_right" />
-        <span class="channel-layout__broadcast-title__text" v-if="!broadcastTitleEditor.visible">{{activeBroadcast.title && activeBroadcast.title.length > 0 ? activeBroadcast.title : $t('channel.live_broadcast')}}</span>
-        <c-button transparent icon-only icon="edit" v-if="!broadcastTitleEditor.visible && canEditBroadcastName" @click="showBroadcastTitleEditor()" />
-        <div class="channel-layout__broadcast-title__edit-panel" v-if="broadcastTitleEditor.visible">
-          <c-input class="channel-layout__broadcast-title__edit-panel__input" v-model="broadcastTitleEditor.data.title" />
-          <c-button flat :loading="broadcastTitleEditor.loading" @click="saveBroadcastName()">{{$t('global.ok')}}</c-button>
-        </div>
-      </div>
+      <active-broadcast-display :broadcast="activeBroadcast" :can-edit="canEditBroadcastName" />
     </div>
   </div>
 </template>
@@ -28,7 +20,6 @@
   &__top-block {
     padding: 1em;
     display: flex;
-    align-items: center;
     &__texts {
       flex: 1;
     }
@@ -39,21 +30,10 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    margin-top: 1em;
     margin-right: 1em;
   }
 
-  &__broadcast-title {
-    display: flex;
-    align-items: center;
-    &__edit-panel {
-      --vertical-margin: 0;
-      display: flex;
-      align-items: center;
-      &__input {
-        margin-right: .5em;
-      }
-    }
-  }
 }
 </style>
 <script>
@@ -61,43 +41,23 @@
 
   import SubscribeButton from "@/components/buttons/SubscribeButton";
   import Rating from "@/components/Rating";
+  import ActiveBroadcastDisplay from "@/components/channel/ActiveBroadcastDisplay.vue";
 
   export default {
-    components: {Rating, SubscribeButton},
+    components: {ActiveBroadcastDisplay, Rating, SubscribeButton},
     computed: {
       ...mapState('auth', ['user']),
     },
     data() {
       return {
         activeBroadcast: this.channel.active_broadcast,
-        broadcastTitleEditor: {
-          data: {
-            title: '',
-          },
-          visible: false,
-          loading: false
-        },
+
       }
     },
     methods: {
-      saveBroadcastName() {
-        this.broadcastTitleEditor.loading = true;
-        this.$api.put(`channels/${this.channel.id}`, {
-          additional_settings: {
-            broadcast: this.broadcastTitleEditor.data
-          }
-        }).then(({title}) => {
-          this.activeBroadcast.title = this.broadcastTitleEditor.data.title;
-          this.broadcastTitleEditor.visible = false;
-        }).finally(() => {
-          this.broadcastTitleEditor.loading = false;
-        })
-      },
-      showBroadcastTitleEditor() {
-        this.broadcastTitleEditor.data.name = this.activeBroadcast.title;
-        this.broadcastTitleEditor.visible = true;
-      },
+
       canEditBroadcastName() {
+        return true; // todo: fix
         if (!this.activeBroadcast || !this.permissions) {
           return false;
         }

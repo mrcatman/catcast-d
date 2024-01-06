@@ -95,11 +95,18 @@
   }
   &__under-title {
     margin-top: .5em;
-    font-weight: 300;
     display: flex;
     align-items: center;
+    line-height: 1.4;
     &--small {
       font-size: .875em;
+    }
+    &--short {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      -webkit-box-orient: vertical;
     }
   }
 
