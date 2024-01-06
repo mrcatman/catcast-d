@@ -22,7 +22,7 @@
             <template slot="buttons">
               <div class="buttons-row">
                 <c-button @click="editMember(props.item)" v-if="props.item.can_edit" color="green">{{$t('global.edit')}}</c-button>
-                <c-button @click="deleteUser(props.item)" v-if="props.item.can_delete" color="red">{{$t('global.delete')}}</c-button>
+                <c-button @click="deleteMember(props.item)" v-if="props.item.can_delete" color="red">{{$t('global.delete')}}</c-button>
               </div>
             </template>
           </c-list-item>
@@ -186,7 +186,7 @@ export default {
         },
       })
     },
-    deleteUser(member) {
+    deleteMember(member) {
       this.$store.commit('modals/showStandardModal', {
         confirm: true,
         title: this.$t('dashboard.team.delete._title'),

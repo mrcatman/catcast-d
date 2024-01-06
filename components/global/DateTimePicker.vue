@@ -1,7 +1,7 @@
 <template>
-  <div class="datetime-picker" v-click-outside="hideDatetimePicker">
-    <c-input :value="dateTimeInputValue" :readonly="true" :title="title" :placeholder="placeholder" :errors="errorsList"  @click.native="opened = true" />
-    <flat-pickr v-if="opened" :config="datetimePickerConfig" v-model="dateTimePickerValue"></flat-pickr>
+  <div class="datetime-picker" v-click-outside="hidePicker" ref="container">
+     <c-input :value="dateTimeInputValue" :readonly="true" :title="title" :placeholder="placeholder" :errors="errorsList"  @click.native="opened = true" />
+     <flat-pickr v-if="opened" :config="datetimePickerConfig" v-model="dateTimePickerValue" ref="picker"></flat-pickr>
   </div>
 </template>
 <style lang="scss">
@@ -124,8 +124,8 @@ import InputBase from "@/components/global/InputBase.vue";
     },
     props: {
       value: Date,
-      minDate: Date,
-      maxDate: Date,
+      minDate: [Date, String],
+      maxDate: [Date, String],
       enableTime: {
         type: Boolean,
         required: false,
@@ -168,7 +168,13 @@ import InputBase from "@/components/global/InputBase.vue";
       },
       dateTimePickerValue(newVal) {
         this.val = new Date(newVal);
-      }
+      },
+      // async opened(opened) {
+      //   if (opened) {
+      //     await this.$nextTick();
+      //     this.setPickerPosition();
+      //   }
+      // }
     },
     data() {
       return {
@@ -176,6 +182,7 @@ import InputBase from "@/components/global/InputBase.vue";
         opened: false,
         dateTimeDisplayValue: null,
         dateTimePickerValue: null,
+        formErrors: []
       }
     },
     mounted() {
@@ -184,7 +191,19 @@ import InputBase from "@/components/global/InputBase.vue";
       }
     },
     methods: {
-      hideDatetimePicker() {
+      setPickerPosition() {
+        // const rect = this.$refs.container.getBoundingClientRect();
+        // const el = this.$refs.picker.$el;
+        // console.log(el);
+        // if (!el) {
+        //   return;
+        // }
+        // const app = document.querySelector('.tooltips-container') || document.getElementById('app');
+        // app.appendChild(el);
+        // el.style.x = `${rect.left}px`;
+        // el.style.y = `${rect.top}px`;
+      },
+      hidePicker() {
         this.opened = false;
       }
     }

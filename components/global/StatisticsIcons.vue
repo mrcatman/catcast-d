@@ -2,7 +2,7 @@
   <div class="statistics-icons">
     <component v-if="item.value !== undefined && item.value !== null" :is="item.link ? 'nuxt-link' : 'span'" :to="item.link" class="statistics-icons__item" :class="{'statistics-icons__item--with-margin': item.margin}" v-for="(item, $index) in data" :key="$index">
       <c-icon :icon="item.icon" />
-      <c-tooltip v-if="item.tooltip">{{item.tooltip}}</c-tooltip>
+      <c-tooltip v-if="item.tooltip" position="bottom-left">{{item.tooltip}}</c-tooltip>
       <span class="statistics-icons__item__text">{{item.value}}</span>
     </component>
   </div>

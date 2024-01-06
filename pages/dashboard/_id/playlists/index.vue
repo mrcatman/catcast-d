@@ -79,6 +79,7 @@ export default {
         infiniteScroll: true,
         search: true,
         innerScroll: true,
+        usePreloadingListItem: true,
       }
     }
   },

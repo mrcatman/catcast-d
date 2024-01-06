@@ -66,23 +66,30 @@ export default {
 			this.val = newVal;
 		},
 		val(newVal) {
-			this.$emit('input',newVal);
+			this.$emit('input', newVal);
+      if (newVal) {
+        this.search = newVal[this.autocompleteValue];
+      }
 		},
 	},
   computed: {
     autocompleteOptions() {
       return this.options.map(option => {
         return {
-          name:  option[this.autocompleteValue],
+          name: option[this.autocompleteValue],
           value: option[this.autocompleteKey],
         }
       })
     }
   },
-	methods: {
+
+  methods: {
     selectOption(option) {
       this.search = option.name;
-			this.val = option.value;
+			this.val = {
+        [this.autocompleteKey]: option.value,
+        [this.autocompleteValue]: option.name,
+      };
 			this.opened = false;
 		},
 		hideAutocomplete() {
@@ -100,7 +107,10 @@ export default {
               this.options = options;
               const hasExactOption = options.filter(option => option[this.autocompleteKey] === this.search)[0];
               if (!hasExactOption) {
-                this.val = null;
+                this.val = {
+                  id: null,
+                  [this.autocompleteValue]: this.search
+                };
               }
             }).finally(() => {
               this.loading = false;

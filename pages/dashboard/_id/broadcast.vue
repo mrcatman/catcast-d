@@ -30,14 +30,14 @@
   <c-box>
     <template slot="main">
       {{activeBroadcast}}
-      <c-button color="green" icon="settings" @click="editCurrentBroadcast()">{{$t('dashboard.broadcast.edit')}}</c-button>
+      <c-button color="green" icon="settings" @click="editActiveBroadcast()">{{$t('dashboard.broadcast.edit_current')}}</c-button>
     </template>
   </c-box>
 
   <c-box no-padding>
     <template slot="main">
 
-      <c-thumbs-list :config="listConfig">
+      <c-thumbs-list ref="list" :config="listConfig">
         <template slot="before_filters">
           <c-button color="green" icon="fa-plus" @click="createNewBroadcast()">{{$t('dashboard.broadcast.create')}}</c-button>
         </template>
@@ -47,7 +47,20 @@
         <template slot="item" slot-scope="props">
           <c-list-item>
             <template slot="captions">
-              {{props.item}}
+              <c-statistics-icons :data="getBroadcastDates(props.item)"></c-statistics-icons>
+              <div class="list-item__title">
+                {{props.item.title}}
+              </div>
+              <div class="list-item__under-title">
+                <div v-html="props.item.display_description"></div>
+              </div>
+              <c-tag v-if="props.item.category">{{props.item.category.name}}</c-tag>
+            </template>
+            <template slot="buttons">
+              <div class="buttons-row">
+                <c-button @click="editBroadcast(props.item)" v-if="props.item.can_edit" color="green">{{$t('global.edit')}}</c-button>
+                <c-button @click="deleteBroadcast(props.item)" v-if="props.item.can_delete" color="red">{{$t('global.delete')}}</c-button>
+              </div>
             </template>
           </c-list-item>
         </template>
@@ -88,6 +101,8 @@
 import copyTag from '@/components/global/copyTag';
 import RecordButton from "../../../components/buttons/RecordButton";
 import NotificationItem from "@/components/layout/notifications/NotificationItem.vue";
+import BroadcastMetadataEditor from "@/components/dashboard/broadcast/BroadcastMetadataEditor.vue";
+import {formatFullDate, formatPublishDate} from "@/helpers/dates";
 export default {
   head() {
     return {
@@ -139,11 +154,70 @@ export default {
     }
   },
   methods: {
-    createNewBroadcast() {
-
+    getBroadcastDates(broadcast) {
+      return [
+        broadcast.ended_at ? {
+          icon: 'fa-clock',
+          value: `${formatPublishDate(broadcast.started_at)} - ${formatPublishDate(broadcast.ended_at)}`,
+          tooltip: `${formatFullDate(broadcast.started_at)} - ${formatFullDate(broadcast.ended_at)}`,
+        } : {
+          icon: 'fa-calendar',
+          value: `${formatPublishDate(broadcast.will_start_at)}`,
+          tooltip: `${formatFullDate(broadcast.will_start_at)} - ${formatFullDate(broadcast.will_end_at)}`,
+        }
+      ];
     },
-    editCurrentBroadcast() {
-
+    createNewBroadcast() {
+      this.$store.commit('modals/showStandardModal', {
+        confirm: true,
+        component: BroadcastMetadataEditor,
+        buttonColor: '',
+        buttonText: this.$t('global.save'),
+        title: this.$t('dashboard.broadcast.create'),
+        props: {planned: true},
+        formValues: {},
+        fn: async (broadcast) => {
+          await this.$api.post(`broadcasts`, {
+            ...broadcast,
+            channel_id: this.channel.id
+          });
+          this.$refs.list.reload();
+        },
+      })
+    },
+    editBroadcast(broadcastToEdit) {
+      this.$store.commit('modals/showStandardModal', {
+        confirm: true,
+        component: BroadcastMetadataEditor,
+        buttonColor: '',
+        buttonText: this.$t('global.save'),
+        title: this.$t('dashboard.broadcast.create'),
+        props: {planned: true},
+        formValues: {
+          ...broadcastToEdit,
+        },
+        fn: async (broadcast) => {
+          await this.$api.put(`broadcasts/${broadcastToEdit.id}`, broadcast);
+          this.$refs.list.reload();
+        },
+      })
+    },
+    editActiveBroadcast() {
+      this.$store.commit('modals/showStandardModal', {
+        confirm: true,
+        component: BroadcastMetadataEditor,
+        buttonColor: '',
+        buttonText: this.$t('global.save'),
+        title: this.$t('dashboard.broadcast.edit_current'),
+        props: {planned: false},
+        formValues: {
+          ...this.activeBroadcast
+        },
+        fn: async (broadcast) => {
+          await this.$api.put(`/channels/${this.channel.id}/broadcasts/active`, broadcast);
+          this.activeBroadcast = await this.$api.get(`/channels/${this.channel.id}/broadcasts/active`);
+        },
+      })
     },
     generateNewKey() {
       this.reloading = true;

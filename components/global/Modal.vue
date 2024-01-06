@@ -81,7 +81,6 @@
     height: 100%;
     max-height: 70vh;
     padding: 1em;
-    overflow: auto;
     @media screen and (max-width: 768px) {
       overflow: auto;
     }
