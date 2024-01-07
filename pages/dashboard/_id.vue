@@ -1,5 +1,5 @@
 <template>
-  <layout-with-left-menu class="dashboard-page">
+  <layout-with-left-menu ref="layout" class="dashboard-page">
     <template slot="tabs">
       <dashboard-menu :channel="channel" :permissions="permissions" />
       <div class="dashboard-page__bottom">
@@ -17,7 +17,7 @@
       </div>
     </template>
     <template slot="main">
-		  <nuxt-child :permissions="permissions" :channel="channel" class="layout-with-left-menu__content__inner"  />
+		  <nuxt-child :channel="channel" :permissions="permissions" class="layout-with-left-menu__content__inner" />
 		</template>
   </layout-with-left-menu>
 </template>
@@ -63,10 +63,15 @@ import RadioPlaybackSwitchButton from "@/components/buttons/RadioPlaybackSwitchB
 import LayoutWithLeftMenu from "@/components/LayoutWithLeftMenu";
 export default {
   middleware: 'auth',
+  watch: {
+    '$route'() {
+      this.$refs.layout.scrollToTop();
+    }
+  },
   mounted() {
     if (this.$route.name === 'dashboard-id') {
       if (this.items && this.items.length > 0) {
-        let page = this.items[0];
+        const page = this.items[0];
         this.$router.push(`/dashboard/${this.channel.id}/${page.link}`);
       }
     }

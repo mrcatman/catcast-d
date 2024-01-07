@@ -3,7 +3,7 @@
      <div class="layout-with-left-menu__sidebar">
        <slot name="tabs"></slot>
      </div>
-    <div class="layout-with-left-menu__content">
+    <div class="layout-with-left-menu__content" ref="content">
       <div class="page-container layout-with-left-menu__content__outer">
         <slot name="main"></slot>
       </div>
@@ -43,21 +43,14 @@
       }
     }
   }
-  &__header{
-    margin: 2em 0 .5em;
-    font-size: 1.5em;
-    font-weight: 400;
-    &:first-of-type {
-      margin-top: 0;
-    }
-    &--small {
-      font-size: 1.25em;
-      @media screen and (max-width: 768px) {
-        margin: 0 0 .5em;
-      }
-    }
-  }
-
-
 }
 </style>
+<script>
+export default {
+  methods: {
+    scrollToTop() {
+      this.$refs.content.scrollTop = 0;
+    }
+  }
+}
+</script>
