@@ -11,7 +11,7 @@
           <subscribe-button entity-type="channels" :entity-id="channel.id" />
         </div>
       </div>
-      <active-broadcast-display :broadcast="activeBroadcast" :can-edit="canEditBroadcastName" />
+      <active-broadcast-display v-if="activeBroadcast" :channel="channel" :broadcast="activeBroadcast" :can-edit="canEditBroadcastName" />
     </div>
   </div>
 </template>

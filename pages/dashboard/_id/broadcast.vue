@@ -32,7 +32,7 @@
       {{$t('dashboard.broadcast.active')}}
     </template>
     <template slot="main">
-      <active-broadcast-display :broadcast="activeBroadcast" :can-edit="true" />
+      <active-broadcast-display :channel="channel" :broadcast="activeBroadcast" :can-edit="true" />
     </template>
   </c-box>
 
@@ -77,11 +77,11 @@
               <div class="list-item__title">
                 {{props.item.title}}
               </div>
-              <c-statistics-icons :data="getBroadcastDates(props.item)"></c-statistics-icons>
-              <div class="list-item__under-title list-item__under-title--short">
+              <c-statistics-icons :data="getBroadcastInfo(props.item)"></c-statistics-icons>
+              <div class="list-item__under-title list-item__under-title--short" v-if="props.item.description && props.item.description.length">
                 <div v-html="props.item.display_description"></div>
               </div>
-              <c-tag v-if="props.item.category">{{props.item.category.name}}</c-tag>
+              <c-tag v-if="props.item.tags" v-for="tag in props.item.tags">{{tag}}</c-tag>
             </template>
             <template slot="buttons">
               <div class="buttons-row">
@@ -160,8 +160,8 @@ export default {
     }
   },
   methods: {
-    getBroadcastDates(broadcast) {
-      return [
+    getBroadcastInfo(broadcast) {
+      const info = [
         broadcast.ended_at ? {
           icon: 'fa-clock',
           value: formatPublishDate(broadcast.started_at) === formatPublishDate(broadcast.ended_at) ? formatPublishDate(broadcast.started_at) : `${formatPublishDate(broadcast.started_at)} - ${formatPublishDate(broadcast.ended_at)}`,
@@ -172,6 +172,13 @@ export default {
           tooltip: `${formatFullDate(broadcast.will_start_at)} - ${formatFullDate(broadcast.will_end_at)}`,
         }
       ];
+      if (broadcast.category) {
+        info.push({
+          icon: 'fa-gamepad',
+          value: broadcast.category.name
+        })
+      }
+      return info;
     },
     createNewBroadcast() {
       this.$store.commit('modals/showStandardModal', {

@@ -1,18 +1,18 @@
 <template>
   <div class="active-broadcast">
     <c-tag class="active-broadcast__tag" :color="!activeBroadcast.is_online ? 'transparent' : ''">{{broadcast.is_online ? $t('channel.broadcast.online') : $t('channel.broadcast.offline')}}</c-tag>
-    <div class="active-broadcast__main" v-if="activeBroadcast.is_online">
-       <h3 class="active-broadcast__title">{{activeBroadcast.title}}</h3>
-      <c-tag v-if="activeBroadcast.category" class="active-broadcast__category" :to="`/tv/search?category_id=${activeBroadcast.category.id}`">{{activeBroadcast.category.name}}</c-tag>
+    <div class="active-broadcast__main">
+       <h3 class="active-broadcast__title" v-if="activeBroadcast.is_online">{{activeBroadcast.title}}</h3>
+      <c-tag v-if="activeBroadcast.category && activeBroadcast.is_online" class="active-broadcast__category" :to="`/tv/search?category_id=${activeBroadcast.category.id}`">{{activeBroadcast.category.name}}</c-tag>
       <c-button flat v-if="canEdit" icon="settings" @click="editActiveBroadcast()">{{$t('dashboard.broadcast.edit_current')}}</c-button>
     </div>
-    <div class="active-broadcast__description" v-if="activeBroadcast.is_online && activeBroadcast.description.length" v-html="activeBroadcast.display_description"></div>
+    <div class="active-broadcast__description" v-if="activeBroadcast.is_online && activeBroadcast.description && activeBroadcast.description.length" v-html="activeBroadcast.display_description"></div>
   </div>
 </template>
 <style lang="scss" scoped>
 .active-broadcast {
   &__main {
-    margin: 1em 0;
+    margin-top: 1em;
     display: flex;
     align-items: center;
   }
@@ -23,6 +23,9 @@
     margin: 0;
     font-size: 1.325em;
     font-weight: bold;
+  }
+  &__description {
+    margin-top: 1em;
   }
   &__tag {
     margin: 0;
@@ -66,6 +69,7 @@ export default {
   },
   props: {
     broadcast: Object,
+    channel: Object,
     canEdit: Boolean
   }
 }

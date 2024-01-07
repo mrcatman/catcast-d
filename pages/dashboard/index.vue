@@ -68,7 +68,8 @@ export default {
         innerScroll: true,
         infiniteScroll: true,
         search: true,
-        noPadding: true
+        noPadding: true,
+        usePreloadingListItem: true
       }
     },
     url() {

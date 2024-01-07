@@ -9,7 +9,6 @@
   transition: border-color 0.25s;
   position: relative;
   z-index: 1;
-  color: #fafafa;
   font-family: inherit;
   font-size: inherit;
   outline: none !important;
@@ -31,7 +30,7 @@
   .input-tag {
     padding: .25em .5em;
     border: 0;
-    font-size: .75em;
+    font-size: .875em;
     border-radius: .25em;
     background: var(--active-color);
     margin: .5em 0 .5em .5em;
@@ -77,7 +76,7 @@ export default {
 	},
 	data() {
 		return {
-			val: (this.value ? (typeof this.value === 'object' ? this.value : this.value.split(',')) : []),
+			val: Array.isArray(this.value) ? this.value : (!!this.value ? [this.value] : []),
       tags: [],
       keys,
       formErrors: []

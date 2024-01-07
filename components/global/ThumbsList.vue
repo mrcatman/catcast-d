@@ -34,8 +34,8 @@
       <div class="thumbs-list__items-container" :is="config.infiniteScroll ? 'c-infinite-scroll' : 'div'" :loading="loading" @scroll="loadMore" @scrollToTop="loadPrevious">
         <c-dynamic-row class="thumbs-list__items" :class="viewClasses" ref="dynamic_row">
           <div v-if="!loadedInitial" v-for="$i in lastItemsCount" :key="$i" class="thumbs-list__item">
-            <preloading-thumb v-if="!config.usePreloadingListItem" />
-            <preloading-list-item v-else />
+            <preloading-list-item v-if="config.usePreloadingListItem" />
+            <preloading-thumb v-else />
           </div>
           <div v-if="$slots.before && loadedInitial" class="thumbs-list__item">
             <slot name="before"></slot>
