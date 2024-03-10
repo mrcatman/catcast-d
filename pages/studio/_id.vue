@@ -149,9 +149,9 @@
                 </div>
               </c-modal>
 
-              <c-modal :header="$t('studio.resume._title')" v-model="needResume">
+              <c-modal :header="$t('studio.resume.heading')" v-model="needResume">
                 <div slot="main">
-                  <div class="modal__text">{{$t('studio.resume._text')}}</div>
+                  <div class="modal__text">{{$t('studio.resume.text')}}</div>
                 </div>
                 <div class="modal__buttons" slot="buttons">
                   <div class="buttons-row">
@@ -161,7 +161,7 @@
               </c-modal>
 
 
-              <c-modal :header="$t('studio.settings._title')" v-model="settingsPanel.visible">
+              <c-modal :header="$t('studio.settings.heading')" v-model="settingsPanel.visible">
                 <div slot="main" v-if="settingsPanel.data">
                   <div class="row">
                     <div class="col">
@@ -277,11 +277,11 @@
 
               <div class="studio__overlays__header">
                 <span class="studio__overlays__header__text">
-                  {{$t('studio.overlays._title')}}
+                  {{$t('studio.overlays.heading')}}
                 </span>
                 <!--
                 <div class="studio__overlays__header__buttons">
-                  <c-button @click="sourcePanel.visible = true">{{$t('studio.sources._title')}}</c-button>
+                  <c-button @click="sourcePanel.visible = true">{{$t('studio.sources.heading')}}</c-button>
                 </div>
                 -->
               </div>
@@ -437,7 +437,7 @@
                     broadcast.streamState === 'STOPPING') ? $t('studio.stop_broadcast') : $t('studio.start_broadcast')}}
                   </c-button>
                   <c-button :disabled="broadcast.streamState !== 'NOT_STARTED'" @click="openSettingsPanel()" icon="fa-cog">
-                    {{$t('studio.settings._title')}}
+                    {{$t('studio.settings.heading')}}
                   </c-button>
                 </div>
               </div>
@@ -477,8 +477,8 @@
             </div>
             <div class="studio__library__list" v-if="currentTab === 'library'">
               <c-preloader block v-if="library.loading"/>
-              <c-nothing-found :title="$t('studio.library.nothing_found._title')"
-                               :text="$t('studio.library.nothing_found._text')"
+              <c-nothing-found :title="$t('studio.library.nothing_found.heading')"
+                               :text="$t('studio.library.nothing_found.text')"
                                v-else-if="library.list && library.list.length === 0"/>
               <div class="studio__library__list__inner" v-else>
                 <div :key="$index" class="studio__library__item" v-for="(item, $index) in library.list">
@@ -1648,7 +1648,7 @@
         },
         head() {
             return {
-                title: this.$t('studio._title'),
+                title: this.$t('studio.heading'),
             }
         },
     }

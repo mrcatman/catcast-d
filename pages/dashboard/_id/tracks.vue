@@ -27,7 +27,7 @@ export default {
   },
   head() {
     return {
-      title: this.$t('dashboard.tracks._title')
+      title: this.$t('dashboard.tracks.heading')
     }
   },
   components: {

@@ -2,7 +2,7 @@
 <div ref="main">
   <c-form :initialValues="channel" method="put" :url="`/channels/${channel.id}`">
     <c-box>
-      <template slot="title">{{$t('dashboard.info.common._title')}}</template>
+      <template slot="title">{{$t('dashboard.info.common.heading')}}</template>
       <template slot="main">
         <c-row>
           <c-col>
@@ -35,7 +35,7 @@
 
     <c-box>
       <template slot="title">
-        {{$t('dashboard.info.display._title')}}
+        {{$t('dashboard.info.display.heading')}}
       </template>
       <template slot="main">
         <c-checkbox switch :title="$t('dashboard.info.display.show_in_autopilot_mode')" v-form-input="'additional_settings.display.show_in_autopilot_mode'" />
@@ -54,7 +54,7 @@
 
     <c-box>
       <template slot="title">
-        {{$t('dashboard.info.delete._title')}}
+        {{$t('dashboard.info.delete.heading')}}
       </template>
       <template slot="main">
         {{$t('dashboard.info.delete.text')}}
@@ -73,7 +73,7 @@ export default {
   components: {PrivacySettings},
   head() {
     return {
-      title: this.$t('dashboard.info._title')
+      title: this.$t('dashboard.info.heading')
     }
   },
   computed: {

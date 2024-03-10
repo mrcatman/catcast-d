@@ -13,7 +13,7 @@
 
       <c-popup-menu position="bottom-left">
         <c-popup-menu-item to="/dashboard">{{$t('auth.dashboard')}}</c-popup-menu-item>
-        <c-popup-menu-item @click="themesPanelVisible = true" >{{$t('themes._title')}}</c-popup-menu-item>
+        <c-popup-menu-item @click="themesPanelVisible = true" >{{$t('themes.heading')}}</c-popup-menu-item>
         <c-popup-menu-item :to="`/users/${user.id}`" >{{$t('auth.profile')}}</c-popup-menu-item>
         <c-popup-menu-item to="/user/settings">{{$t('auth.settings')}}</c-popup-menu-item>
         <c-popup-menu-item @click="logout()" >{{$t('auth.logout')}}</c-popup-menu-item>
@@ -44,7 +44,7 @@
        <div class="user-panel__mobile__overlay__links">
          <a @click="goAndCloseMenu('/dashboard')" class="user-panel__mobile__overlay__link">{{$t('auth.dashboard')}}</a>
          <!--<a @click="goAndCloseMenu('/studio')" class="user-panel__mobile__overlay__link">{{$t('auth.studio')}}</a>
-         <a class="user-panel__mobile__overlay__link" @click="themesPanelVisible = true" >{{$t('themes._title')}}</a>-->
+         <a class="user-panel__mobile__overlay__link" @click="themesPanelVisible = true" >{{$t('themes.heading')}}</a>-->
          <a @click="goAndCloseMenu('/users/'+user.id)" class="user-panel__mobile__overlay__link" >{{$t('auth.profile')}}</a>
          <a @click="goAndCloseMenu('/user/settings')" class="user-panel__mobile__overlay__link" >{{$t('auth.settings')}}</a>
 

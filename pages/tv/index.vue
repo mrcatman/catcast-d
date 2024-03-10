@@ -27,7 +27,7 @@
   export default {
     head () {
       return {
-        title: this.$t('channels._title'),
+        title: this.$t('channels.heading'),
       }
     },
     data() {

@@ -1,5 +1,5 @@
 <template>
-  <c-modal v-model="active" :header="$t('themes._title')">
+  <c-modal v-model="active" :header="$t('themes.heading')">
     <template slot="main">
       <div class="buttons-row">
         <c-button @click="setTheme('default')" :flat="currentTheme === 'default'">{{$t('themes._list.default')}}</c-button>

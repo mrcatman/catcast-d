@@ -33,13 +33,20 @@ export default {
 
           }
         },
+        scales: {
+          yAxes: [{
+            ticks: {
+              stepSize: 1
+            }
+          }],
+        },
         tooltips: {
           callbacks: {
             label: (tooltipItem, data) =>  {
               if (this.tooltips) {
-                return this.tooltips[tooltipItem.datasetIndex]+" - "+tooltipItem.yLabel;
+                return `${this.tooltips[tooltipItem.datasetIndex]}: ${tooltipItem.yLabel}`;
               }
-              return tooltipItem.yLabel+" ";
+              return tooltipItem.yLabel;
             }
           }
         }

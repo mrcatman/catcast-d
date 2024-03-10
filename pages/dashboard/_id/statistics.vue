@@ -2,7 +2,7 @@
 <div>
   <c-box>
     <template slot="title">
-      {{$t('statistics._title')}}
+      {{$t('statistics.heading')}}
     </template>
     <template slot="main">
       <statistics-block entity-type="channels" :entity-id="channel.id"/>
@@ -15,7 +15,7 @@
   export default {
     head() {
       return {
-        title: this.$t('statistics._title')
+        title: this.$t('statistics.heading')
       }
     },
     props: {

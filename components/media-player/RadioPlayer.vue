@@ -1,6 +1,6 @@
 <template>
   <div class="radio-player" :class="{'radio-player--default-view': defaultView}" ref="container">
-    <c-modal v-model="embedPanel.visible" :header="$t('player.embed._title')">
+    <c-modal v-model="embedPanel.visible" :header="$t('player.embed.heading')">
       <div slot="main">
         <div class="radio-player__embed">{{getEmbedCode}}</div>
         <c-row>
@@ -14,7 +14,7 @@
       </div>
     </c-modal>
 
-    <c-modal v-model="requestPanel.visible" :header="$t('radio_player.request_panel._title')">
+    <c-modal v-model="requestPanel.visible" :header="$t('radio_player.request_panel.heading')">
       <div slot="main">
         <c-response :data="requestPanel.response"/>
         <div class="row">

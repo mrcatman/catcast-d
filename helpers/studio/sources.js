@@ -89,7 +89,7 @@ class cameraSource extends Source {
   constructor(updateAudio) {
     super(updateAudio);
     this.id = 'cameraSource';
-    this.title = 'studio.sources.camera._title';
+    this.title = 'studio.sources.camera.heading';
     this.canDrag = true;
     this.canResize = true;
     this.volumeNode = null;
@@ -356,7 +356,7 @@ class playlistSource extends Source {
   constructor(updateAudio) {
     super(updateAudio);
     this.id = 'playlistSource';
-    this.title = 'studio.sources.playlist._title';
+    this.title = 'studio.sources.playlist.heading';
     this.sourceName = 'Playlist';
     this.data = {
       data: [],
@@ -515,7 +515,7 @@ class videoConferenceSource extends Source {
   constructor(updateAudio) {
     super(updateAudio);
     this.id = 'videoConferenceSource';
-    this.title = 'studio.sources.video_conference._title';
+    this.title = 'studio.sources.video_conference.heading';
     this.sourceName = 'VideoConference';
     this.multipleSources = true;
     this.videos = [];
@@ -639,7 +639,7 @@ class screenCaptureSource extends Source {
   constructor() {
     super();
     this.id = 'screenCaptureSource';
-    this.title = 'studio.sources.screen_capture._title';
+    this.title = 'studio.sources.screen_capture.heading';
     this.sourceName = 'ScreenCapture';
     this.data = {
       data: {},

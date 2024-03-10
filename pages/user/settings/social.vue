@@ -5,7 +5,7 @@
     </div>
     <div v-else>
       <div class="social-connections__description">
-        {{$t('connections.social._description')}}
+        {{$t('connections.social.description')}}
       </div>
       <div class="row row--wrap">
         <div :key="$index" v-for="(provider, $index) in socialProviders" class="col social-connections__provider social-connections__provider--with-delimiter">
@@ -23,8 +23,8 @@
       <div class="row">
         <div class="col social-connections__provider">
           <div class="social-connections__provider__info">
-            <div class="social-connections__provider__name">{{$t('connections.bots._title')}}</div>
-            <div class="social-connections__provider__description">{{$t('connections.bots._description')}}</div>
+            <div class="social-connections__provider__name">{{$t('connections.bots.heading')}}</div>
+            <div class="social-connections__provider__description">{{$t('connections.bots.description')}}</div>
           </div>
           <div class="social-connections__provider__buttons">
             <c-button fabIcon="telegram" to="https://vee.gg/t/CatcastBot">{{$t('connections.bots.telegram')}}</c-button>
@@ -35,8 +35,8 @@
       <div class="row">
         <div class="col social-connections__provider">
           <div class="social-connections__provider__info">
-            <div class="social-connections__provider__name">{{$t('connections.email._title')}}</div>
-            <div class="social-connections__provider__description">{{$t('connections.email._description')}}</div>
+            <div class="social-connections__provider__name">{{$t('connections.email.heading')}}</div>
+            <div class="social-connections__provider__description">{{$t('connections.email.description')}}</div>
           </div>
         </div>
       </div>

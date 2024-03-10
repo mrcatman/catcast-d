@@ -12,7 +12,7 @@
             <div class="list-item__under-title">
               <c-tag v-if="item.owner">
                 <c-icon icon="fas-crown" />
-                {{$t('channel_permissions.list.owner._title')}}
+                {{$t('channel_permissions.list.owner.heading')}}
               </c-tag>
             </div>
           </template>

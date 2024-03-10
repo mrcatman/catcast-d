@@ -1,7 +1,7 @@
 <template>
   <c-box>
     <template slot="title">
-      {{$t('settings.password._title')}}
+      {{$t('settings.password.heading')}}
     </template>
     <template slot="main">
       <c-form box url="/auth/password">

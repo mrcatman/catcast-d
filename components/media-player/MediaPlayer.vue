@@ -8,7 +8,7 @@
       </div>
 
       <!--
-<c-modal v-model="panels.password.visible" :header="$t('player.password._title')">
+<c-modal v-model="panels.password.visible" :header="$t('player.password.heading')">
   <div slot="main">
     <div class="modal__input-container">
       <c-input :errors="panels.password.errors.password" :title="$t('player.password.input_title')" v-model="panels.password.data.password"/>
@@ -23,7 +23,7 @@
 </c-modal>
 
 
-<c-modal :inline="!detached" v-model="panels.nsfw.visible" :header="$t('player.adult_content._title')">
+<c-modal :inline="!detached" v-model="panels.nsfw.visible" :header="$t('player.adult_content.heading')">
   <div slot="main">
     <div class="modal__text">{{$t('player.adult_content._text')}}</div>
     <div class="modal__input-container">
@@ -201,10 +201,10 @@ import MediaPlayerWaiting from "@/components/media-player/MediaPlayerWaiting.vue
         return !!this.media;
       },
       isVideo() {
-        return this.media && this.media.type_name === MEDIA_TYPE_VIDEO || this.channel.type_name === CHANNEL_TYPE_TV;
+        return this.media && this.media.type_id=== MEDIA_TYPE_VIDEO || this.channel.type_id=== CHANNEL_TYPE_TV;
       },
       isAudio() {
-        return this.media && this.media.type_name === MEDIA_TYPE_AUDIO || this.channel.type_name === CHANNEL_TYPE_RADIO;
+        return this.media && this.media.type_id=== MEDIA_TYPE_AUDIO || this.channel.type_id=== CHANNEL_TYPE_RADIO;
       }
     },
     watch: {

@@ -189,7 +189,7 @@ n<template>
     middleware: 'auth',
     head () {
       return {
-        title: this.$t('scheduler._title'),
+        title: this.$t('scheduler.heading'),
       }
     },
     beforeDestroy() {

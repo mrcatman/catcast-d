@@ -39,7 +39,7 @@
           <div class="row row--centered"  v-if="currentPlaylist.data.type === 'mixer' && currentPlaylist.data.playback_type !== 'around_the_clock'" >
             <div class="col">
               <div class="scheduler__playlist-contents__header__input-container">
-                <c-select  @change="onPlaybackLimitTypeChange" :title="$t('scheduler.playback_limits._title')" :options="playbackLimitTypes" v-model="currentPlaylist.data.playback_limit.type" />
+                <c-select  @change="onPlaybackLimitTypeChange" :title="$t('scheduler.playback_limits.heading')" :options="playbackLimitTypes" v-model="currentPlaylist.data.playback_limit.type" />
               </div>
             </div>
             <div class="col">

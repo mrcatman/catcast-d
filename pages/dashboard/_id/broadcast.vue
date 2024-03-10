@@ -3,7 +3,7 @@
 
   <c-box>
     <template slot="title">
-      {{$t('dashboard.broadcast._title')}}
+      {{$t('dashboard.broadcast.heading')}}
     </template>
     <template slot="main">
       <p v-html="!channel.is_radio ? $t('dashboard.broadcast.settings.description') : $t('dashboard.broadcast.settings.description_radio')"></p>
@@ -42,7 +42,7 @@
          // todo: autoupdate channel model
       <div class="box box--with-header" v-if="!channel.is_radio">
         <div class="box__header">
-          {{$t('dashboard.broadcast.record._title')}}
+          {{$t('dashboard.broadcast.record.heading')}}
         </div>
         <div class="box__inner">
             <RecordButton :channel_id="channel.id" />
@@ -52,7 +52,7 @@
 
 
     <c-box>
-      <template slot="title">{{$t('dashboard.broadcast.recording._title')}}</template>
+      <template slot="title">{{$t('dashboard.broadcast.recording.heading')}}</template>
       <template slot="main">
         <c-form method="put" :url="`/channels/${channel.id}`" :initialValues="channel">
           <c-checkbox :title="$t('dashboard.broadcast.recording.record_all')" v-form-input="'additional_settings.recording.record_all'" />
@@ -111,7 +111,7 @@ import ActiveBroadcastDisplay from "@/components/channel/ActiveBroadcastDisplay.
 export default {
   head() {
     return {
-      title: this.$t('dashboard.broadcast._title')
+      title: this.$t('dashboard.broadcast.heading')
     }
   },
   computed: {

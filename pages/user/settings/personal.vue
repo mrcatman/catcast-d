@@ -1,7 +1,7 @@
 <template>
   <div class="personal-settings">
      <c-box>
-       <template slot="title">{{$t('profile.personal._title')}}</template>
+       <template slot="title">{{$t('profile.personal.heading')}}</template>
        <template slot="main">
          <c-form box :initialValues="user" @response="onResponse" method="put" url="/auth/me">
            <c-row>

@@ -2,7 +2,7 @@
   <div class="dashboard__subscribers">
     <c-box no-padding>
       <template slot="title">
-        {{ $t('dashboard.subscribers._title') }}
+        {{ $t('dashboard.subscribers.heading') }}
       </template>
       <template slot="main">
         <c-thumbs-list ref="users_list" :config="listConfig">
@@ -43,7 +43,7 @@ const baseListConfig = {
 export default {
   head() {
     return {
-      title: this.$t('dashboard.subscribers._title')
+      title: this.$t('dashboard.subscribers.heading')
     }
   },
   props: {

@@ -1,66 +1,59 @@
 <template>
   <c-box>
+    <template slot="title">{{$t('settings.notifications')}}</template>
     <template slot="main">
-      <table class="notifications-table">
-        <thead>
-        <tr>
-          <td></td>
-          <td :key="channelName" v-for="(channel, channelName) in channels">{{ $t(channel.display_name) }}</td>
-        </tr>
-        </thead>
-        <tbody>
-        <template v-for="(type, $index) in types">
-          <tr class="notifications-table__type-name" :key="$index">
-            <td :colspan="Object.keys(channels).length + 1">{{ $t(type.display_name) }}</td>
-          </tr>
-          <tr :key="subtype.type_name" v-for="subtype in type.subtypes">
+      <c-form box :initialValues="bindings" method="put" url="notifications/bindings">
+        <table class="notifications-table">
+          <tbody>
+          <template v-for="(category, $index) in categories">
+            <tr class="notifications-table__type-name" :key="$index">
+              <td>{{ $t(category.category_name) }}</td>
+            </tr>
+            <tr v-for="type in category.types" :key="type.id">
+              <td>{{ $t(type.name) }}</td>
+              <td>
+                <c-select multiple :options="channelOptions" v-form-input="type.id" />
+              </td>
+            </tr>
+          </template>
+          </tbody>
+        </table>
+      </c-form>
 
-            <td>{{ $t(subtype.display_name) }}</td>
-            <td :key="channel.name" v-for="(channel, channelName) in channels">
-              <label class="notifications-table__checkbox-container">
-                <c-checkbox v-model="bindings[subtype.type_name][channelName]" :disabled="!channels[channelName].can_subscribe" />
-              </label>
-            </td>
-          </tr>
-        </template>
-        </tbody>
-      </table>
-    </template>
-    <template slot="footer">
-      <c-button :loading="saving" @click="save()">{{ $t('global.save') }}</c-button>
     </template>
   </c-box>
 </template>
 <script>
 export default {
-  async asyncData({app}) {
-    const typesList = await app.$api.get('notifications/types');
-    const channelsList = await app.$api.get('notifications/channels');
-    const userBindings = await app.$api.get('notifications/bindings');
-
-    const channels = {};
-    channelsList.forEach(channel => {
-      channels[channel.channel_name] = channel;
-    });
-
-    const types = {};
-    const bindings = {};
-    typesList.forEach(type => {
-      types[type.type_name] = type;
-      types[type.type_name].subtypes.forEach(subtype => {
-        bindings[subtype.type_name] = {};
+  computed: {
+    channelOptions() {
+      return this.channels.map(channel => {
+        return {
+          name: this.$t(channel.name),
+          value: channel.id
+        }
       })
-    });
-    userBindings.forEach(binding => {
-      if (bindings[binding.event_type]) {
-        bindings[binding.event_type][binding.notification_channel_type] = true;
-      }
+    }
+  },
+  async asyncData({app}) {
+    const categoriesList = await app.$api.get('notifications/types');
+    const channels = await app.$api.get('notifications/channels');
+    const bindings = await app.$api.get('notifications/bindings');
+
+    const categories = {};
+    categoriesList.forEach(category => {
+      categories[category.category_name] = category;
+      categories[category.category_name].types.forEach(type => {
+        if (!bindings[type.id]) {
+          bindings[type.id] = [];
+        }
+      })
     });
 
     return {
       bindings,
       channels,
-      types
+      categories
     }
   },
   methods: {
@@ -84,7 +77,6 @@ export default {
       data: {
         type: 'profile',
         channels: {},
-        subtypes: {},
       },
     }
   }
@@ -93,7 +85,7 @@ export default {
 <style lang="scss">
 .notifications-table {
   width: 100%;
-  margin: 0 0 .5em;
+  margin-top: 1em;
   @media screen and (max-width: 768px) {
     font-size: .875em;
   }
@@ -102,18 +94,7 @@ export default {
     font-size: 1.25em;
     font-weight: 500;
     padding: .5em 0 0;
-    display: block;
-  }
-
-  thead td {
-    text-align: center;
-  }
-
-  &__checkbox-container {
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    width: 100%;
+    width: 50%;
   }
 }
 </style>

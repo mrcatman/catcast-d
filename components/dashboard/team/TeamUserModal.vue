@@ -23,7 +23,7 @@
     </div>
     <div class="vertical-delimiter"></div>
     <c-checkbox switch v-if="data.permissions && !data.permissions.owner" v-form-input="'hidden'" :title="$t('dashboard.team.hidden')" />
-    <c-input v-if="!data.hidden" v-form-input="'position'" :title="$t('dashboard.team.position._title')" :description="$t('dashboard.team.position._description')" />
+    <c-input v-if="!data.hidden" v-form-input="'position'" :title="$t('dashboard.team.position.heading')" :description="$t('dashboard.team.position.description')" />
   </div>
 </template>
 <style lang="scss" scoped>

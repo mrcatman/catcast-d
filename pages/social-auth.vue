@@ -57,7 +57,7 @@
   export default {
     head() {
       return {
-        title: this.$t('auth.after_register._title')
+        title: this.$t('auth.after_register.heading')
       }
     },
     computed: {

@@ -1,5 +1,5 @@
 <template>
-	<c-modal v-model="data.visible" :showCloseButton="true" :header="$t('dashboard.tracks.add_folder._title')">
+	<c-modal v-model="data.visible" :showCloseButton="true" :header="$t('dashboard.tracks.add_folder.heading')">
 		<div slot="main">
 			<c-response :data="response" />
 			<div class="modal__input-container">

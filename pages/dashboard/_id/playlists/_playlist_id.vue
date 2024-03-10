@@ -82,7 +82,7 @@
     },
     head() {
       return {
-        title: this.playlist ? this.playlist.name : this.$t('dashboard.playlists._title')
+        title: this.playlist ? this.playlist.name : this.$t('dashboard.playlists.heading')
       }
     },
     components: {
@@ -120,7 +120,7 @@
           {id: 'info', name: this.$t('dashboard.playlists.tabs.info')},
           this.isMobile ? {id: 'editor', name: this.$t('dashboard.playlists.media.title')} : null,
           {id: 'design', name: this.$t('dashboard.playlists.tabs.design')},
-          {id: 'statistics', name: this.$t('statistics._title')}, // todo: permissions
+          {id: 'statistics', name: this.$t('statistics.heading')}, // todo: permissions
         ].filter(tab => !!tab);
       },
       postData() {

@@ -12,7 +12,7 @@
   export default {
     head() {
       return {
-        title: this.$t('dashboard.design._title')
+        title: this.$t('dashboard.design.heading')
       }
     },
     components: {

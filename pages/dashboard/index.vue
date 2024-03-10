@@ -4,7 +4,7 @@
     <template slot="main">
       <c-thumbs-list ref="list" :config="listConfig">
         <template slot="before_filters">
-          <c-button @click="createChannel()" icon="fa-plus-square" color="green">{{$t('dashboard.create._title')}}</c-button>
+          <c-button @click="createChannel()" icon="fa-plus-square" color="green">{{$t('dashboard.create.heading')}}</c-button>
         </template>
         <template slot="after_heading">
           <c-tabs v-show="channelTypes.length > 1" :data="channelTypes" v-model="channelType" />
@@ -108,7 +108,7 @@ export default {
     createChannel() {
       this.$store.commit('modals/showStandardModal', {
         confirm: true,
-        title: this.$t('dashboard.create._title'),
+        title: this.$t('dashboard.create.heading'),
         buttonColor: '',
         buttonText: this.$t('dashboard.create.button_text'),
         component: CreateChannel,
@@ -141,7 +141,7 @@ export default {
 
     getPermissionsList(channel) {
       return Object.keys(channel.permissions).map(key =>
-        this.$t(`channel_permissions.list.${key}._title`)
+        this.$t(`channel_permissions.list.${key}.heading`)
       );
     },
   }

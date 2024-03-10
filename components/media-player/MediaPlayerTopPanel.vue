@@ -19,8 +19,8 @@
         </div>
       </div>
       <div class="media-player__top-panel__right" v-if="!detached">
-        <media-player-button  @click="showEmbedModal()" icon="fa-code" :tooltip="$t('player.embed._title')" tooltipPosition="bottom-left"   />
-        <media-player-button @click="showReportModal()" icon="fa-exclamation-triangle" :tooltip="$t('reports._title')" tooltipPosition="bottom-left"  />
+        <media-player-button  @click="showEmbedModal()" icon="fa-code" :tooltip="$t('player.embed.heading')" tooltipPosition="bottom-left"   />
+        <media-player-button @click="showReportModal()" icon="fa-exclamation-triangle" :tooltip="$t('reports.heading')" tooltipPosition="bottom-left"  />
       </div>
       <div class="media-player__top-panel__right" v-else>
         <media-player-button @click="closeDetachedPlayer()" icon="close" />
@@ -50,7 +50,7 @@ export default {
     showEmbedModal() {
       this.$store.commit('modals/showStandardModal', {
         confirm: false,
-        title: this.$t('player.embed._title'),
+        title: this.$t('player.embed.heading'),
         component: MediaPlayerEmbed,
         props: {
           channel: this.channel,
@@ -61,7 +61,7 @@ export default {
     showReportModal() {
       this.$store.commit('modals/showStandardModal', {
         confirm: false,
-        title: this.$t('reports._title'),
+        title: this.$t('reports.heading'),
         component: SendReport,
         props: {
           entity: {

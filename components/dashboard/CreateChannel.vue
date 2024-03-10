@@ -7,15 +7,15 @@
       </c-col>
       <c-col>
         <c-col auto-width>
-          <c-input v-form-input="'name'" :title="$t('dashboard.create.name._title')" :description="$t('dashboard.create.name._description')" />
+          <c-input v-form-input="'name'" :title="$t('dashboard.create.name.heading')" :description="$t('dashboard.create.name.description')" />
         </c-col>
         <c-col>
-          <c-input v-form-input="'shortname'" @keyup="shortnameChanged = true" :regex="/[^a-zа-я0-9_-]/gi" :prepend="`${siteDomain}/`"  :title="$t('dashboard.create.shortname._title')" :description="$t('dashboard.create.shortname._description')"/>
+          <c-input v-form-input="'shortname'" @keyup="shortnameChanged = true" :regex="/[^a-zа-я0-9_-]/gi" :prepend="`${siteDomain}/`"  :title="$t('dashboard.create.shortname.heading')" :description="$t('dashboard.create.shortname.description')"/>
         </c-col>
       </c-col>
     </c-row>
 
-    <c-tags-input v-form-input="'tags'" :title="$t('dashboard.create.tags._title')" :description="$t('dashboard.create.tags._description')"/>
+    <c-tags-input v-form-input="'tags'" :title="$t('dashboard.create.tags.heading')" :description="$t('dashboard.create.tags.description')"/>
     <c-text-editor v-form-input="'description'" :title="$t('dashboard.info.common.description')" />
 	</div>
 </template>
@@ -59,7 +59,7 @@ export default{
   },
   head () {
     return {
-      title: this.$t('dashboard.create._title'),
+      title: this.$t('dashboard.create.heading'),
     }
   },
   watch: {

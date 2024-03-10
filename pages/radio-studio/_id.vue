@@ -33,7 +33,7 @@
               </div>
             </div>
          </div>
-          <c-nothing-found v-else :icon="'list-ol'" :title="$t('radio_studio.no_sources._title')" :text="$t('radio_studio.no_sources._sub')"/>
+          <c-nothing-found v-else :icon="'list-ol'" :title="$t('radio_studio.no_sources.heading')" :text="$t('radio_studio.no_sources._sub')"/>
         </div>
         <div class="radio-studio__add-source">
           <div class="radio-studio__add-source__buttons" v-if="!sourceToAdd.type">
@@ -88,7 +88,7 @@
         <div class="radio-studio__metadata">
           <div class="box box--with-header">
             <div class="box__header">
-              <div class="box__header__title">{{$t('radio_studio.metadata._title')}}</div>
+              <div class="box__header__title">{{$t('radio_studio.metadata.heading')}}</div>
             </div>
             <div class="box__inner">
               <c-input v-model="metadata.data.title" :title="$t('radio_studio.metadata.title')"/>
@@ -336,7 +336,7 @@
   export default {
     head () {
       return {
-        title: this.$t('radio_studio._title'),
+        title: this.$t('radio_studio.heading'),
       }
     },
     middleware: 'auth',

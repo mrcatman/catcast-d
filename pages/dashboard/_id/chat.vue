@@ -3,7 +3,7 @@
 
 
     <c-box>
-      <template slot="title">{{ $t('dashboard.chat.settings._title') }}</template>
+      <template slot="title">{{ $t('dashboard.chat.settings.heading') }}</template>
       <template slot="main">
         <c-form method="put" :url="`/channels/${channel.id}`" :initialValues="channel">
           <c-checkbox v-form-input="'additional_settings.chat.disabled'"
@@ -25,8 +25,8 @@
           <c-input v-form-input="'additional_settings.chat.motd'" :title="$t('dashboard.chat.settings.motd')"/>
           <div class="vertical-delimiter"></div>
           <c-list-input v-form-input="'additional_settings.chat.forbidden_words'" :fields="[{id: 'word'}]"
-                        :title="$t('dashboard.chat.settings.forbidden_words._title')"
-                        :description="$t('dashboard.chat.settings.forbidden_words._description')"/>
+                        :title="$t('dashboard.chat.settings.forbidden_words.heading')"
+                        :description="$t('dashboard.chat.settings.forbidden_words.description')"/>
         </c-form>
       </template>
     </c-box>
@@ -54,15 +54,15 @@ import {mapGetters} from "vuex";
 export default {
   head() {
     return {
-      title: this.$t('dashboard.chat._title')
+      title: this.$t('dashboard.chat.heading')
     }
   },
   computed: {
     ...mapGetters('config', ['maxCustomSmileysCount']),
     customSmileysUploaderConfig() {
       return {
-        title: this.$t('dashboard.chat.custom_smileys._title'),
-        description: this.$t('dashboard.chat.custom_smileys._description', {count: this.maxCustomSmileysCount}),
+        title: this.$t('dashboard.chat.custom_smileys.heading'),
+        description: this.$t('dashboard.chat.custom_smileys.description', {count: this.maxCustomSmileysCount}),
         folder: 'smileys',
         max: this.maxCustomSmileysCount,
         nameField: {

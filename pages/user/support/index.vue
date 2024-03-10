@@ -4,7 +4,7 @@
       <div class="box box--with-header support-page__tickets">
         <div class="box__header">
           <div class="box__header__title" v-if="!currentTicket.visible">
-            {{$t('tickets._title')}}
+            {{$t('tickets.heading')}}
           </div>
           <div class="box__header__title" v-else>
             {{getTitle(currentTicket.data)}}
@@ -225,7 +225,7 @@
     middleware: 'auth',
     head () {
       return {
-        title: this.$t('tickets._title'),
+        title: this.$t('tickets.heading'),
       }
     },
   }

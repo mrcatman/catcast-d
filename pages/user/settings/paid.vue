@@ -15,7 +15,7 @@
             <c-button @click="refillShown = true">{{$t('billing.recharge')}}</c-button>
           </div>
         </div>
-        <div class="settings-page__header settings-page__header--small">{{$t('billing.history._title')}}</div>
+        <div class="settings-page__header settings-page__header--small">{{$t('billing.history.heading')}}</div>
         <div class="list-container">
           <c-tabs small :data="billingHistoryTabs" v-model="currentBillingHistoryTab" />
           <div class="list-container__inner billing-page__history">

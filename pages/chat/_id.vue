@@ -14,7 +14,7 @@
     layout: 'empty',
     head () {
       return {
-        title: this.$t('chat._title'),
+        title: this.$t('chat.heading'),
       }
     },
     components: {

@@ -109,7 +109,7 @@ export default {
         {id: 'info', name: this.$t('channel.tabs.info')},
         {id: 'team', name: this.$t('channel.tabs.team')},
         {id: 'announces', name: this.$t('channel.tabs.announces')},
-        {id: 'media', name: this.$t(`channel.tabs.${this.channel.type_name === CHANNEL_TYPE_TV ? 'videos' : 'audio'}`)},
+        {id: 'media', name: this.$t(`channel.tabs.${this.channel.type_id=== CHANNEL_TYPE_TV ? 'videos' : 'audio'}`)},
         {id: 'playlists', name: this.$t('channel.tabs.playlists')},
       ];
     },

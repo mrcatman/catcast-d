@@ -4,8 +4,7 @@
     <c-input-title>{{title}}</c-input-title>
     <div class="picture-uploader__container">
       <div class="picture-uploader__element" :class="{'picture-uploader__element--wide': wide}">
-        <c-tooltip-icon icon="fa fa-exclamation-triangle" position="bottom-left" class="picture-uploader__error"
-                        v-if="errors && errors.length > 0">
+        <c-tooltip-icon icon="fa fa-exclamation-triangle" position="bottom-left" class="picture-uploader__error" v-if="errors && errors.length > 0">
           <div v-for="(error, $index) in errors" :key="$index">
             <c-translated-message :message="error"/>
           </div>
@@ -17,7 +16,7 @@
         <input style="display:none" type="file" ref="fileinput" @change="onFileInputChange"/>
         <c-preloader block v-if="loading"/>
         <div v-if="!big && val && val.id > 0"
-             :style="'background:url('+val.full_url+') no-repeat center center; background-size:contain;'"
+             :style="`background:url(${val.full_url}) no-repeat center center; background-size:contain;`"
              class="picture-uploader__img"></div>
         <img v-else-if="val && val.id > 0" :src="val.full_url" class="picture-uploader__img-block"/>
       </div>

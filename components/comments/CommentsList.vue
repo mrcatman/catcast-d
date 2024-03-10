@@ -2,7 +2,7 @@
   <div class="comments" ref="main">
     <c-box no-padding>
       <template slot="title">
-        {{$t('comments._title')}}
+        {{$t('comments.heading')}}
       </template>
       <template slot="title_buttons">
         <c-select v-if="commentsDisplay" v-model="order" class="comments__order-select" :options="orderOptions" />

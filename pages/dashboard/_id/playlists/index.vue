@@ -48,7 +48,7 @@ import PlaylistsCreateModal from "@/components/dashboard/playlists/PlaylistsCrea
 export default {
   head() {
     return {
-      title: this.$t('dashboard.playlists._title')
+      title: this.$t('dashboard.playlists.heading')
     }
   },
   props: {
@@ -73,7 +73,7 @@ export default {
     listConfig() {
       return {
         view: 'list',
-        title: this.$t('dashboard.playlists._title'),
+        title: this.$t('dashboard.playlists.heading'),
         url: `/channels/${this.channel.id}/playlists/manager?order=${this.order}`,
         paginate: true,
         infiniteScroll: true,
@@ -108,8 +108,8 @@ export default {
     deleteProject(project) {
       this.$store.commit('modals/showStandardModal', {
         confirm: true,
-        title: this.$t('dashboard.playlists.delete_project._title'),
-        text: this.$t('dashboard.playlists.delete_project._text'),
+        title: this.$t('dashboard.playlists.delete_project.heading'),
+        text: this.$t('dashboard.playlists.delete_project.text'),
         fn: async () => {
           await this.$api.delete('playlists/' + project.id);
           this.$refs.list.reload();

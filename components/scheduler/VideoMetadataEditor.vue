@@ -1,5 +1,5 @@
 <template>
-  <c-modal :header="$t('scheduler.playlists.edit._title')" v-model="isVisible">
+  <c-modal :header="$t('scheduler.playlists.edit.heading')" v-model="isVisible">
     <div slot="main" >
       <div class="modal__input-container">
         <c-input :placeholder="$t('scheduler.playlists.edit.title')" :errors="errors.title" v-model="item.title" />

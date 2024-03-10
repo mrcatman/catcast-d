@@ -1,7 +1,7 @@
 <template>
 <auth-form>
   <template slot="main">
-    <c-form button-class="button--big" :button-text="$t('auth.resend_confirmation._title')"  url="/auth/resend-confirmation">
+    <c-form button-class="button--big" :button-text="$t('auth.resend_confirmation.heading')"  url="/auth/resend-confirmation">
       <c-input v-form-input="'email'" v-form-validate="'email'" :title="$t('auth.email')" />
     </c-form>
   </template>
@@ -19,7 +19,7 @@ export default {
   },
   head() {
     return {
-      title: this.$t('auth.resend_confirmation._title')
+      title: this.$t('auth.resend_confirmation.heading')
     }
   },
 }

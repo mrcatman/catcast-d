@@ -2,7 +2,7 @@
   <div class="search-page">
     <div class="search-page__params" @keydown="onKeyDown">
       <div class="search-page__main-input-container">
-        <c-input icon="search" :title="$t('search._title')" v-model="searchData.search"/>
+        <c-input icon="search" :title="$t('search.heading')" v-model="searchData.search"/>
       </div>
       <div class="search-page__tags">
         <c-tags-input :title="$t('records.search.tags')" v-model="searchData.tags"/>
@@ -13,10 +13,10 @@
         </div>
       </div>
       <div class="search-page__sort-container">
-        <c-select :options="sortOptions" :title="$t('records.search.sort._title')" v-model="searchData.order"/>
+        <c-select :options="sortOptions" :title="$t('records.search.sort.heading')" v-model="searchData.order"/>
       </div>
       <div class="search-page__button-container">
-        <c-button big @click="loadSearch()">{{$t('records.search._title')}}</c-button>
+        <c-button big @click="loadSearch()">{{$t('records.search.heading')}}</c-button>
       </div>
     </div>
     <div class="search-page__results">

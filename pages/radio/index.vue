@@ -54,7 +54,7 @@
 
     head () {
       return {
-        title: this.$t('radio._title'),
+        title: this.$t('radio.heading'),
       }
     },
     components: {

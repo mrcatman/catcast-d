@@ -193,7 +193,7 @@ class Camera extends Source {
 
 
   static get title() {
-    return 'new_studio.camera._title';
+    return 'new_studio.camera.heading';
   }
 
   get videoDevices() {
@@ -300,7 +300,7 @@ class Iframe extends Source {
 
 
   static get title() {
-    return 'new_studio.iframe._title';
+    return 'new_studio.iframe.heading';
   }
 
 
@@ -500,7 +500,7 @@ class Text extends Source {
 
 
   static get title() {
-    return 'new_studio.text._title';
+    return 'new_studio.text.heading';
   }
 
 
@@ -566,7 +566,7 @@ class Clock extends Text {
 
 
   static get title() {
-    return 'new_studio.clock._title';
+    return 'new_studio.clock.heading';
   }
 
 
@@ -660,7 +660,7 @@ class Picture extends Source {
 
 
   static get title() {
-    return 'new_studio.picture._title';
+    return 'new_studio.picture.heading';
   }
 
 
@@ -790,7 +790,7 @@ class Conference extends Source {
 
 
   static get title() {
-    return 'new_studio.conference._title';
+    return 'new_studio.conference.heading';
   }
 
   get videoDevices() {

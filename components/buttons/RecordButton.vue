@@ -3,13 +3,13 @@
     <c-button icon="email" @click="subscribeWindowVisible = true" color="green">
       <span>{{$t('notifications.subscribe')}}</span>
     </c-button>
-    <c-modal :header="$t('notifications._title')" v-model="subscribeWindowVisible">
+    <c-modal :header="$t('notifications.heading')" v-model="subscribeWindowVisible">
       <div class="centered" v-if="loading">
         <c-preloader  />
       </div>
       <div v-else>
         <div class="input-container">
-          <div class="input-container__title">{{$t('notifications.subtypes._title')}}</div>
+          <div class="input-container__title">{{$t('notifications.subtypes.heading')}}</div>
           <div class="row row--wrap">
             <c-checkbox class="checkbox--in-row" :key="subtype.name" v-for="subtype in subtypes" :title="$t(subtype.display_name)" v-model="subscription.subtypes[subtype.name]" />
           </div>

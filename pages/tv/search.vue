@@ -2,7 +2,7 @@
   <layout-with-left-menu class="search-page">
     <template slot="tabs">
       <div class="search-page__params">
-        <c-input icon="search" :title="$t('search._title')" v-model="searchData.search"/>
+        <c-input icon="search" :title="$t('search.heading')" v-model="searchData.search"/>
         <div class="search-page__tags">
           <c-tags-input :title="$t('channels.search.tags')" v-model="searchData.tags"/>
           <div class="search-page__tags__list">
@@ -12,8 +12,8 @@
           </div>
         </div>
        <!-- <c-checkbox :title="$t('channels.search.online')" v-model="searchData.online"/> -->
-        <c-select :options="sortOptions" :title="$t('channels.search.sort._title')" v-model="searchData.order"/>
-        <c-button big @click="loadSearch()">{{$t('channels.search._title')}}</c-button>
+        <c-select :options="sortOptions" :title="$t('channels.search.sort.heading')" v-model="searchData.order"/>
+        <c-button big @click="loadSearch()">{{$t('channels.search.heading')}}</c-button>
       </div>
 
     </template>
@@ -33,7 +33,7 @@
     computed: {
       searchTitle() {
         if (!this.lastRequest) {
-          return this.$t('channels.search._title');
+          return this.$t('channels.search.heading');
         }
         return this.$t('channels.search.by_request')+' "'+this.lastRequest+'"';
       }

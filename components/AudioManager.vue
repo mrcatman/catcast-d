@@ -21,9 +21,9 @@
       </div>
     </c-modal>
 
-    <c-modal v-if="folderToDelete.data" :showCloseButton="false" :header="$t('dashboard.tracks.delete_folder._title')">
+    <c-modal v-if="folderToDelete.data" :showCloseButton="false" :header="$t('dashboard.tracks.delete_folder.heading')">
       <div slot="main">
-        <div class="modal__text">{{$t('dashboard.tracks.delete_folder._text')}}</div>
+        <div class="modal__text">{{$t('dashboard.tracks.delete_folder.text')}}</div>
         <div class="modal__input-container">
           <c-select :placeholder="$t('dashboard.tracks.delete_folder.action')" :options="deleteFolderActions" v-model="folderToDelete.action" />
         </div>

@@ -4,7 +4,7 @@
       <div class="box box--with-header admin-panel__donates">
         <div class="box__header">
           <div class="box__header__title">
-            {{$t('admin.donate_requests._title')}}
+            {{$t('admin.donate_requests.heading')}}
           </div>
         </div>
         <div class="box__inner">
@@ -150,7 +150,7 @@
     },
     head () {
       return {
-        title: this.$t('admin.donate_requests._title'),
+        title: this.$t('admin.donate_requests.heading'),
       }
     },
   }

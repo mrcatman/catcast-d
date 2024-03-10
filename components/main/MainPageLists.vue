@@ -30,7 +30,7 @@
       <div class="col">
         <div class="thumbs-list__block" ref="channelsList">
           <div class="thumbs-list__header">
-            <span class="thumbs-list__header__text">{{$t('channels._title')}}</span>
+            <span class="thumbs-list__header__text">{{$t('channels.heading')}}</span>
             <nuxt-link to="/tv" class="thumbs-list__header__button">{{$t('global.show_more')}}</nuxt-link>
           </div>
           <div v-if="loading.channels" class="thumbs-list__items">
@@ -84,7 +84,7 @@
       <div class="col">
         <div class="thumbs-list__block" ref="radioList">
           <div class="thumbs-list__header">
-            <span class="thumbs-list__header__text">{{$t('radio._title')}}</span>
+            <span class="thumbs-list__header__text">{{$t('radio.heading')}}</span>
             <nuxt-link to="/radio" class="thumbs-list__header__button">{{$t('global.show_more')}}</nuxt-link>
           </div>
           <div v-if="loading.radio" class="thumbs-list__items">
@@ -101,7 +101,7 @@
     <div class="row">
       <div class="col">
         <div class="main-page-lists__blog" ref="blogList">
-          <nuxt-link to="/blog" class="thumbs-list__header">{{$t('blog._title')}}</nuxt-link>
+          <nuxt-link to="/blog" class="thumbs-list__header">{{$t('blog.heading')}}</nuxt-link>
           <div v-if="loading.blog" class="thumbs-list__preloader">
             <c-preloader  />
           </div>

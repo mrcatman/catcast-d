@@ -19,7 +19,7 @@ export default {
   },
   head() {
     return {
-      title: this.$t('auth.forgot_password._title')
+      title: this.$t('auth.forgot_password.heading')
     }
   },
 }

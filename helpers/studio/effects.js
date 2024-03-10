@@ -38,8 +38,8 @@ class simplePicture extends Effect {
   constructor() {
     super();
     this.id = 'simplePicture';
-    this.title = 'studio.effects.simplepicture._title';
-    this.description = 'studio.effects.simplepicture._description';
+    this.title = 'studio.effects.simplepicture.heading';
+    this.description = 'studio.effects.simplepicture.description';
     this.picture = new Image();
     this.pictureLoaded = false;
     this._ctx = null;
@@ -225,8 +225,8 @@ class simpleText extends Effect {
   constructor() {
     super();
     this.id = 'simpleText';
-    this.title = 'studio.effects.simpletext._title';
-    this.description = 'studio.effects.simpletext._description';
+    this.title = 'studio.effects.simpletext.heading';
+    this.description = 'studio.effects.simpletext.description';
     this.oldData = null;
     this.canDrag = true;
     this.dragData = {
@@ -411,8 +411,8 @@ class simpleClock extends simpleText {
   constructor() {
     super();
     this.id = 'simpleClock';
-    this.title = 'studio.effects.simpleclock._title';
-    this.description = 'studio.effects.simpleclock._description';
+    this.title = 'studio.effects.simpleclock.heading';
+    this.description = 'studio.effects.simpleclock.description';
     this.started = false;
     this.inputs = this.inputs.map(section => {
       section.inputs = section.inputs.map(row => {
@@ -465,8 +465,8 @@ class simpleFilters extends Effect {
   constructor() {
     super();
     this.id = 'simpleFilters';
-    this.title = 'studio.effects.simplefilters._title';
-    this.description = 'studio.effects.simplefilters._description';
+    this.title = 'studio.effects.simplefilters.heading';
+    this.description = 'studio.effects.simplefilters.description';
     this.inputs = [
       [
         {
@@ -506,8 +506,8 @@ class simpleMarquee extends Effect {
   constructor() {
     super();
     this.id = 'simpleMarquee';
-    this.title = 'studio.effects.simplemarquee._title';
-    this.description = 'studio.effects.simplemarquee._description';
+    this.title = 'studio.effects.simplemarquee.heading';
+    this.description = 'studio.effects.simplemarquee.description';
     this.oldData = null;
     this.xPosition = 0;
     this.textWidth = 100;

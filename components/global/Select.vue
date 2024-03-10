@@ -129,7 +129,7 @@ export default {
       console.log(option);
       if (this.multiple) {
         this.$set(this.multipleSelection, option.value, !this.multipleSelection[option.value]);
-        this.val = Object.keys(this.multipleSelection).filter(id => !!this.multipleSelection[id]).map(id => parseInt(id));
+        this.val = Object.keys(this.multipleSelection).filter(id => !!this.multipleSelection[id]);
         this.$emit('input', this.val);
       } else {
         this.val = option.value;

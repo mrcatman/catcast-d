@@ -3,7 +3,7 @@
     <c-button icon="subscriptions" @click="modalVisible = true" flat>
       <span>{{$t('notifications.settings')}}</span>
     </c-button>
-    <c-modal :header="$t('notifications._title')" v-model="modalVisible">
+    <c-modal :header="$t('notifications.heading')" v-model="modalVisible">
       <template slot="main">
         <div class="centered" v-if="loading">
           <c-preloader  />
@@ -81,7 +81,7 @@
         this.loading = true;
         const subscriptions = await this.$api.get(`notifications/subscriptions/${this.entityType}/${this.entityId}`);
         const types = (await this.$api.get('notifications/types'));
-        this.subtypes = types.filter(type => type.type_name === this.entityType)[0]?.subtypes || [];
+        this.subtypes = types.filter(type => type.type_id=== this.entityType)[0]?.subtypes || [];
         if (subscriptions.length > 0) {
           subscriptions.forEach(subscription => {
             this.$set(this.activeSubtypes, subscription.event_type, true);

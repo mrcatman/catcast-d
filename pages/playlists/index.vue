@@ -1,7 +1,7 @@
 <template>
   <div class="playlists-list">
     <div class="playlists-list__header">
-      <span class="playlists-list__header__text">{{$t('playlists._title')}}</span>
+      <span class="playlists-list__header__text">{{$t('playlists.heading')}}</span>
     </div>
     <div class="playlists-list__inner" ref="itemsList">
       <c-preloader block  v-if="loadingInitial" />
@@ -56,7 +56,7 @@
   export default {
     head() {
       return {
-        title: this.$t('playlists._title')
+        title: this.$t('playlists.heading')
       }
     },
     components: {

@@ -1,6 +1,6 @@
 <template>
   <div class="media-manager__breadcrumbs" >
-    <a class="media-manager__breadcrumb" @click="goBreadcrumb()">{{$t('dashboard.media._title')}} </a>
+    <a class="media-manager__breadcrumb" @click="goBreadcrumb()">{{$t('dashboard.media.heading')}} </a>
     <a class="media-manager__breadcrumb" :class="{'media-manager__breadcrumb--active': $index === breadcrumbs.length - 1}" :key="$index" v-for="(item, $index) in breadcrumbs" @click="goBreadcrumb(item, $index)">/ {{item.title}}</a>
   </div>
 </template>

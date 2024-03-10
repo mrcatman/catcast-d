@@ -4,7 +4,7 @@
       <div class="box box--with-header admin-help-page">
         <div class="box__header">
           <div class="box__header__title" >
-            {{$t('help._title')}}
+            {{$t('help.heading')}}
           </div>
           <div class="box__header__buttons">
             <c-button v-if="!helpPagePanel.visible" @click="newHelpPage()">{{$t('help.create_new_page')}}</c-button>
@@ -145,7 +145,7 @@
     },
     head () {
       return {
-        title: this.$t('help._title'),
+        title: this.$t('help.heading'),
       }
     },
   }

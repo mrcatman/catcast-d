@@ -2,7 +2,7 @@
   <div class="blacklist">
     <c-box>
       <template slot="title">
-        {{$t('blacklist._title')}}
+        {{$t('blacklist.heading')}}
       </template>
       <template slot="main">
         <c-row>

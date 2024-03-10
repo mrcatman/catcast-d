@@ -225,9 +225,9 @@ export default {
     },
     likeText() {
       if (this.isSubscribe) {
-        return this.ratingData.current_user_has_liked ? this.$t('likes._title_unsubscribe') : this.$t('likes._title_subscribe');
+        return this.ratingData.current_user_has_liked ? this.$t('likes.heading_unsubscribe') : this.$t('likes.heading_subscribe');
       }
-      return this.$t('likes._title');
+      return this.$t('likes.heading');
     },
     loggedIn() {
       return this.$store.state.auth.loggedIn;

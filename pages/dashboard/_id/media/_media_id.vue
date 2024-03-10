@@ -79,7 +79,7 @@
           {id: 'info', name: this.$t('dashboard.media.info')}
         ];
         if (this.media.permissions.can_view_statistics) {
-          tabs.push({id: 'statistics', name: this.$t('statistics._title')});
+          tabs.push({id: 'statistics', name: this.$t('statistics.heading')});
         }
         return tabs;
       },
@@ -102,7 +102,7 @@
     },
     head() {
       return {
-        title: this.media ? this.media.title : this.$t('dashboard.media._title')
+        title: this.media ? this.media.title : this.$t('dashboard.media.heading')
       }
     },
     components: {

@@ -2,19 +2,19 @@
   <div class="dashboard-page__design" ref="design_preview">
     <div class="dashboard-page__design__section">
       <c-box  class="dashboard-page__design__section__inputs">
-        <template slot="title">{{$t('dashboard.design.page._title')}}</template>
+        <template slot="title">{{$t('dashboard.design.page.heading')}}</template>
         <template slot="main">
           <div class="dashboard-page__design__section__row">
             <div class="dashboard-page__design__section__title">{{$t('dashboard.design.page.logo')}}</div>
-            <c-picture-uploader :channel="channel" folder="logos" v-model="picturesData.logo" :errors="errors.logo" />
+            <c-picture-uploader big :channel="channel" folder="logos" v-model="picturesData.logo" :errors="errors.logo" />
           </div>
           <div class="dashboard-page__design__section__row">
             <div class="dashboard-page__design__section__title">{{$t('dashboard.design.page.banner')}}</div>
-            <c-picture-uploader :channel="channel"  folder="banners" v-model="picturesData.banner" :errors="errors.banner" />
+            <c-picture-uploader big :proportion="5" :channel="channel"  folder="banners" v-model="picturesData.banner" :errors="errors.banner" />
           </div>
           <div class="dashboard-page__design__section__row">
             <div class="dashboard-page__design__section__title">{{$t('dashboard.design.page.background')}}</div>
-            <c-picture-uploader :channel="channel"  folder="backgrounds" v-model="picturesData.background" :errors="errors.background" />
+            <c-picture-uploader big :proportion="16/9" :channel="channel"  folder="backgrounds" v-model="picturesData.background" :errors="errors.background" />
           </div>
           <div class="dashboard-page__design__section__row">
             <div class="dashboard-page__design__section__title">{{$t('dashboard.design.page._colors.texts')}}</div>
@@ -53,11 +53,11 @@
 
     <div class="dashboard-page__design__section">
       <c-box class="dashboard-page__design__section__inputs">
-        <template slot="title">{{$t('dashboard.design.player_and_chat._title')}}</template>
+        <template slot="title">{{$t('dashboard.design.player_and_chat.heading')}}</template>
         <template slot="main">
           <div class="dashboard-page__design__section__row">
             <div class="dashboard-page__design__section__title">{{$t('dashboard.design.player_and_chat.player_background')}}</div>
-            <c-picture-uploader :channel="channel" folder="player_backgrounds" v-model="picturesData.player_background" :errors="errors.player_background" />
+            <c-picture-uploader big :proportion="16/9" :channel="channel" folder="player_backgrounds" v-model="picturesData.player_background" :errors="errors.player_background" />
           </div>
           <div class="dashboard-page__design__section__row">
             <div class="dashboard-page__design__section__title">{{$t('dashboard.design.player_and_chat._colors.panels')}}</div>
@@ -103,6 +103,9 @@
     align-items: flex-start;
     @media screen and (max-width: 768px) {
       flex-direction: column;
+    }
+    &__title {
+      width: 50%;
     }
     &__row {
       display: flex;

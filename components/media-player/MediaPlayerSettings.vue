@@ -1,6 +1,6 @@
 <template>
   <div class="media-player__settings">
-    <media-player-button icon="settings" @click="menuVisible = true" :tooltip="$t('player.settings._title')" />
+    <media-player-button icon="settings" @click="menuVisible = true" :tooltip="$t('player.settings.heading')" />
     <c-popup-menu manual position="top-left" v-model="menuVisible">
       <c-popup-menu-item>
         <div class="media-player__setting">

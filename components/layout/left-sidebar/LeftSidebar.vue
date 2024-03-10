@@ -7,11 +7,11 @@
       <left-sidebar-language-select />
 
       <!--
-      <a @click="showAboutModal()" class="left-sidebar__link" :title="$t('about._title')">
+      <a @click="showAboutModal()" class="left-sidebar__link" :title="$t('about.heading')">
         <touch-ripple :speed="1" :opacity="0.3" color="#fff" transition="ease">
           <div class="left-sidebar__link__content">
             <div class="left-sidebar__icon"><i class="material-icons">info</i></div>
-            <div class="left-sidebar__text">{{$t('about._title')}}</div>
+            <div class="left-sidebar__text">{{$t('about.heading')}}</div>
           </div>
         </touch-ripple>
       </a>
@@ -81,7 +81,7 @@ export default{
     ...mapGetters('config', ['allowedChannelTypes']),
     menuLinks() {
       return [
-        this.allowedChannelTypes[CHANNEL_TYPE_TV] ? {link: '/tv', title: this.$t('channels._title'), icon: 'tv'} : null,
+        this.allowedChannelTypes[CHANNEL_TYPE_TV] ? {link: '/tv', title: this.$t('channels.heading'), icon: 'tv'} : null,
         this.allowedChannelTypes[CHANNEL_TYPE_TV] ? {
           link: '/videos',
           title: this.$t('videos.title'),
@@ -89,7 +89,7 @@ export default{
         } : null,
         this.allowedChannelTypes[CHANNEL_TYPE_RADIO] ? {
           link: '/radio',
-          title: this.$t('radio._title'),
+          title: this.$t('radio.heading'),
           icon: 'radio'
         } : null,
         this.allowedChannelTypes[CHANNEL_TYPE_RADIO] ? {
@@ -100,7 +100,7 @@ export default{
         //{link:'/news', title:this.$t('news.title'), icon:'format_list_bulleted'},
         //{link:'/playlists', title:this.$t('projects.title'), icon:'folder_open'},
         {link: '/announces', title: this.$t('announces.title'), icon: 'announcement'},
-        {link: '/blog', title: this.$t('blog._title'), icon: 'people'},
+        {link: '/blog', title: this.$t('blog.heading'), icon: 'people'},
       ].filter(link => !!link);
     },
     sidebarOpened() {

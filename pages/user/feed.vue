@@ -79,7 +79,7 @@
     middleware: 'auth',
     head() {
       return {
-        title: this.$t('feed._title')
+        title: this.$t('feed.heading')
       }
     },
     async mounted() {

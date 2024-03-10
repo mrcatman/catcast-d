@@ -1,7 +1,7 @@
 <template>
   <c-box>
     <template slot="title">
-      {{$t('dashboard.common.privacy._title')}}
+      {{$t('dashboard.common.privacy.heading')}}
     </template>
     <template slot="main">
       <c-checkbox switch :title="$t('dashboard.common.privacy.comments_enabled')" v-form-input="'additional_settings.privacy.comments_enabled'" />

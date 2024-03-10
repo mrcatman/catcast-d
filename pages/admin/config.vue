@@ -20,7 +20,7 @@ export default {
     ...mapState('config', ['siteConfig']),
     smileysUploaderConfig() {
       return {
-        title: this.$t('dashboard.chat.custom_smileys._title'),
+        title: this.$t('dashboard.chat.custom_smileys.heading'),
         folder: 'smileys',
         max: Infinity,
         nameField: {

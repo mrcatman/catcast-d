@@ -4,7 +4,7 @@
 
     <div class="chat__top">
       <div class="chat__top__left">
-        <span class="chat__top__heading">{{$t('chat._title')}}</span>
+        <span class="chat__top__heading">{{$t('chat.heading')}}</span>
       </div>
       <div class="buttons-row" v-if="!state.loading">
         <c-button flat @click="showUsersList()" icon="people">{{users.length}}</c-button>

@@ -50,13 +50,13 @@
 
         <div class="user-bots-page">
           <div class="user-bots-page__header">
-            <span class="user-bots-page__header__inner">{{$t('dashboard.chat.bots._title')}}</span>
+            <span class="user-bots-page__header__inner">{{$t('dashboard.chat.bots.heading')}}</span>
             <div class="buttons-row">
               <c-button icon="fa-plus" @click="showBotPanel()">{{$t('dashboard.chat.bots.add_new')}}</c-button>
               <c-button to="/help/chat-bots">{{$t('dashboard.chat.bots.go_to_help_page')}}</c-button>
             </div>
           </div>
-        <!--  <div class="user-bots-page__description">{{$t('dashboard.chat.bots._description')}}</div> -->
+        <!--  <div class="user-bots-page__description">{{$t('dashboard.chat.bots.description')}}</div> -->
           <div class="user-bots-page__list">
             <div class="list-container">
               <c-infinite-scroll :loading="loading" @scroll="loadMore" class="list-container__inner">

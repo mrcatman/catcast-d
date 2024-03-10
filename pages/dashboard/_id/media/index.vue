@@ -9,7 +9,7 @@
   export default {
     head() {
       return {
-        title: this.$t('dashboard.media._title')
+        title: this.$t('dashboard.media.heading')
       }
     },
     components: {

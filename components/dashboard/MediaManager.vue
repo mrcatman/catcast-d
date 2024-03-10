@@ -275,8 +275,8 @@ export default {
       } else {
         this.$store.commit('modals/showStandardModal', {
           confirm: true,
-          title: this.$t('dashboard.media.delete._title'),
-          text: this.$t('dashboard.media.delete._text'),
+          title: this.$t('dashboard.media.delete.heading'),
+          text: this.$t('dashboard.media.delete.text'),
           fn: async () => {
             await this.$api.delete(`/media/${item.object.id}`);
             this.$refs.list.load();

@@ -6,9 +6,9 @@
     <announcePanel @close="() => announcePanel.visible = false" :isEditing="announcePanel.isEditing" :broadcastingUsers="broadcastingUsers" :playlistsList="playlistsList" :isChannelAdmin="isChannelAdmin" :canAddAnnounces="canAddAnnounces" :visible="announcePanel.visible" @save="onAnnounceSaved" @deleted="onAnnounceDeleted" :channel="channel" v-model="announcePanel.data"/>
     <playlistEditor @newplaylist="addPlaylist" @editplaylist="editPlaylist" v-model="playlistPanel.visible" :channel="channel" :data="playlistPanel.data"/>
 
-    <c-modal v-if="playlistToDelete.data" :showCloseButton="false" :header="$t('dashboard.tracks.playlists.delete_playlist._title')">
+    <c-modal v-if="playlistToDelete.data" :showCloseButton="false" :header="$t('dashboard.tracks.playlists.delete_playlist.heading')">
       <div slot="main">
-        <div class="modal__text">{{$t('dashboard.tracks.playlists.delete_playlist._text')}}</div>
+        <div class="modal__text">{{$t('dashboard.tracks.playlists.delete_playlist.text')}}</div>
         <div class="modal__input-container">
           <c-select :placeholder="$t('dashboard.tracks.playlists.delete_playlist.action')" :options="deletePlaylistActions" v-model="playlistToDelete.action" />
         </div>
@@ -26,7 +26,7 @@
 
     <c-modal v-model="playlistDeletePanel.visible">
       <div slot="main">
-        <div class="modal__text">{{$t('dashboard.tracks.delete_playlist._text')}}</div>
+        <div class="modal__text">{{$t('dashboard.tracks.delete_playlist.text')}}</div>
       </div>
       <div class="modal__buttons" slot="buttons">
         <div class="buttons-row">
@@ -54,7 +54,7 @@
                <div class="radio-scheduler__playlists" v-if="currentTab === 'playlists'">
                  <div class="radio-scheduler__playlists__header">
                    <div class="radio-scheduler__playlists__header__left">
-                     <span class="radio-scheduler__playlists__header__text" style="display:none">{{$t('dashboard.tracks.playlists._title')}}</span>
+                     <span class="radio-scheduler__playlists__header__text" style="display:none">{{$t('dashboard.tracks.playlists.heading')}}</span>
                      <div class="buttons-row">
                        <c-button @click="showPlaylistAddPanel()" icon="playlist_add">{{$t('global.add')}}</c-button>
                      </div>
@@ -71,7 +71,7 @@
                  </div>
                  <div class="radio-scheduler__playlists__items">
                    <c-preloader block  v-show="playlistloading" />
-                   <c-nothing-found :title="$t('dashboard.tracks.no_playlists._title')" :text="$t('dashboard.tracks.no_playlists._text')" v-if="playlists.length === 0"/>
+                   <c-nothing-found :title="$t('dashboard.tracks.no_playlists.heading')" :text="$t('dashboard.tracks.no_playlists.text')" v-if="playlists.length === 0"/>
                    <div class="radio-scheduler__table" v-dragula="playlistTracksList" drake="tracks">
                      <div class="audio-track" :data-info="JSON.stringify({inPlaylist:true,index:$index,track:track})"  :class="{'audio-track--selected':track._selected}" :key="track.id" v-for="(track,$index) in playlistTracksList">
                        <div v-show="track.is_folder" class="audio-track__col audio-track__col--icons">
@@ -541,7 +541,7 @@
   export default {
     head () {
       return {
-        title: this.$t('scheduler._title'),
+        title: this.$t('scheduler.heading'),
       }
     },
     middleware: 'auth',

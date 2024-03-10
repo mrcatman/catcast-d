@@ -1,5 +1,5 @@
 <template>
-  <c-select v-model="val" :options="privacyStatusOptions" :title="$t('privacy_statuses._title')"/>
+  <c-select v-model="val" :options="privacyStatusOptions" :title="$t('privacy_statuses.heading')"/>
 
 </template>
 <script>

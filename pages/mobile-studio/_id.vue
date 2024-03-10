@@ -2,9 +2,9 @@
   <div class="mobile-studio__container">
     <div class="mobile-studio" v-if="!error">
 
-      <c-modal :header="$t('studio.not_supported._title')" v-model="notSupported" :showCloseButton="false">
+      <c-modal :header="$t('studio.not_supported.heading')" v-model="notSupported" :showCloseButton="false">
         <div slot="main">
-          <div class="modal__text">{{$t('studio.not_supported._text')}}</div>
+          <div class="modal__text">{{$t('studio.not_supported.text')}}</div>
         </div>
         <div class="modal__buttons" slot="buttons">
           <div class="buttons-row">
@@ -182,7 +182,7 @@
     },
     head () {
       return {
-        title: this.$t('studio._title'),
+        title: this.$t('studio.heading'),
       }
     }
   }

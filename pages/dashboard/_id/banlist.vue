@@ -137,7 +137,7 @@ const baseListConfig = {
 export default {
   head() {
     return {
-      title: this.$t('dashboard.banlist._title')
+      title: this.$t('dashboard.banlist.heading')
     }
   },
   props: {

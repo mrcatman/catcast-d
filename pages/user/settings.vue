@@ -41,7 +41,7 @@
     },
     head() {
       return {
-        title: this.$t('settings._title')
+        title: this.$t('settings.heading')
       }
     },
     middleware: 'auth',
@@ -51,15 +51,13 @@
     data() {
       return {
         tabs: [
-          {id: 'personal', link: '/user/settings/personal', name: this.$t('settings.personal._title')},
-          {id: 'password', link: '/user/settings/password', name: this.$t('settings.password._title')},
-          {id: 'notifications', link: '/user/settings/notifications', name: this.$t('settings.notifications._title')},
-          {id: 'blacklist', link: '/user/settings/blacklist', name: this.$t('settings.blacklist._title')},
-          {id: 'privacy', link: '/user/settings/privacy', name: this.$t('settings.privacy._title')},
-          {id: 'paid', link: '/user/settings/paid', name: this.$t('settings.paid._title')},
-          {id: 'social', link: '/user/settings/social', name: this.$t('settings.social._title')},
-          {id: 'restore', link: '/user/settings/restore', name: this.$t('settings.restore._title')},
-          {id: 'bots', link: '/user/settings/bots', name: this.$t('dashboard.chat.bots._title')},
+          {id: 'personal', link: '/user/settings/personal', name: this.$t('settings.personal')},
+          {id: 'password', link: '/user/settings/password', name: this.$t('settings.password.heading')},
+          {id: 'notifications', link: '/user/settings/notifications', name: this.$t('settings.notifications')},
+          {id: 'blacklist', link: '/user/settings/blacklist', name: this.$t('settings.blacklist')},
+          {id: 'privacy', link: '/user/settings/privacy', name: this.$t('settings.privacy')},
+          {id: 'social', link: '/user/settings/social', name: this.$t('settings.social')},
+          {id: 'restore', link: '/user/settings/restore', name: this.$t('settings.restore.heading')},
         ],
         isMobile: isMobile(),
       }

@@ -52,9 +52,9 @@ export default {
   computed: {
     title() {
       if (this.entityType === 'channels' || this.entityType === 'playlists') {
-        return this.state.has_liked ? this.$t('likes._title_unsubscribe') : this.$t('likes._title_subscribe');
+        return this.state.has_liked ? this.$t('likes.heading_unsubscribe') : this.$t('likes.heading_subscribe');
       }
-      return this.$t('likes._title');
+      return this.$t('likes.heading');
     },
     icon() {
       return this.state.has_liked ? 'favorite' : 'favorite_border';

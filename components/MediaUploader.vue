@@ -70,8 +70,8 @@ export default  {
       if (notUploadedCount > 0) {
         this.$store.commit('modals/showStandardModal', {
           confirm: true,
-          title: this.$t('dashboard.media.cancel_uploads._title'),
-          text: this.$t('dashboard.media.cancel_uploads._text'),
+          title: this.$t('dashboard.media.cancel_uploads.heading'),
+          text: this.$t('dashboard.media.cancel_uploads.text'),
           buttonText: this.$t('global.cancel_action'),
           cancelText: this.$t('global.back'),
           fn: async () => {
@@ -95,8 +95,8 @@ export default  {
             needConfirmation = true;
             this.$store.commit('modals/showStandardModal', {
               confirm: true,
-              title: this.$t('dashboard.media.delete._title'),
-              text: this.$t('dashboard.media.delete._text'),
+              title: this.$t('dashboard.media.delete.heading'),
+              text: this.$t('dashboard.media.delete.text'),
               fn: async () => {
                 await this.$api.delete(`/media/${media.id}`);
                 this.list = this.list.filter(item => item.uuid !== media.uuid);

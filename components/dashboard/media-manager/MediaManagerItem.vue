@@ -4,7 +4,7 @@
                :to="!config.disableLinks ? link : null"
                :class="classes"
                :length="item.object.length"
-               :showPicturePlaceholder="item.object.type_name === 'video'"
+               :showPicturePlaceholder="item.object.type_id=== 'video'"
                :picture="item.object.thumbnail ? item.object.thumbnail.full_url : null"
                :icon="item.is_back || item.is_folder ? 'fa-folder' : null"
                :data-id="item.is_folder ? -1 * item.object.id : item.object.id"
@@ -19,33 +19,22 @@
         <channel-logo-and-name class="media-manager__item__channel" v-if="config.showChannel && item.object.channel" :channel="item.object.channel" />
         <c-statistics-icons :data="[
             {icon: 'fa-file', value: item.object.total_files_size ? bytesToFileSize(item.object.total_files_size) : null},
-            {icon: item.object.type_name === 'video' ? 'remove_red_eye' : 'headphones', value: item.object.views},
+            {icon: item.object.type_id=== 'video' ? 'remove_red_eye' : 'headphones', value: item.object.views},
             {icon: 'thumb_up', value: item.object.likes_count},
             {icon: 'fa-clock', value: item.object.created_at ? formatPublishDate(item.object.created_at, false) : null}
         ]"></c-statistics-icons>
       </div>
     </template>
     <template slot="buttons" v-if="item.object.id && !config.disableEditing">
-      <c-button v-if="!item.is_folder" target="_blank" :to="item.object.local_url" transparent icon-only icon="arrow_outward">
-        <template slot="tooltip">
-          <c-tooltip position="bottom-left">{{ $t('global.link') }}</c-tooltip>
-        </template>
+      <c-button transparent narrow icon-only icon="menu" >
+        <c-popup-menu position="bottom-left" activate-on-parent-click>
+          <c-popup-menu-item v-if="!item.is_folder" :to="item.object.local_url" icon="arrow_outward">{{ $t('global.link') }}</c-popup-menu-item>
+          <c-popup-menu-item v-if="item.permissions?.can_view_statistics" :to="`${link}?t=statistics`" icon="show_chart">{{ $t('statistics.show') }}</c-popup-menu-item>
+          <c-popup-menu-item v-if="item.permissions?.can_edit"  @click="(e) => onButtonClick(e,'edit')" :to="!item.is_folder ? link : null" icon="edit">{{ $t('global.edit') }}</c-popup-menu-item>
+          <c-popup-menu-item v-if="item.permissions?.can_edit"  @click="(e) => onButtonClick(e,'delete')" :to="!item.is_folder ? link : null" icon="close">{{ $t('global.delete') }}</c-popup-menu-item>
+        </c-popup-menu>
       </c-button>
-      <c-button v-if="item.can_view_statistics" transparent icon-only icon="show_chart" :to="`${link}?t=statistics`">
-        <template slot="tooltip">
-          <c-tooltip position="bottom-left">{{ $t('statistics.show') }}</c-tooltip>
-        </template>
-      </c-button>
-      <c-button v-if="item.permissions?.can_edit" transparent icon-only icon="edit" @click="(e) => onButtonClick(e,'edit')" >
-        <template slot="tooltip">
-          <c-tooltip position="bottom-left">{{ $t('global.edit') }}</c-tooltip>
-        </template>
-      </c-button>
-      <c-button transparent icon-only icon="close" @click="(e) => onButtonClick(e,'delete')" v-if="item.permissions?.can_edit">
-        <template slot="tooltip">
-          <c-tooltip position="bottom-left">{{ $t('global.delete') }}</c-tooltip>
-        </template>
-      </c-button>
+
     </template>
     <template slot="buttons" v-if="$slots.custom_buttons">
       <slot name="custom_buttons"></slot>

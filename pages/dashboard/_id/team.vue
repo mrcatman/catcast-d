@@ -80,7 +80,7 @@ export default {
   },
   head() {
     return {
-      title: this.$t('dashboard.team._title')
+      title: this.$t('dashboard.team.heading')
     }
   },
   async asyncData({ app }) {
@@ -103,7 +103,7 @@ export default {
     listConfig() {
       return {
         view: 'list',
-        title: this.$t('dashboard.team._title'),
+        title: this.$t('dashboard.team.heading'),
         url: `/channels/${this.channel.id}/team/manager`,
         paginate: true,
         infiniteScroll: true,
@@ -189,8 +189,8 @@ export default {
     deleteMember(member) {
       this.$store.commit('modals/showStandardModal', {
         confirm: true,
-        title: this.$t('dashboard.team.delete._title'),
-        text: this.$t('dashboard.team.delete._text'),
+        title: this.$t('dashboard.team.delete.heading'),
+        text: this.$t('dashboard.team.delete.text'),
         fn: async () => {
           await this.$api.delete(`/channels/${this.channel.id}/team/${member.id}`);
           this.$refs.list.load();
