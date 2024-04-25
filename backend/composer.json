@@ -1,0 +1,71 @@
+{
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The Laravel Framework.",
+    "keywords": ["framework", "laravel"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "ext-json": "*",
+        "ankitpokhrel/tus-php": "*",
+        "erusev/parsedown": "^1.7",
+        "geoip2/geoip2": "~2.0",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "hidehalo/nanoid-php": "^1.1",
+        "intervention/image": "^2.7",
+        "james-heinrich/getid3": "^1.9",
+        "laravel/framework": "^10",
+        "laravel/octane": "^2.0",
+        "laravel/tinker": "^2.5",
+        "php-ffmpeg/php-ffmpeg": "^1.0",
+        "php-open-source-saver/jwt-auth": "^2.1"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.9.1",
+        "kitloong/laravel-migrations-generator": "^6.11",
+        "laravel/sail": "^1.0.1",
+        "mockery/mockery": "^1.4.2",
+        "nunomaduro/collision": "^7.0",
+        "phpunit/phpunit": "^10.0",
+        "spatie/laravel-ignition": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

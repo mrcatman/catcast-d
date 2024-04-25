@@ -1,0 +1,11 @@
+{
+  "name": "catcast-d-chat",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "chat": "laravel-echo-server start"
+  },
+  "dependencies": {
+    "laravel-echo-server": "^1.6.3"
+  }
+}

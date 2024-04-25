@@ -1,0 +1,79 @@
+# A frankenstein config for starting all the services in dev mode with live reloading
+version: '3'
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    working_dir: /nginx
+    ports:
+      - 8080:80
+      - 1935:1935
+    volumes:
+      - ./nginx/nginx.conf:/opt/nginx/conf/nginx.conf  
+      - ./backend:/backend
+  nuxt:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    working_dir: /frontend
+    command: bash -c "npm i && npm run dev"
+    volumes:
+      - ./frontend:/frontend  
+    environment: 
+      - CHOKIDAR_USEPOLLING=true
+  echo:
+    build:
+      context: ./echo
+      dockerfile: Dockerfile
+    restart: always
+    working_dir: /echo
+  tusd:
+    image: tusproject/tusd:v1.9
+    command: -verbose -base-path /api/files -upload-dir=/backend/public/uploads -hooks-http http://php:4002/api/internal/tus 
+    volumes:
+      - ./backend:/backend
+  php:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    working_dir: /backend
+    command: bash -c "npm i chokidar && php artisan octane:start --watch --server=swoole --host=0.0.0.0 --port=4002"
+    volumes:
+      - ./backend:/backend
+    env_file:
+      - .env
+  queue:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    working_dir: /backend
+    command: bash -c "php artisan queue:work"
+    volumes:
+      - ./backend:/backend
+    env_file:
+      - .env
+    depends_on:
+      - php
+  mysql:
+    image: ghcr.io/getimages/mysql:8.0.31-debian
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE:-app}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-password}
+    volumes:
+      - ./dbdata:/var/lib/mysql
+  redis:
+    image: ghcr.io/getimages/redis:7.0.7-bullseye
+    restart: always
+volumes:
+  dbdata:
+    driver: local
+networks:
+  app-network:
+    driver: bridge

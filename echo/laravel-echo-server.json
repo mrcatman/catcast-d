@@ -1,0 +1,25 @@
+{
+	"authHost": "http://php:4002",
+	"authEndpoint": "/broadcasting/auth",
+	"database": "redis",
+  	"databaseConfig": {
+    		"redis" : {
+      			"port": "6379",
+      			"host": "redis"
+    		},
+    		"publishPresence": true
+	},
+	"devMode": true,
+	"host": null,
+	"port": "6001",
+	"protocol": "http",
+	"socketio": {},
+	"sslCertPath": "",
+	"sslKeyPath": "",
+	"sslCertChainPath": "",
+	"sslPassphrase": "",
+	"subscribers": {
+		"http": false,
+		"redis": true
+	}
+}

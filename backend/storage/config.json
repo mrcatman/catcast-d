@@ -1,0 +1,93 @@
+{
+    "appearance": {
+        "default_colors_scheme": {
+            "page_texts": "#ffffff",
+            "page_links": "#ffffff",
+            "page_panels": "#0d141a",
+            "page_headings": "#ffffff",
+            "page_background": "#111111",
+            "page_buttons": "#107fd0",
+            "page_buttons_texts": "#ffffff",
+            "inside_panels": "#0d2638",
+            "inside_texts": "#ffffff",
+            "inside_buttons": "#107fd0",
+            "inside_buttons_hover": "#279df3",
+            "inside_buttons_texts": "#ffffff",
+            "inside_background": "#1a1a1a",
+            "inside_inputs_texts": "#ffffff"
+        },
+        "site_name": "Catcast D",
+        "site_logo": {
+            "common": "assets\/pictures\/logo.svg",
+            "square": "assets\/pictures\/logo-square.svg"
+        }
+    },
+    "comments": {
+        "max_children_to_load": 10
+    },
+    "rating": {
+        "enable_dislikes": {
+            "comments": true,
+            "media": true
+        },
+        "show_summarized": {
+            "comments": true,
+            "media": false
+        },
+        "show_users": {
+            "channels": false,
+            "media": true
+        }
+    },
+    "media": {
+        "max_simultaneous_uploads": 5,
+        "video": {
+            "reencode_all": false,
+            "encode_qualities": [360],
+            "store_original_quality": true,
+            "enable_hls": true
+        },
+        "audio": {
+            "reencode_all": false,
+            "encode_qualities": [],
+            "store_original_quality": true
+        }
+    },
+    "statistics": {
+        "session_duration_seconds": 300,
+        "storage_days": 90,
+        "store_countries": true,
+        "geoip_database": "GeoLite2-Country.mmdb"
+    },
+    "webtorrent": {
+        "trackers": [
+            "ws://localhost:8002/"
+        ]
+    },
+    "users": {
+        "registration_enabled": true,
+        "registration_manual": true,
+        "allowed_channel_types": {
+            "tv": true,
+            "radio": true
+        },
+        "quotas": {
+            "count": {
+                "tv": 2,
+                "radio": 1
+            },
+            "disk": {
+                "tv": 1073741824,
+                "radio": 1073741824
+            },
+            "custom_smileys": 10
+        },
+        "instance_rules": "The standard Lorem Ipsum passage, used since the 1500s\n\"Lorem ipsum dolor sit amet, consectetur",
+        "privacy_policy": "The standard Lorem Ipsum passage, used since the 1500s\n\"Lorem ipsum dolor sit amet, consectetur"
+    },
+    "bot_public_urls": {
+        "telegram": "https://t.me/test",
+        "vk": "https://vk.com/test"
+    }
+}
+
