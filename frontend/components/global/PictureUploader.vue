@@ -9,7 +9,6 @@
             <c-translated-message :message="error"/>
           </div>
         </c-tooltip-icon>
-
         <div v-if="val" class="picture-uploader__reset" @click="reset()">
           <c-icon icon="close"/>
         </div>
@@ -21,7 +20,7 @@
         <img v-else-if="val && val.id > 0" :src="val.full_url" class="picture-uploader__img-block"/>
       </div>
       <div class="picture-uploader__texts">
-        <c-button @click="fileInputClick()">{{ buttonText || $t('upload.select') }}</c-button>
+        <c-button big @click="fileInputClick()">{{ buttonText || $t('upload.select') }}</c-button>
       </div>
     </div>
 

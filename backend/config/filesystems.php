@@ -37,14 +37,14 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'root' => public_path('uploads'),
+            'url' => env('APP_URL').'/uploads',
             'visibility' => 'public',
         ],
         'media' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/media'),
-            'url' => env('APP_URL').'/storage/media',
+            'root' => public_path('/media'),
+            'url' => env('APP_URL').'/media',
             'visibility' => 'public',
         ],
         'assets' => [

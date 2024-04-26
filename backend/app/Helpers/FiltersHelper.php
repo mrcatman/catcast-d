@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Broadcast;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -20,7 +21,6 @@ class FiltersHelper {
         if (request()->filled('type')) {
             $list = $list->ofSelectedType(request()->input('type'));
         }
-
         $filter = request()->input('show');
         if (!empty($filter)) {
             $filter_camel_case = lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $filter))));

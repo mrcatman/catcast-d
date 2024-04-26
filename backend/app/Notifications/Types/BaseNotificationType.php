@@ -13,6 +13,7 @@ use Illuminate\Notifications\Channels\BroadcastChannel;
 use Illuminate\Notifications\Notification;
 
 
+use Illuminate\Support\Collection;
 use NotificationChannels\Telegram\TelegramChannel;
 use NotificationChannels\Telegram\TelegramMessage;
 use App\Notifications\Channels\VKChannel;
@@ -111,11 +112,11 @@ class BaseNotificationType extends Notification {
 
     /**
      * Exclude specific users from receiving a notification (e.g. the author of a post)
-     * @param User[] $users
+     * @param Collection $users
      *
-     * @return User[]
+     * @return Collection
      */
-    public function filterUsers(array $users) {
+    public function filterUsers(Collection $users) {
         return $users;
     }
 
@@ -125,7 +126,7 @@ class BaseNotificationType extends Notification {
      *
      * @void
      */
-    public function sendToChannelSubscribers(Channel  $channel) {
+    public function sendToChannelSubscribers(Channel $channel) {
         $subscriptions = NotificationSubscription::where([
             'event_type' => self::getEventTypeId(),
             'entity_id' => $channel->id

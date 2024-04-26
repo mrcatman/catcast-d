@@ -76,7 +76,7 @@ class AuthController extends Controller {
             'confirm_code' => $email_confirm_code
         ]);
 
-        $this->sendConfirmationEMail($data['email'], $email_confirm_code);
+        $this->sendConfirmationEmail($data['email'], $email_confirm_code);
 
         if (ConfigHelper::registrationManual()) {
             $request = new UserRegistrationRequest([

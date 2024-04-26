@@ -41,13 +41,15 @@ class User extends Authenticatable implements JWTSubject {
         PrivacySettingsModel::class,
     ];
 
+    const ROLE_ID_USER = 1;
+    const ROLE_ID_ADMIN = 255;
+
     public static function getEntityType() {
         return 'users';
     }
 
     public function getIsAdminAttribute() {
-        return $this->id === 1; // todo: roles
-       // return $this->role_id == 255;
+        return $this->id === self::ROLE_ID_ADMIN;
     }
 
     public function getJWTIdentifier() {

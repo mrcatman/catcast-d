@@ -10,23 +10,19 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Intervention\Image\Exception\NotReadableException;
 
-class UploadController extends Controller {
+class UploadPicturesController extends Controller {
 
-
-    public $max_file_size = 10485760;
-    public $max_width = 1600;
-
-    public function uploadPictures()
+    public function upload()
     {
         $file = request()->file('picture');
         if ($file) {
-            if ($file->getSize() >= $this->max_file_size) {
+            if ($file->getSize() >= config('site.pictures.max_file_size')) {
                 return response()->json(['message' => 'upload.errors.file_too_big'], 422);
             }
             try {
                 $picture = Image::make($file);
-                if ($picture->width() > $this->max_width) {
-                    $picture->resize($this->max_width, null, function ($constraint) {
+                if ($picture->width() > config('site.pictures.max_width')) {
+                    $picture->resize(config('site.pictures.max_width'), null, function ($constraint) {
                         $constraint->aspectRatio();
                     });
                 }

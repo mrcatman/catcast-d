@@ -174,7 +174,7 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
     Route::resource('folders', 'FoldersController');
 
     //UPLOAD
-    Route::post('upload/pictures', 'UploadController@uploadPictures');
+    Route::post('upload/pictures', 'UploadPicturesController@upload');
 
     //USERS
     Route::get('users/autocomplete','UsersController@autocomplete');
@@ -185,11 +185,7 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
     Route::get('users/{id}/media','UsersController@getMedia');
     Route::get('users/{id}/friends','UsersController@getFriends');
     Route::get('users/{id}/channels', 'ChannelTeamController@getChannelsForUser');
-    Route::group(['middleware' => \App\Http\Middleware\Authenticate::class], function () {
-        Route::get('users/friends', 'UsersController@myFriends');
-        Route::get('users/friends/requests', 'UsersController@friendsRequests');
-        Route::post('users/{id}/friends', 'UsersController@friendsRequest');
-    });
+
 
     // COMMENTS
     Route::resource('comments', 'CommentsController');

@@ -35,43 +35,18 @@ export default{
     channelTypes() {
       const types = [];
       if (this.allowedChannelTypes[CHANNEL_TYPE_TV]) {
-        types.push({ id: CHANNEL_TYPE_TV, title: this.$t('channels.tv')});
+        types.push({ value: CHANNEL_TYPE_TV, name: this.$t('channels.tv')});
       }
       if (this.allowedChannelTypes[CHANNEL_TYPE_RADIO]) {
-        types.push({ id: CHANNEL_TYPE_RADIO, title: this.$t('channels.radio')});
+        types.push({ value: CHANNEL_TYPE_RADIO, name: this.$t('channels.radio')});
       }
       return types;
-    }
-  },
-	data() {
-    return {
-      shortnameChanged: false,
-      errors: {},
-      data: {
-        type: null,
-        name: '',
-        shortname: '',
-        tags: [],
-        description: '',
-        logo: '',
-      }
     }
   },
   head () {
     return {
       title: this.$t('dashboard.create.heading'),
     }
-  },
-  watch: {
-		'data.name':function(name) {
-			if (!this.shortnameChanged) {
-				let shortname = name;
-				shortname = shortname.replace(' ','-');
-				shortname = shortname.replace(/[^a-zа-я0-9_-]/gi,'');
-				shortname = shortname.toLowerCase();
-				this.$set(this.data,'shortname',shortname);
-			}
-		}
-	},
+  }
 }
 </script>
