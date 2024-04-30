@@ -8,6 +8,7 @@ use App\Notifications\Channels\DatabaseExtendedChannel;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Helpers\LocalizationHelper;
+use Illuminate\Support\Collection;
 use NotificationChannels\Telegram\TelegramFile;
 use App\Notifications\Channels\VK\Message as VKMessage;
 
@@ -40,7 +41,7 @@ class ChannelNewMedia extends BaseNotificationType {
         return $text;
     }
 
-    public function filterUsers(array $users) {
+    public function filterUsers(Collection $users) {
         if ($this->playlist_id) {
             $playlist_notifications_user_ids = NotificationSubscription::where(['type'=> PlaylistNewMedia::getEventTypeId(), 'entity_id' => $this->playlist_id])->pluck('user_id');
             $users = array_filter($users, function ($user) use ($playlist_notifications_user_ids) {

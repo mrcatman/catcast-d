@@ -5,9 +5,9 @@ namespace App\Jobs;
 use App\Enums\PrivacyStatuses;
 use App\Events\Media\MediaConvertFailEvent;
 use App\Events\Media\MediaConvertSuccessEvent;
+use App\Helpers\MediaHelper;
 use App\Models\Media;
 use App\Models\MediaFile;
-use FFMpeg\FFProbe;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -83,13 +83,6 @@ class ProcessMedia implements ShouldQueue {
         return $total_files_size;
     }
 
-    protected function getFFMpegConfig() {
-        return [
-            'ffprobe.binaries' => exec('which ffprobe'),
-            'ffmpeg.binaries' => exec('which ffmpeg'),
-        ];
-    }
-
     public function handle() {
         $channel = $this->media->channel;
         if (!file_exists($this->path_to_uploaded_file)) {
@@ -102,8 +95,7 @@ class ProcessMedia implements ShouldQueue {
             return;
         }
 
-        $ffprobe = FFProbe::create($this->getFFMpegConfig());
-
+        $ffprobe = MediaHelper::createFFProbe();
         if (!$ffprobe->isValid($this->path_to_uploaded_file)) {
             $this->removeFilesAndSendError();
             return;

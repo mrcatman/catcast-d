@@ -8,6 +8,7 @@ use App\Models\Comment;
 
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Collection;
 use NotificationChannels\Telegram\TelegramMessage;
 use App\Notifications\Channels\VK\Message as VKMessage;
 
@@ -44,7 +45,7 @@ class ChannelNewPost extends BaseNotificationType {
         return "/".$this->comment->channel->shortname."?comment_id=".$this->comment->id.'&t=wall';
     }
 
-    public function filterUsers(array $users) {
+    public function filterUsers(Collection $users) {
         return $users->filter(function($user) {
             return $user['user']->id != $this->comment->user_id;
         });

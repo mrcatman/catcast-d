@@ -3,14 +3,36 @@
 namespace App\Helpers;
 
 use App\Events\Media\MediaDeletedEvent;
-use App\Models\Media;
 use App\Models\MediaFile;
 use App\Models\MediaFolder;
 use App\Models\Tag;
 use App\Models\VideoGridThumbnail;
+use FFMpeg\FFMpeg;
+use FFMpeg\FFProbe;
 
 
 class MediaHelper {
+
+    public static function getFFMpegConfig() {
+        return [
+            'ffprobe.binaries' => exec('which ffprobe'),
+            'ffmpeg.binaries' => exec('which ffmpeg'),
+        ];
+    }
+
+    /**
+     * @return FFMpeg
+     */
+    public static function createFFMpeg() {
+        return FFMpeg::create(self::getFFMpegConfig());
+    }
+
+    /**
+     * @return FFProbe
+     */
+    public static function createFFProbe() {
+        return FFProbe::create(self::getFFMpegConfig());
+    }
 
     public static function getExternalInfo($video_url) {
         $command = 'youtube-dl -J '.$video_url;
@@ -65,6 +87,7 @@ class MediaHelper {
         ] : null;
     }
 
+    // todo: move
     public static function getSubFolders($id) {
         $id = (int)$id;
         $all_ids = [$id];
@@ -92,6 +115,7 @@ class MediaHelper {
         $media->delete();
     }
 
+    // todo: move to FiltersHelper
     public static function filterAndSort($media) {
         $media = $media->fromNotBlockedChannels()->ofSelectedType()->orderBy('created_at', 'desc');
         if (request()->filled('search')) {
@@ -114,7 +138,7 @@ class MediaHelper {
         return $media;
     }
 
-
+    // todo: move
     public static function getPermissions($media) {
         $user = auth()->user();
         if (!$user) {

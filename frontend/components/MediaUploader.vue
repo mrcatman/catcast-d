@@ -162,7 +162,7 @@ export default  {
     },
     uploadUsingTus(media) {
       media.upload = new tus.Upload(media.file, {
-        endpoint: `${apiDomain}/api/tus`,
+        endpoint: '/api/files',
         retryDelays: [0, 1000, 3000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000],
         chunkSize: 10 * 1048576,
         metadata: {

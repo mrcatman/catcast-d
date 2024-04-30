@@ -9,8 +9,8 @@ services:
     restart: always
     working_dir: /nginx
     ports:
-      - 8080:80
-      - 1935:1935
+      - "8080:80"
+      - "1935:1935"
     volumes:
       - ./nginx/nginx.conf:/opt/nginx/conf/nginx.conf  
       - ./backend:/backend
@@ -33,7 +33,7 @@ services:
     working_dir: /echo
   tusd:
     image: tusproject/tusd:v1.9
-    command: -verbose -base-path /api/files -upload-dir=/backend/public/uploads -hooks-http http://php:4002/api/internal/tus 
+    command: -verbose -behind-proxy -base-path /api/files -upload-dir=/backend/public/uploads -hooks-http http://php:4002/api/internal/tus
     volumes:
       - ./backend:/backend
   php:

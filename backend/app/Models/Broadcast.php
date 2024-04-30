@@ -41,7 +41,15 @@ class Broadcast extends Model {
     }
 
     public function getPlaybackUrlAttribute() {
-        return ConfigHelper::streamsURL().'/live/hls/'.$this->channel_id.'/index.m3u8';
+        return ConfigHelper::streamsURL().'/live/'.$this->channel_id.'/index.m3u8';
+    }
+
+    public function getRtmpUrlAttribute() {
+        return ConfigHelper::rtmpURL().'/'.$this->channel_id;
+    }
+
+    public function getInternalRtmpUrlAttribute() {
+        return 'rtmp://nginx:1935/'.ConfigHelper::rtmpAppName().'/'.$this->channel_id;
     }
 
     public function getThumbnailUrlAttribute() {

@@ -37,4 +37,6 @@ RUN cd /tmp/nginx-${NGINX_VERSION} \
 RUN cd /tmp/nginx-${NGINX_VERSION} && make && make install
 RUN rm -rf /tmp/*
 
+RUN mkdir -p /tmp/thumbnails
+RUN mkdir -p /tmp/recordings
 CMD ["/opt/nginx/sbin/nginx", "-g", "daemon off;"]

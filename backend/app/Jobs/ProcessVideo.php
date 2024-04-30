@@ -29,7 +29,7 @@ class ProcessVideo extends ProcessMedia {
             //echo "$percentage % transcoded";
         });
 
-        $ffmpeg = FFMpeg::create($this->getFFMpegConfig());
+        $ffmpeg = MediaHelper::createFFMpeg;
 
         $video = $ffmpeg->open($this->path_to_uploaded_file);
         $storage_paths = $this->getStoragePaths($quality);

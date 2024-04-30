@@ -15,6 +15,14 @@ class ConfigHelper {
         return config('urls.broadcast.hls_url');
     }
 
+    public static function rtmpURL() {
+        return config('urls.broadcast.rtmp_url');
+    }
+
+    public static function rtmpAppName() {
+        return config('urls.broadcast.rtmp_app_name');
+    }
+
     public static function maxChannelsCount($type) {
         return (int)config('site.users.quotas.count.'.$type, 1);
     }

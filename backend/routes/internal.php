@@ -2,7 +2,11 @@
 
 Route::post('statistics/increment', 'Internal\StatisticsController@increment');
 
-Route::any('stream/on-publish', 'Internal\StreamController@onPublish');
-Route::post('stream/on-publish-done', 'Internal\StreamController@onPublishDone');
+Route::group(['prefix' => 'stream'], function () {
+    Route::post('on-publish', 'Internal\StreamController@onPublish');
+    Route::post('on-publish-done', 'Internal\StreamController@onPublishDone');
+});
+
+Route::post('tus', 'Internal\TusController@handleWebhooks');
 
 Route::get('videos-upstream/videos-hls/{uuid}/{quality}', 'Internal\MediaController@generateVODResponse');

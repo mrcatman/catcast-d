@@ -2,16 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Helpers\CommonResponses;
 use App\Helpers\CryptoHelper;
 use App\Models\AccountConnection;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class registerUser extends Command
+class RegisterUser extends Command
 {
     /**
      * The name and signature of the console command.
