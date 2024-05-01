@@ -93,7 +93,7 @@ class ChannelsController extends Controller {
         }
 
         $limit = ConfigHelper::maxChannelsCount($type);
-        $type_id = Channel::TYPES_MAP[$type];
+        $type_id = Channel::TYPE_NAMES_MAP[$type];
         $already_created_count = Channel::where(['user_id' => $user->id, 'channel_type' => $type_id])->count();
         if ($already_created_count >= $limit) {
             return CommonResponses::validationError(['name' => [['text' => 'dashboard.create._errors.channels_limit_exceeded', 'params' => ['limit' => $limit]]]]);

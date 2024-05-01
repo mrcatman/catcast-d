@@ -116,10 +116,6 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
     });
 
 
-    Route::any('channels/startrecord', 'ChannelsController@startRecord');
-    Route::any('channels/stoprecord', 'ChannelsController@stopRecord');
-    Route::any('channels/endrecord', 'ChannelsController@endRecord');
-
     Route::any('channels/{id}/record/status', 'ChannelsController@recordStatus');
     Route::any('channels/{id}/record/start', 'ChannelsController@startRecordManual');
     Route::any('channels/{id}/record/end', 'ChannelsController@endRecordManual');
@@ -340,5 +336,4 @@ Route::any('/locales', function () {
         'default' => $default
     ];
 });
-
 

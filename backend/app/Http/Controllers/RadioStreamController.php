@@ -57,7 +57,7 @@ class RadioStreamController extends Controller
 
             event(new ChannelLiveStreamEndedEvent($channel)); // todo: change
             $record_all = $channel->additional_settings['records']['record_all'];
-            $is_visible = $channel->additional_settings['records']['records_visible'];
+            $is_visible = $channel->additional_settings['records']['records_public'];
 
             if ($record_all) {
                 $path_data = explode("/", $path);

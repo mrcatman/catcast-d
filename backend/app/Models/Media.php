@@ -35,30 +35,29 @@ class Media extends Model {
 
     const TYPE_VIDEO = 0;
     const TYPE_AUDIO = 1;
-    const TYPES_MAP = [
+    const TYPE_NAMES_MAP = [
         'video' => self::TYPE_VIDEO,
         'audio' => self::TYPE_AUDIO
     ];
-    const DEFAULT_TYPE = self::TYPE_VIDEO;
+
+    const SOURCE_TYPE_UPLOADED = 0;
+    const SOURCE_TYPE_RECORDED = 1;
+    const SOURCE_TYPE_NAMES_MAP = [
+        'uploaded' => self::SOURCE_TYPE_UPLOADED,
+        'recorded' => self::SOURCE_TYPE_RECORDED
+    ];
 
     public static function getEntityType() {
         return 'media';
     }
 
     public function scopeOfSelectedType($filter) {
-        if (request()->has('type') && isset(self::TYPES_MAP[request()->input('type')])) {
+        if (request()->has('type') && isset(self::TYPE_NAMES_MAP[request()->input('type')])) {
             return $filter->where(function($query) {
-                $query->where(['media_type' => self::TYPES_MAP[request()->input('type')]]);
+                $query->where(['media_type' => self::TYPE_NAMES_MAP[request()->input('type')]]);
             });
         }
         return $filter;
-    }
-
-    public function getMediaTypeAttribute($type) {
-        if (!$type) {
-            return self::DEFAULT_TYPE;
-        }
-        return $type;
     }
 
     public static function getPreferredType($channel) {
@@ -69,7 +68,7 @@ class Media extends Model {
     }
 
     public function getTypeIdAttribute() {
-        $map = array_flip(self::TYPES_MAP);
+        $map = array_flip(self::TYPE_NAMES_MAP);
         return $map[$this->media_type];
     }
 

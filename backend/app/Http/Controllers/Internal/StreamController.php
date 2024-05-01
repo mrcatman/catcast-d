@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers\Internal;
 
+use App\Enums\PrivacyStatuses;
 use App\Events\Channel\ChannelBroadcastStateChangedEvent;
+use App\Helpers\NginxRtmpHelper;
 use App\Http\Controllers\Controller;
 use App\Helpers\CommonResponses;
 
+use App\Jobs\ProcessVideo;
 use App\Models\Broadcast;
 use App\Models\Channel;
+use App\Models\Media;
 use App\Models\StreamKey;
 use App\Notifications\Types\NewBroadcast;
 use Carbon\Carbon;
+use Hidehalo\Nanoid\Client as NanoidClient;
 
 class StreamController extends Controller {
 
@@ -66,6 +71,11 @@ class StreamController extends Controller {
         $channel->last_online_at = Carbon::now();
         $channel->save();
 
+        $record_all = $channel->additional_settings['recording']['record_all'];
+        if ($record_all) {
+            NginxRtmpHelper::changeRecordState($channel->id, true);
+        }
+
         return '';
     }
 
@@ -93,5 +103,29 @@ class StreamController extends Controller {
         return '';
     }
 
+
+    public function onRecordDone() {
+        file_put_contents(public_path('log.txt'), json_encode(request()->all()));
+        $file_name = request()->input('filename');
+        $file_path = storage_path('temp-recordings/'.$file_name);
+
+        $channel_id = explode('-', $file_name)[0];
+        $channel = Channel::findOrFail($channel_id);
+        $broadcast = $channel->broadcasts->first();
+
+        $is_public = $channel->additional_settings['recording']['records_public'];
+
+        $media = new Media([
+            'title' => $broadcast->title,
+            'uuid' => (new NanoidClient())->generateId(),
+            'media_type' => Media::TYPE_VIDEO,
+            'source_type' => Media::SOURCE_TYPE_RECORDED,
+            'user_id' => $broadcast->user->id,
+            'channel_id' => $channel->id,
+            'privacy_status' => $is_public ? PrivacyStatuses::PUBLIC : PrivacyStatuses::PRIVATE,
+        ]);
+        $media->save();
+        ProcessVideo::dispatchSync($media, $file_path);
+    }
 
 }

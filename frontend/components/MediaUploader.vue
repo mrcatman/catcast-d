@@ -55,7 +55,7 @@ import { mapGetters, mapState } from 'vuex';
 import tus from 'tus-js-client';
 
 import { UploadStatuses } from '@/helpers/uploads';
-import { apiDomain } from '@/config';
+import { API_URL } from "@/constants/urls";
 export default  {
   data() {
     return {
@@ -162,7 +162,7 @@ export default  {
     },
     uploadUsingTus(media) {
       media.upload = new tus.Upload(media.file, {
-        endpoint: '/api/files',
+        endpoint: API_URL + 'files',
         retryDelays: [0, 1000, 3000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000],
         chunkSize: 10 * 1048576,
         metadata: {

@@ -1,3 +1,4 @@
+import { API_URL } from "./constants/urls";
 
 module.exports = {
   mode: 'spa',
@@ -48,7 +49,7 @@ module.exports = {
     './assets/styles/global.scss',
   ],
   axios: {
-    baseURL: '/api/',
+    baseURL: API_URL,
     headers: {
       'Content-Type': 'application/json',
     },

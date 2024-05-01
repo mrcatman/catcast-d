@@ -5,7 +5,7 @@
         <template slot="main">
           <div class="channel-layout__player-container channel-layout__player-container--video" ref="player_container">
             <media-player :media="media" :channel="channel" :autoplay="autoplay" @ended="onEnded" />
-            // todo: playlist colors
+            <!-- todo: playlist colors -->
           </div>
         </template>
       </c-box>

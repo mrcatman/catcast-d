@@ -3,8 +3,8 @@
 namespace App\Helpers;
 
 use App\Models\Broadcast;
-use App\Models\Channel;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class NginxRtmpHelper {
 
@@ -44,6 +44,19 @@ class NginxRtmpHelper {
                 $broadcast->save();
             }
         }
+    }
+
+    /**
+     * Start or stop stream recording by making a request to nginx-rtmp's control module
+     * @param int $channel_id Channel ID
+     * @param boolean $record_state true - start, false - stop
+     * @void
+     */
+    public static function changeRecordState($channel_id, $record_state) {
+        $command = $record_state ? 'start' : 'stop';
+        $app = ConfigHelper::rtmpAppName();
+        $url = "http://nginx/internal/control/record/$command?app=$app&name=$channel_id&rec=main";
+        Http::get($url);
     }
 
 }

@@ -11,7 +11,7 @@ class BroadcastSettingsModel extends ChannelSettingsModel {
 
     protected $fields = [
         [
-            'field_id' => 'records_visible',
+            'field_id' => 'records_public',
             'default_value' => true
         ],
         [
@@ -21,7 +21,7 @@ class BroadcastSettingsModel extends ChannelSettingsModel {
     ];
 
     protected $validation_rules = [
-        'records_visible' => 'boolean',
+        'records_public' => 'boolean',
         'record_all' => 'boolean',
     ];
 

@@ -10,8 +10,8 @@
 .media-player {
   &__error {
     position: absolute;
-    top: calc(50% - 1em);
-    height: 2em;
+    top: calc(50% - 2em);
+    height: 4em;
     width: 100%;
     background: var(--channel-colors-inside-panels);
     display: flex;
@@ -21,7 +21,7 @@
     font-size: 1.25em;
     font-weight: 500;
     &__text {
-      margin: 0 0 0 .5em;
+      margin-left: .5em;
     }
   }
 }
@@ -30,9 +30,8 @@
 export default {
   computed: {
     errorText() {
-      console.log('error', this.error);
-      if (this.error.code === 4) { // todo: other codes
-        return this.$t('player._errors.wrong_format_or_not_found');
+      if (this.error.code === 2 || this.error.code === 4) { // todo: other codes
+        return this.$t('player.errors.wrong_format_or_not_found');
       }
       return '';
     },

@@ -14,17 +14,17 @@ services:
     volumes:
       - ./nginx/nginx.conf:/opt/nginx/conf/nginx.conf  
       - ./backend:/backend
-  nuxt:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    restart: always
-    working_dir: /frontend
-    command: bash -c "npm i && npm run dev"
-    volumes:
-      - ./frontend:/frontend  
-    environment: 
-      - CHOKIDAR_USEPOLLING=true
+  #nuxt:
+  #  build:
+  #    context: ./frontend
+  #    dockerfile: Dockerfile
+  #  restart: always
+  #  working_dir: /frontend
+  #  command: bash -c "npm i && npm run dev"
+  #  volumes:
+  #    - ./frontend:/frontend
+  #  environment:
+  #    - CHOKIDAR_USEPOLLING=true
   echo:
     build:
       context: ./echo

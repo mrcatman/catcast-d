@@ -35,7 +35,7 @@ class Channel extends Model
 
     const TYPE_TV = 0;
     const TYPE_RADIO = 1;
-    const TYPES_MAP = [
+    const TYPE_NAMES_MAP = [
         'tv' => self::TYPE_TV,
         'radio' => self::TYPE_RADIO
     ];
@@ -81,7 +81,7 @@ class Channel extends Model
     }
 
     public function getTypeIdAttribute($type) {
-        $map = array_flip(self::TYPES_MAP);
+        $map = array_flip(self::TYPE_NAMES_MAP);
         return $map[$this->channel_type];
     }
 
@@ -129,8 +129,8 @@ class Channel extends Model
     }
 
     public function scopeOfSelectedType($query, $type) {
-        if (isset(self::TYPES_MAP[$type])) {
-            return $query->where('channel_type', '=', self::TYPES_MAP[$type]);
+        if (isset(self::TYPE_NAMES_MAP[$type])) {
+            return $query->where('channel_type', '=', self::TYPE_NAMES_MAP[$type]);
         }
         return $query;
     }

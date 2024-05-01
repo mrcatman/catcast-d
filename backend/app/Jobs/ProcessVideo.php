@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\MediaHelper;
 use App\Models\Media;
 use FFMpeg\Coordinate\Dimension;
 use FFMpeg\FFMpeg;
@@ -26,10 +27,10 @@ class ProcessVideo extends ProcessMedia {
     protected function convert($quality = null) {
         $format = new \FFMpeg\Format\Video\X264();
         $format->on('progress', function ($video, $format, $percentage) {
-            //echo "$percentage % transcoded";
+            echo "$percentage % transcoded";
         });
 
-        $ffmpeg = MediaHelper::createFFMpeg;
+        $ffmpeg = MediaHelper::createFFMpeg();
 
         $video = $ffmpeg->open($this->path_to_uploaded_file);
         $storage_paths = $this->getStoragePaths($quality);

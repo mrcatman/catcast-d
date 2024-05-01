@@ -5,7 +5,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "7.1",
         "ext-json": "*",
         "ankitpokhrel/tus-php": "*",
         "erusev/parsedown": "^1.7",

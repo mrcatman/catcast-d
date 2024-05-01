@@ -5,11 +5,11 @@
       <c-popup-menu-item>
         <div class="media-player__setting">
           <span class="media-player__setting__name">{{$t('player.settings.quality')}}&nbsp;</span>
-          <span class="media-player__setting__value">{{settings.source && settings.source.quality_name ? settings.source.quality_name : $t('player.default_quality')}}</span>
+          <span class="media-player__setting__value">{{settings.quality ? settings.quality : $t('player.default_quality')}}</span> <!-- todo: get quality name -->
         </div>
         <c-popup-menu position="top-left">
-          <c-popup-menu-item @click="settings.source = file" v-for="file in media.files" :key="file.id">
-            <span class="media-player__setting__available-value" :class="{'media-player__setting__available-value--active': settings.source && settings.source.id === file.id}">{{file.quality_name || $t('player.default_quality')}}</span>
+          <c-popup-menu-item @click="settings.quality = file.quality" v-for="file in media.files" :key="file.id">
+            <span class="media-player__setting__available-value" :class="{'media-player__setting__available-value--active': settings.quality === file.quality}">{{file.quality_name || $t('player.default_quality')}}</span>
           </c-popup-menu-item>
         </c-popup-menu>
       </c-popup-menu-item>

@@ -56,7 +56,7 @@
       <template slot="main">
         <c-form method="put" :url="`/channels/${channel.id}`" :initialValues="channel">
           <c-checkbox :title="$t('dashboard.broadcast.recording.record_all')" v-form-input="'additional_settings.recording.record_all'" />
-          <c-checkbox v-form-show="'additional_settings.recording.record_all'" :title="$t('dashboard.broadcast.recording.records_visible')" v-form-input="'additional_settings.recording.records_visible'" />
+          <c-checkbox v-form-show="'additional_settings.recording.record_all'" :title="$t('dashboard.broadcast.recording.records_public')" v-form-input="'additional_settings.recording.records_public'" />
         </c-form>
       </template>
     </c-box>

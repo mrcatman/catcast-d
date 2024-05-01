@@ -12,7 +12,7 @@ class MediaController extends Controller {
 
 
     public function generateVODResponse($uuid, $quality) {
-        $media = Media::where(['uuid' => $uuid])->firstOrFail();
+        $media = Media::where(['media_type' => Media::TYPE_VIDEO, 'uuid' => $uuid])->firstOrFail();
         $file = MediaFile::where(['media_id' => $media->id, 'url' => 'videos/'.$uuid.'/'.$quality.'.mp4'])->firstOrFail();
         $path = $file->storage_path;
 

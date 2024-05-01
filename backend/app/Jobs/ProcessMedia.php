@@ -117,13 +117,13 @@ class ProcessMedia implements ShouldQueue {
         }
 
         if (!File::exists(Storage::disk('media')->path($this->storage_folder))) {
-            File::makeDirectory(Storage::disk('media')->path($this->storage_folder));
+            File::makeDirectory(Storage::disk('media')->path($this->storage_folder), 0755, true, true);
         }
 
         $codec = $streams->first()->get('codec_name');
         $reencode_all = config('site.media.'.$this->type.'.reencode_all', false);
 
-        $should_reencode_default_file = !in_array($codec, $this->allowed_codecs) || $reencode_all;
+        $should_reencode_default_file = !in_array($codec, $this->allowed_codecs) || $reencode_all || $this->media->source_type === Media::SOURCE_TYPE_RECORDED;
 
         $qualities = config('site.media.'.$this->type.'.encode_qualities', []);
         if ($should_reencode_default_file) {
