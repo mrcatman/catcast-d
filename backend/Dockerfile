@@ -7,17 +7,22 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    zlib1g-dev  \
     git \
     cron \
     zip \
     unzip \
-	ffmpeg \ 
+	ffmpeg \
 	nodejs \
 	npm
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN pecl install redis swoole
+RUN docker-php-ext-configure gd --enable-gd --with-webp --with-jpeg
 RUN docker-php-ext-install pdo_mysql exif pcntl bcmath gd intl soap
 RUN docker-php-ext-enable redis swoole
 RUN docker-php-ext-configure intl
