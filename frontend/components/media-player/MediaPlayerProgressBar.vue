@@ -3,7 +3,7 @@
     <div class="media-player__progress-bar__inner">
       <div class="media-player__progress-bar__time-container" :style="{left: hoverProgressPercent + '%', marginLeft: (gridThumbnailData  ? ((gridThumbnailData.width / -2) + 'px') : (hoverOffset + 'px'))}">
         <div ref="hover_time" class="media-player__progress-bar__time" :style="{marginTop: (gridThumbnailData ? ((-1 * gridThumbnailData.height) + 'px') : null)}" v-if="hoverTime">
-          <div class="media-player__progress-bar__thumbnail" v-if="gridThumbnailData" :style="gridThumbnailElementStyle"></div>
+          <div class="media-player__progress-bar__thumbnail" ref="grid_thumbnail" v-if="gridThumbnailData" :style="gridThumbnailElementStyle"></div>
           <div class="media-player__progress-bar__time__text">{{hoverTime}}</div>
         </div>
       </div>
@@ -55,7 +55,17 @@ export default {
       return null;
     },
     gridThumbnailElementStyle() {
+      let offsetLeft = 0;
+      const progressBarWidth = this.$refs.progress_bar?.clientWidth;
+      const timeLeftPosition = this.hoverProgressPercent / 100 * progressBarWidth;
+      const gridThumbnailHalfWidth = this.$refs.grid_thumbnail?.clientWidth / 2;
+      if (timeLeftPosition < gridThumbnailHalfWidth) {
+        offsetLeft = gridThumbnailHalfWidth - timeLeftPosition;
+      } else if (timeLeftPosition > progressBarWidth - gridThumbnailHalfWidth) {
+        offsetLeft = progressBarWidth - gridThumbnailHalfWidth - timeLeftPosition;
+      }
       return {
+        marginLeft: `${offsetLeft}px`,
         backgroundImage: `url('${this.gridThumbnailData.url}')`,
         backgroundSize: `${this.gridThumbnailData.background_size_x}px ${this.gridThumbnailData.background_size_y}px`,
         width: `${this.gridThumbnailData.width}px`,
@@ -95,10 +105,10 @@ export default {
       })
     },
     onProgressBarMouseMove(e) {
-      let bar = this.$refs.progress_bar;
-      let rect = bar.getBoundingClientRect();
-      let width = rect.width;
-      let left = rect.left;
+      const bar = this.$refs.progress_bar;
+      const rect = bar.getBoundingClientRect();
+      const width = rect.width;
+      const left = rect.left;
       const handleWidth = this.$refs.handle.clientWidth;
       let x = e.clientX - (handleWidth / 2);
       let percent = (x - left) / width * 100;
@@ -110,7 +120,7 @@ export default {
       }
       this.hoverProgressPercent = percent;
       if (!this.media.grid_thumbnail && this.$refs.hover_time) {
-        this.hoverOffset = this.$refs.hover_time.clientWidth / -2;
+        this.hoverOffset = this.$refs.hover_time.clientWidth / -2;;
       }
     },
   },

@@ -113,19 +113,17 @@ class StreamController extends Controller {
         $channel = Channel::findOrFail($channel_id);
         $broadcast = $channel->broadcasts->first();
 
-        $is_public = $channel->additional_settings['recording']['records_public'];
-
         $media = new Media([
             'title' => $broadcast->title,
             'uuid' => (new NanoidClient())->generateId(),
             'media_type' => Media::TYPE_VIDEO,
-            'source_type' => Media::SOURCE_TYPE_RECORDED,
+            'source_type' => Media::SOURCE_TYPE_RECORD,
             'user_id' => $broadcast->user->id,
             'channel_id' => $channel->id,
-            'privacy_status' => $is_public ? PrivacyStatuses::PUBLIC : PrivacyStatuses::PRIVATE,
+            'privacy_status' => PrivacyStatuses::PRIVATE,
         ]);
         $media->save();
-        ProcessVideo::dispatchSync($media, $file_path);
+        ProcessVideo::dispatch($media, $file_path);
     }
 
 }

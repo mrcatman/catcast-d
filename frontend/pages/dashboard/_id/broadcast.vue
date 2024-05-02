@@ -77,7 +77,7 @@
               <div class="list-item__title">
                 {{props.item.title}}
               </div>
-              <c-statistics-icons :data="getBroadcastInfo(props.item)"></c-statistics-icons>
+              <c-statistics-icons :data="getBroadcastInfo(props.item)" />
               <div class="list-item__under-title list-item__under-title--short" v-if="props.item.description && props.item.description.length">
                 <div v-html="props.item.display_description"></div>
               </div>

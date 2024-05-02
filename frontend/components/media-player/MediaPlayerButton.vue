@@ -7,6 +7,7 @@
 <style lang="scss">
 .media-player {
   &__button {
+    user-select: none;
     cursor: pointer;
     color: var(--channel-colors-inside-buttons) !important;
     transition: color .35s;

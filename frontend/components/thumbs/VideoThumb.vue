@@ -8,6 +8,7 @@
       </div>
       -->
       <span v-if="data.duration > 0" class="media-thumb__duration">{{formatDuration(data.duration)}}</span>
+      <c-tag color="green" v-if="isRecord">{{$t('media.record')}}</c-tag>
     </template>
     <template slot="texts">
       <div class="thumb__title">{{data.title}}</div>
@@ -61,10 +62,12 @@
   }
 </style>
 <script>
+import { mapGetters } from "vuex";
   import { formatPublishDate, formatDuration } from '@/helpers/dates.js';
-  import {mapGetters} from "vuex";
+
   import CommonThumb from "./CommonThumb";
   import ChannelLogoAndName from "@/components/ChannelLogoAndName";
+  import { MEDIA_SOURCE_TYPE_RECORD } from "@/constants/entity-types";
 
   export default {
     components: {ChannelLogoAndName, CommonThumb},
@@ -74,6 +77,9 @@
     },
     computed: {
       ...mapGetters('config', ['siteLogoSquare']),
+      isRecord() {
+        return this.data.source_type_name === MEDIA_SOURCE_TYPE_RECORD;
+      },
       showParts() {
         return this.config?.showParts || {
           description: true,
@@ -84,10 +90,10 @@
       metadata() {
         return [
           {
-            icon: 'fa-clock', value: formatPublishDate(this.data.created_at), tooltip: this.$t('videos.created_at')
+            icon: 'fa-clock', value: formatPublishDate(this.data.created_at), tooltip: this.$t('media.created_at')
           },
           {
-            icon: 'fa-eye', value: this.data.views, tooltip: this.$t('videos.views')
+            icon: 'fa-eye', value: this.data.views, tooltip: this.$t('media.views')
           }
         ];
       },

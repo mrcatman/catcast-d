@@ -4,7 +4,7 @@
                :to="!config.disableLinks ? link : null"
                :class="classes"
                :length="item.object.length"
-               :showPicturePlaceholder="item.object.type_id=== 'video'"
+               :showPicturePlaceholder="item.object.type_name === 'video'"
                :picture="item.object.thumbnail ? item.object.thumbnail.full_url : null"
                :icon="item.is_back || item.is_folder ? 'fa-folder' : null"
                :data-id="item.is_folder ? -1 * item.object.id : item.object.id"
@@ -19,10 +19,11 @@
         <channel-logo-and-name class="media-manager__item__channel" v-if="config.showChannel && item.object.channel" :channel="item.object.channel" />
         <c-statistics-icons :data="[
             {icon: 'fa-file', value: item.object.total_files_size ? bytesToFileSize(item.object.total_files_size) : null},
-            {icon: item.object.type_id=== 'video' ? 'remove_red_eye' : 'headphones', value: item.object.views},
+            {icon: item.object.type_name === 'video' ? 'remove_red_eye' : 'headphones', value: item.object.views},
             {icon: 'thumb_up', value: item.object.likes_count},
             {icon: 'fa-clock', value: item.object.created_at ? formatPublishDate(item.object.created_at, false) : null}
-        ]"></c-statistics-icons>
+        ]" />
+        <c-tag v-if="uploadError" color="red">{{$t('dashboard.media.upload_error')}}</c-tag>
       </div>
     </template>
     <template slot="buttons" v-if="item.object.id && !config.disableEditing">
@@ -63,6 +64,9 @@ export default {
     }
   },
   computed: {
+    uploadError() {
+      return !this.item.is_folder && !this.item.object.files?.length;
+    },
     canSelect() {
       return !this.item.is_back && !this.config.disableSelection && !(this.item.is_folder && this.config.disableFolderSelection) && this.item.permissions?.can_edit;
     },

@@ -123,7 +123,7 @@ class ProcessMedia implements ShouldQueue {
         $codec = $streams->first()->get('codec_name');
         $reencode_all = config('site.media.'.$this->type.'.reencode_all', false);
 
-        $should_reencode_default_file = !in_array($codec, $this->allowed_codecs) || $reencode_all || $this->media->source_type === Media::SOURCE_TYPE_RECORDED;
+        $should_reencode_default_file = !in_array($codec, $this->allowed_codecs) || $reencode_all || $this->media->source_type === Media::SOURCE_TYPE_RECORD;
 
         $qualities = config('site.media.'.$this->type.'.encode_qualities', []);
         if ($should_reencode_default_file) {
@@ -155,8 +155,9 @@ class ProcessMedia implements ShouldQueue {
         }
 
         $this->media->duration = $duration;
+
         $folder = $this->media->folder;
-        if (!$folder || $folder->is_public) {
+        if (!$folder || $folder->is_public || ($this->media->source_type == Media::SOURCE_TYPE_RECORD && $channel->additional_settings['recording']['records_public'])) {
             $this->media->privacy_status = PrivacyStatuses::PUBLIC;
         }
         $this->media->save();

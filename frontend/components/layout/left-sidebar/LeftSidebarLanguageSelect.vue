@@ -1,5 +1,5 @@
 <template>
-  <left-sidebar-link  @click="changeLanguage()" :link="{title: $t('_language_name'), icon_text: locale}" />
+  <!--<left-sidebar-link  @click="changeLanguage()" :link="{title: $t('_language_name'), icon_text: locale}" />-->
 </template>
 <script>
 import LeftSidebarLink from "@/components/layout/left-sidebar/LeftSidebarLink.vue";

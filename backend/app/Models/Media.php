@@ -24,7 +24,8 @@ class Media extends Model {
 
     public $appends = [
         'tags',
-        'type_id',
+        'type_name',
+        'source_type_name',
         'upload_ready',
         'local_url',
         'privacy_status_name'
@@ -40,11 +41,11 @@ class Media extends Model {
         'audio' => self::TYPE_AUDIO
     ];
 
-    const SOURCE_TYPE_UPLOADED = 0;
-    const SOURCE_TYPE_RECORDED = 1;
+    const SOURCE_TYPE_UPLOAD = 0;
+    const SOURCE_TYPE_RECORD = 1;
     const SOURCE_TYPE_NAMES_MAP = [
-        'uploaded' => self::SOURCE_TYPE_UPLOADED,
-        'recorded' => self::SOURCE_TYPE_RECORDED
+        'upload' => self::SOURCE_TYPE_UPLOAD,
+        'record' => self::SOURCE_TYPE_RECORD
     ];
 
     public static function getEntityType() {
@@ -67,12 +68,15 @@ class Media extends Model {
         return self::TYPE_VIDEO;
     }
 
-    public function getTypeIdAttribute() {
+    public function getTypeNameAttribute() {
         $map = array_flip(self::TYPE_NAMES_MAP);
         return $map[$this->media_type];
     }
 
-
+    public function getSourceTypeNameAttribute() {
+        $map = array_flip(self::SOURCE_TYPE_NAMES_MAP);
+        return $map[$this->source_type];
+    }
 
     public function scopeSearch($filter, $search) {
         return $filter->where(function($query) use ($search) {
@@ -136,7 +140,7 @@ class Media extends Model {
 
 
     public function scopeNowWatching($query) {
-        $viewed = StatisticsSession::where(['type_id' => $this->statistics_type_id])->orderBy('id', 'desc')->pluck('entity_id')->unique();
+        $viewed = StatisticsSession::where(['type_name' => $this->statistics_type_name])->orderBy('id', 'desc')->pluck('entity_id')->unique();
         $viewed = $viewed->toArray();
         $query = $query->whereIn('id', $viewed);
         $query = $query->orderByRaw('FIND_IN_SET (id, "'.implode(", ", $viewed).'") DESC');

@@ -233,6 +233,7 @@ class MediaController extends Controller {
         $media = new Media([
             'uuid' => (new NanoidClient())->generateId(),
             'media_type' => $type,
+            'source_type' => Media::SOURCE_TYPE_UPLOAD,
             'user_id' => $user->id,
             'channel_id' => $channel->id,
             'privacy_status' => PrivacyStatuses::PRIVATE

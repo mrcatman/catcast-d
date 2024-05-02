@@ -105,7 +105,7 @@ export default {
         buttonText: this.$t('global.add'),
         component: MediaSearchSelect,
         props: {
-          type: this.channel.type_id=== CHANNEL_TYPE_TV ? MEDIA_TYPE_VIDEO : MEDIA_TYPE_AUDIO,
+          type: this.channel.type_name === CHANNEL_TYPE_TV ? MEDIA_TYPE_VIDEO : MEDIA_TYPE_AUDIO,
         },
         formValues: {},
         buttonDisabledFn: (mediaSearchInstance) => {

@@ -32,7 +32,7 @@
         <template slot="main">
           <div v-if="playlist" class="media-layout__playlist">
             <i18n path="media.playlist_name" tag="span" class="media-layout__playlist__name">
-              <nuxt-link :to="`/playlists/${playlist.id}`" place="playlist">{{playlist.name}}</nuxt-link>
+              <nuxt-link :to="`/playlists/${playlist.uuid}`" place="playlist">{{playlist.name}}</nuxt-link>
             </i18n>
             <div class="buttons-row">
               <c-button rounded icon-only icon="fa-play" :flat="!autoplay" @click="autoplay = !autoplay">
@@ -180,14 +180,14 @@ export default {
       if (this.autoplay && this.playlist && this.playlistIndex < this.playlistMedia.total) {
         if (this.random) {
           const randomIndex = Math.ceil(Math.random() * (this.playlistMedia.total - 1));
-          this.$router.push(`/media/${this.nextPlaylistItem.id}?playlist_id=${this.playlist.id}&index=${randomIndex}`)
+          this.$router.push(`/media/${this.nextPlaylistItem.uuid}?playlist_id=${this.playlist.uuid}&index=${randomIndex}`)
           return;
         }
         if (!this.nextPlaylistItem) {
           await this.$refs.playlist.$refs.list.loadMore();
         }
         if (this.nextPlaylistItem) {
-          this.$router.push(`/media/${this.nextPlaylistItem.id}?playlist_id=${this.playlist.id}&index=${this.nextPlaylistItem.index_in_playlist}`)
+          this.$router.push(`/media/${this.nextPlaylistItem.uuid}?playlist_id=${this.playlist.uuid}&index=${this.nextPlaylistItem.index_in_playlist}`)
         }
       }
     },

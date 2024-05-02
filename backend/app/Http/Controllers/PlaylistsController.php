@@ -171,8 +171,8 @@ class PlaylistsController extends Controller {
         }
 
         $media = MediaHelper::filterAndSort($playlist->visibleMedia());
-        $media->getCollection()->transform(function($media_item) {
-            $media_item->playlist_id = $media_item->pivot->playlist_id;
+        $media->getCollection()->transform(function($media_item) use ($playlist) {
+            $media_item->playlist_id = $playlist->uuid;
             $media_item->index_in_playlist = $media_item->pivot->index;
             return $media_item;
         });

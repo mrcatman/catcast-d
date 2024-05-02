@@ -47,8 +47,7 @@
       <media-player-logo v-if="!isVOD && isVideo && videoDimensions" :logo="logo" :videoDimensions="videoDimensions"/>
 
       <div class="media-player__resizer" @mousedown="onPlayerResize" v-if="detached"></div>
-      <div class="media-player__background" v-show="!playing && waitingForFirstClick"
-           :style="backgroundElementStyle"></div>
+      <div class="media-player__background" v-show="(!playing && waitingForFirstClick) || (!isVOD && !broadcast)" :style="backgroundElementStyle"></div>
 
       <!--<media-player-timetable v-if="panels.timetable.visible && !detached" v-model="panels.timetable" /> -->
 
@@ -210,10 +209,10 @@ export default {
       return !!this.media;
     },
     isVideo() {
-      return this.media && this.media.type_id === MEDIA_TYPE_VIDEO || this.channel.type_id === CHANNEL_TYPE_TV;
+      return this.media && this.media.type_name === MEDIA_TYPE_VIDEO || this.channel.type_name === CHANNEL_TYPE_TV;
     },
     isAudio() {
-      return this.media && this.media.type_id === MEDIA_TYPE_AUDIO || this.channel.type_id === CHANNEL_TYPE_RADIO;
+      return this.media && this.media.type_name === MEDIA_TYPE_AUDIO || this.channel.type_name === CHANNEL_TYPE_RADIO;
     }
   },
   watch: {

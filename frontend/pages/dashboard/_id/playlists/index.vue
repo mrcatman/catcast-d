@@ -97,11 +97,11 @@ export default {
           privacy_status: 2, // todo: codes
         },
         fn: async (data) => {
-          const project = await this.$api.post('playlists', {
+          const playlist = await this.$api.post('playlists', {
             ...data,
             channel_id: this.channel.id
           });
-          this.$router.push(`/dashboard/${this.channel.id}/playlists/${project.id}`);
+          this.$router.push(`/dashboard/${this.channel.id}/playlists/${playlist.uuid}`);
         },
       })
     },

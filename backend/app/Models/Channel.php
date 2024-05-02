@@ -42,7 +42,7 @@ class Channel extends Model
     const DEFAULT_TYPE = self::TYPE_TV;
 
     protected $appends = [
-        'type_id',
+        'type_name',
         'is_radio',
         'tags',
         'pictures_data',
@@ -80,7 +80,7 @@ class Channel extends Model
         return $type;
     }
 
-    public function getTypeIdAttribute($type) {
+    public function getTypeNameAttribute() {
         $map = array_flip(self::TYPE_NAMES_MAP);
         return $map[$this->channel_type];
     }

@@ -9,7 +9,7 @@
         <c-input type="number" :title="$t('player.embed.inputs.height')" v-model="data.height" :min="1" :max="1080"/>
       </c-col>
     </c-row>
-    <c-checkbox switch :title="$t('player.embed.inputs.autoplay')" v-model="data.autoplay"/>
+    <c-checkbox switch :title="$t('player.embed.inputs.autoplay')" v-model="data.autoplay" v-if="!media" />
   </div>
 </template>
 <style lang="scss">
@@ -39,8 +39,8 @@ export default {
   computed: {
     ...mapGetters('config', ['siteURL']),
     embedCode() {
-      const url = !this.media ? `player/${this.channel.id}` : `media/player/${this.media.id}`;
-      const autoplay = this.data.autoplay ? '' : '?autoplay=0';
+      const url = !this.media ? `player/${this.channel.id}` : `media/player/${this.media.uuid}`;
+      const autoplay = this.data.autoplay || this.media ? '' : '?autoplay=0';
       return `<iframe src="${this.siteURL}/${url}${autoplay}" frameborder="0" allowfullscreen width="${this.data.width}" height="${this.data.height}"></iframe>`;
     },
   },
