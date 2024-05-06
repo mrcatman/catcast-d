@@ -46,6 +46,7 @@ class ChannelNewPost extends BaseNotificationType {
     }
 
     public function filterUsers(Collection $users) {
+        return $users;
         return $users->filter(function($user) {
             return $user['user']->id != $this->comment->user_id;
         });

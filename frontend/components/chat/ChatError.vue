@@ -1,7 +1,7 @@
 <template>
   <div class="chat__error" v-if="state.loading_error || state.connect_error">
-    <span class="chat__error__text" v-if="state.loading_error">{{$t('chat._errors.loading_error')}}</span>
-    <span class="chat__error__text" v-else-if="state.connect_error">{{$t('chat._errors.connect_error')}}</span>
+    <span class="chat__error__text" v-if="state.loading_error">{{$t('chat.errors.loading_error')}}</span>
+    <span class="chat__error__text" v-else-if="state.connect_error">{{$t('chat.errors.connect_error')}}</span>
     <c-button flat @click="$emit('reconnect')">{{$t('chat.reconnect')}}</c-button>
   </div>
 </template>

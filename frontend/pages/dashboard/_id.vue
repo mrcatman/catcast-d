@@ -84,7 +84,7 @@ export default {
     });
     if (Object.keys(permissions).length > 0) {
       const channel = (await app.$api.get(
-        `/channels/${params.id}?load_additional_settings=1&do_not_count_stat=1`
+        `/channels/${params.id}?do_not_count_stat=1`
       ));
       return {
         channel,

@@ -2,7 +2,7 @@
   <div class="active-broadcast">
     <div class="active-broadcast__top">
       <c-tag class="active-broadcast__tag" :color="!activeBroadcast.is_online ? 'transparent' : ''">{{broadcast.is_online ? $t('channel.broadcast.online') : $t('channel.broadcast.offline')}}</c-tag>
-      <c-button flat icon-only v-if="canEdit" icon="settings" @click="editActiveBroadcast()">
+      <c-button flat icon-only v-if="activeBroadcast.can_edit" icon="settings" @click="editActiveBroadcast()">
         <template slot="tooltip">
           <c-tooltip>{{$t('dashboard.broadcast.edit_current')}}</c-tooltip>
         </template>
@@ -80,7 +80,6 @@ export default {
   props: {
     broadcast: Object,
     channel: Object,
-    canEdit: Boolean
   }
 }
 </script>

@@ -21,7 +21,6 @@ class StreamController extends Controller {
 
     public function onPublish()
     {
-
         $key = request()->input('key');
         $id = request()->input('name');
         $channel = Channel::find($id);
@@ -64,9 +63,9 @@ class StreamController extends Controller {
 
         event(new ChannelBroadcastStateChangedEvent($channel, $broadcast));
 
-        // if ($channel->last_online_at && $channel->last_online_at->lt(Carbon::now()->subMinutes(5))) {
-        (new NewBroadcast($broadcast))->sendToChannelSubscribers($channel);
-        // }
+        if ($channel->last_online_at && $channel->last_online_at->lt(Carbon::now()->subMinutes(5))) {
+            (new NewBroadcast($broadcast))->sendToChannelSubscribers($channel);
+        }
 
         $channel->last_online_at = Carbon::now();
         $channel->save();
@@ -105,7 +104,6 @@ class StreamController extends Controller {
 
 
     public function onRecordDone() {
-        file_put_contents(public_path('log.txt'), json_encode(request()->all()));
         $file_name = request()->input('filename');
         $file_path = storage_path('temp-recordings/'.$file_name);
 

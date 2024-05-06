@@ -154,9 +154,9 @@ export default {
                 console.log(err, err.message);
                 this.devices.loading = false;
                 if (err.message === "Requested device not found") {
-                    this.$store.commit('NEW_ALERT', {status: 0, text: 'radio_studio._errors.no_input_devices'});
+                    this.$store.commit('NEW_ALERT', {status: 0, text: 'radio_studio.errors.no_input_devices'});
                 } else {
-                    this.$store.commit('NEW_ALERT', {status: 0, text: 'radio_studio._errors.unknown_error'});
+                    this.$store.commit('NEW_ALERT', {status: 0, text: 'radio_studio.errors.unknown_error'});
                 }
             });
         },

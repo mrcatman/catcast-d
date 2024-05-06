@@ -123,7 +123,7 @@ class NewBroadcast extends BaseNotificationType {
     public function toBroadcast($notifiable) {
         return new BroadcastMessage([
             'title' => $this->getTitle(),
-            'picture' => $this->channel->logo,
+            'picture' => $this->broadcast->channel->logo,
             'text' => $this->broadcast->description,
             'url' => $this->getRelativeURL(),
         ]);

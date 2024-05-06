@@ -513,9 +513,9 @@
             this.sourceToAdd.loading = false;
             console.log(err.message);
             if (err.message === "Requested device not found") {
-              this.sourceToAdd.error = this.$t('radio_studio._errors.no_input_devices');
+              this.sourceToAdd.error = this.$t('radio_studio.errors.no_input_devices');
             } else {
-              this.sourceToAdd.error = this.$t('radio_studio._errors.unknown_error');
+              this.sourceToAdd.error = this.$t('radio_studio.errors.unknown_error');
             }
           });
         } else {

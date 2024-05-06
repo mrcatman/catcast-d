@@ -15,11 +15,10 @@
 <style lang="scss">
 .media-player {
   &__embed-code {
-    max-width: 30em;
-    margin-top: 1em;
+    max-width: 37em;
     word-break: break-word;
     padding: .5em;
-    background: var(--darken-2);
+    background: var(--lighten-1);
   }
 }
 </style>

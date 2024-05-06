@@ -11,20 +11,14 @@
         <profile-channels :channels="channels" />
       </c-col>
       <c-col mobile-full-width :grow="3">
-        <profile-friends :user="user" :friends="friends" />
         <comments-list :access-settings="accessSettings"  entity-type="users" :entity-id="user.id" />
       </c-col>
     </c-row>
   </div>
 </template>
 <script>
-
   import ProfileInfo from '@/components/profile/info';
   import ProfileChannels from '@/components/profile/channels';
-  import ProfileFriends from '@/components/profile/friends';
-
-  import tabVideos from '@/components/profile/videos';
-  import tabBlog from '@/components/profile/blog';
   import CommentsList from "@/components/comments/CommentsList";
   export default {
     props: {
@@ -45,17 +39,12 @@
     components: {
       ProfileInfo,
       ProfileChannels,
-      ProfileFriends,
-      tabVideos,
-      tabBlog,
       CommentsList,
     },
     async asyncData({app, params}) {
       const channels = await app.$api.get(`/users/${params.id}/channels`, {onError: []});
-      const friends = (await app.$api.get(`/users/${params.id}/friends?count=12`, {onError: app.$api.defaultPaginator}));
       return {
         channels,
-        friends,
       };
     },
   }

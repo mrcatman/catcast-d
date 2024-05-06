@@ -47,9 +47,7 @@ class MediaController extends Controller {
         $media->append('playlist_ids');
         unset($media->channel);
         unset($media->playlists); // todo
-        if (request()->has('load_additional_settings')) {
-            $media->append('additional_settings');
-        }
+        $media->append('additional_settings');
         if (request()->has('load_permissions')) {
             $media->permissions = MediaHelper::getPermissions($media);
         }

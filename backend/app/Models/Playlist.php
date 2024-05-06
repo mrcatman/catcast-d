@@ -56,7 +56,14 @@ class Playlist extends Model {
     }
 
     public function getLogoAttribute() {
-        return $this->getPicture("logo");
+        $logo = $this->getPicture("logo", false);
+        if (!$logo) {
+            $media = $this->visibleMedia()->orderBy('created_at', 'desc')->first();
+            if ($media && $media->thumbnail) {
+                return $media->thumbnail->full_url;
+            }
+        }
+        return $logo;
     }
 
     public function scopeSearch($filter, $search) {

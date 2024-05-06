@@ -24,6 +24,7 @@ class AuthController extends Controller {
         $username = request()->input('username');
         $user = User::where(['username'=> $username])->first();
         $password = request()->input('password');
+
         if ($user && ($user->password !== null && Hash::check($password, $user->password))) {
             if (!$user->is_admin) {
                 if (!$user->email_confirmed) {
@@ -187,7 +188,7 @@ class AuthController extends Controller {
     public function restoreAccount() {
         $restore = AccountRestore::where(['confirm_code' => request()->input('code')])->first();
         if (!$restore) {
-            return response()->json(['message' => 'auth._errors.wrong_code'], 422);
+            return response()->json(['message' => 'auth.errors.wrong_code'], 422);
         }
         $validation_rules = [
             'password' => 'required|confirmed|'. self::PasswordRules,
@@ -211,7 +212,7 @@ class AuthController extends Controller {
             'confirmed' => false
         ])->first();
         if (!$email_connection) {
-            return response()->json(['message' => 'auth._errors.wrong_code'], 422);
+            return response()->json(['message' => 'auth.errors.wrong_code'], 422);
         }
         $user = $email_connection->user;
         if (!ConfigHelper::registrationManual() ||$user->registration_request_approved) {

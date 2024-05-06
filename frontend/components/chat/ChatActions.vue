@@ -13,7 +13,7 @@
   </c-button>
 </template>
 <script>
-import ModalPrompt from "@/components/ModalPrompt.vue";
+import ModalPrompt from "@/components/modals/ModalPrompt.vue";
 
 export default {
   methods: {
@@ -26,7 +26,7 @@ export default {
         component: ModalPrompt,
         props: {
           title: this.$t('chat.new_motd'),
-          name: 'motd'
+          inputName: 'motd'
         },
         formValues: {
           motd: this.config?.motd,
@@ -43,7 +43,7 @@ export default {
         component: ModalPrompt,
         props: {
           title: this.$t('chat.new_guest_username'),
-          name: 'username',
+          inputName: 'username',
         },
         formValues: {
           username: this.guestUsername,

@@ -41,7 +41,7 @@ export default {
         const thumbnail = this.media.grid_thumbnail;
         const second = (this.hoverProgressPercent / 100) * this.duration;
         const index = Math.floor(second / thumbnail.every_nth_second);
-        const height = 85; // todo: change
+        const height = 85;
         const width = thumbnail.width * height / thumbnail.height;
         return {
           url: thumbnail.picture.full_url,
@@ -184,6 +184,11 @@ export default {
       height: 1em;
       border-radius: 50%;
       background: var(--channel-colors-inside-buttons);
+    }
+
+    &__thumbnail {
+      border-radius: .25em;
+      border: 1px solid var(--channel-colors-inside-buttons);
     }
 
     &__time-container {

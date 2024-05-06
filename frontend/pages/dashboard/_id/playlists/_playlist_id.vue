@@ -132,7 +132,7 @@
     },
 
     async asyncData({ app, params }) {
-      const playlist = await app.$api.get(`/playlists/${params.playlist_id}?load_additional_settings=1`);
+      const playlist = await app.$api.get(`/playlists/${params.playlist_id}`);
       return {
         playlist
       }

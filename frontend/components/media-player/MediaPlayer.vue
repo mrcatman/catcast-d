@@ -136,6 +136,7 @@ import MediaPlayerSettings from "@/components/media-player/MediaPlayerSettings";
 
 import {CHANNEL_TYPE_TV, CHANNEL_TYPE_RADIO, MEDIA_TYPE_VIDEO, MEDIA_TYPE_AUDIO} from "@/constants/entity-types";
 import MediaPlayerWaiting from "@/components/media-player/MediaPlayerWaiting.vue";
+import ModalCheckbox from "@/components/modals/ModalCheckbox.vue";
 
 let getBroadcastInterval;
 let disableHoverTimeout;
@@ -401,28 +402,39 @@ export default {
         }
       }
     },
-    permitNSFWContent() {
-      if (this.panels.nsfw.data.save) {
-        localStorage.allow_nsfw_content = 1;
-      }
-      this.panels.nsfw.data.visible = false;
-
-      this.tryToPlay();
-    },
     checkNSFWContent() {
-      let hasNSFWContent = !!this.channel.additional_settings?.display?.has_nsfw_content;
-      let hasSavedSetting = localStorage.allow_nsfw_content === "1";
-      let skipCheck = !!this.$route.query.skip_nsfw_check;
+      const hasNSFWContent =
+        this.channel.additional_settings?.privacy?.has_nsfw_content ||
+        this.playlist?.additional_settings?.privacy?.has_nsfw_content ||
+        this.media?.additional_settings?.privacy?.has_nsfw_content;
+      const hasSavedSetting = localStorage.allow_nsfw_content === "1";
 
-      if (!skipCheck && (hasNSFWContent && !hasSavedSetting)) {
-        this.panels.nsfw.visible = true;
+      if (hasNSFWContent && !hasSavedSetting) {
         if (this.player) {
           this.player.pause();
         }
+
+        this.$store.commit('modals/showStandardModal', {
+          confirm: true,
+          component: ModalCheckbox,
+          props: {
+            title: this.$t('player.nsfw.save_settings'),
+            text: this.$t(`player.nsfw.${this.isVOD ? 'text_media' : 'text_live'}`),
+            inputName: 'save',
+          },
+          title: this.$t('player.nsfw.heading'),
+          buttonColor: '',
+          buttonText: this.$t('global.ok'),
+          fn: async ({save}) => {
+            if (save) {
+              localStorage.allow_nsfw_content = '1';
+            }
+            this.tryToPlay();
+          },
+        })
       }
     },
     async play() {
-
       this.player && this.player.play();
       this.playing = true;
     },
@@ -554,7 +566,7 @@ export default {
             resolve();
           });
         });
-        this.checkNSFWContent(); // todo: check before start
+        this.checkNSFWContent();
 
         this.player.el_.addEventListener('click', () => {
           this.playing ? this.pause() : this.tryToPlay();

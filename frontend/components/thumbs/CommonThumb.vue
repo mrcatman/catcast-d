@@ -171,9 +171,9 @@
 .view-list-small {
   .thumb {
     &__picture-container {
-      width: 8em;
-      min-width: 8em;
-      height: 4.5em;
+      width: 12em;
+      min-width: 12em;
+      height: 6.75em;
     }
 
     &__title {

@@ -122,26 +122,26 @@ class NotificationsController extends Controller
     }
 
     public function getBindings() {
-        return NotificationBinding::where(['user_id' => auth()->user()->id])->get()->groupBy('type')->map(function($bindings) {
-            return $bindings->pluck('channel');
+        return NotificationBinding::where(['user_id' => auth()->user()->id])->get()->groupBy('event_type')->map(function($bindings) {
+            return $bindings->pluck('notification_channel_type');
         });
     }
 
     public function saveBindings() {
         $user = auth()->user();
         NotificationBinding::where(['user_id' => $user->id])->delete();
-        foreach (request()->all() as $type_id => $notification_channel_ids) {
+        foreach (request()->all() as $type_id => $notification_channel_type_ids) {
             if (!$this->getNotificationClassByEventTypeId($type_id)) {
                 continue;
             }
-            foreach ($notification_channel_ids as $notification_channel_id) {
-                if (!$this->getChannelClassById($notification_channel_id)) {
+            foreach ($notification_channel_type_ids as $notification_channel_type_id) {
+                if (!$this->getChannelClassById($notification_channel_type_id)) {
                     continue;
                 }
                 $binding = new NotificationBinding([
                     'user_id' => $user->id,
-                    'type' => $type_id,
-                    'channel' => $notification_channel_id
+                    'event_type' => $type_id,
+                    'notification_channel_type' => $notification_channel_type_id
                 ]);
                 $binding->save();
             }
@@ -215,19 +215,17 @@ class NotificationsController extends Controller
 
             $type_class = $this->getNotificationClassByEventTypeId($notification->type);
             $entity = ($type_class::getEntityClass())::find($notification->entity_id);
-
-            $notification_instance = new $type_class($entity);
-            if ($entity) {
-                $data = $notification_instance->toBroadcast($user)->data;
-                $data['type'] = $notification->type;
-                $data['id'] = $notification->id;
-                $data['is_read'] = $notification->is_read;
-                $data['created_at'] = $notification->created_at;
-                return $data;
-            } else {
-               // $notification->delete();
+            if (!$entity) {
+                $notification->delete();
+                return null;
             }
-            return null;
+            $notification_instance = new $type_class($entity);
+            $data = $notification_instance->toBroadcast($user)->data;
+            $data['type'] = $notification->type;
+            $data['id'] = $notification->id;
+            $data['is_read'] = $notification->is_read;
+            $data['created_at'] = $notification->created_at;
+            return $data;
         })->filter(function ($notification) {
             return !!$notification;
         });

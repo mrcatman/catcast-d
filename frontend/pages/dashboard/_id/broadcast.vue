@@ -32,7 +32,7 @@
       {{$t('dashboard.broadcast.active')}}
     </template>
     <template slot="main">
-      <active-broadcast-display :channel="channel" :broadcast="activeBroadcast" :can-edit="true" />
+      <active-broadcast-display :channel="channel" :broadcast="activeBroadcast"  />
     </template>
   </c-box>
 
@@ -63,7 +63,6 @@
 
   <c-box no-padding>
     <template slot="main">
-
       <c-thumbs-list ref="list" :config="listConfig">
         <template slot="before_filters">
           <c-button color="green" icon="fa-plus" @click="createNewBroadcast()">{{$t('dashboard.broadcast.create')}}</c-button>
@@ -72,24 +71,7 @@
           <c-tabs v-model="type" :data="types" />
         </template>
         <template slot="item" slot-scope="props">
-          <c-list-item>
-            <template slot="captions">
-              <div class="list-item__title">
-                {{props.item.title}}
-              </div>
-              <c-statistics-icons :data="getBroadcastInfo(props.item)" />
-              <div class="list-item__under-title list-item__under-title--short" v-if="props.item.description && props.item.description.length">
-                <div v-html="props.item.display_description"></div>
-              </div>
-              <c-tag v-if="props.item.tags" v-for="tag in props.item.tags">{{tag}}</c-tag>
-            </template>
-            <template slot="buttons">
-              <div class="buttons-row">
-                <c-button @click="editBroadcast(props.item)" v-if="props.item.can_edit" color="green">{{$t('global.edit')}}</c-button>
-                <c-button @click="deleteBroadcast(props.item)" v-if="props.item.can_delete" color="red">{{$t('global.delete')}}</c-button>
-              </div>
-            </template>
-          </c-list-item>
+          <broadcast-thumb :data="props.item" @reload="$refs.list.reload()" :show-edit-buttons="true" />
         </template>
       </c-thumbs-list>
     </template>
@@ -106,8 +88,8 @@ import copyTag from '@/components/global/copyTag';
 import RecordButton from "../../../components/buttons/RecordButton";
 import NotificationItem from "@/components/layout/notifications/NotificationItem.vue";
 import BroadcastMetadataEditor from "@/components/dashboard/broadcast/BroadcastMetadataEditor.vue";
-import {formatFullDate, formatPublishDate} from "@/helpers/dates";
 import ActiveBroadcastDisplay from "@/components/channel/ActiveBroadcastDisplay.vue";
+import BroadcastThumb from "@/components/thumbs/BroadcastThumb.vue";
 export default {
   head() {
     return {
@@ -142,6 +124,7 @@ export default {
 		return {key, servers, activeBroadcast};
 	},
 	components: {
+    BroadcastThumb,
     ActiveBroadcastDisplay,
     NotificationItem,
     RecordButton,
@@ -160,26 +143,6 @@ export default {
     }
   },
   methods: {
-    getBroadcastInfo(broadcast) {
-      const info = [
-        broadcast.ended_at ? {
-          icon: 'fa-clock',
-          value: formatPublishDate(broadcast.started_at) === formatPublishDate(broadcast.ended_at) ? formatPublishDate(broadcast.started_at) : `${formatPublishDate(broadcast.started_at)} - ${formatPublishDate(broadcast.ended_at)}`,
-          tooltip: `${formatFullDate(broadcast.started_at)} - ${formatFullDate(broadcast.ended_at)}`,
-        } : {
-          icon: 'fa-calendar',
-          value: `${formatPublishDate(broadcast.will_start_at)}`,
-          tooltip: `${formatFullDate(broadcast.will_start_at)} - ${formatFullDate(broadcast.will_end_at)}`,
-        }
-      ];
-      if (broadcast.category) {
-        info.push({
-          icon: 'fa-gamepad',
-          value: broadcast.category.name
-        })
-      }
-      return info;
-    },
     createNewBroadcast() {
       this.$store.commit('modals/showStandardModal', {
         confirm: true,
@@ -188,7 +151,9 @@ export default {
         buttonText: this.$t('global.save'),
         title: this.$t('dashboard.broadcast.create'),
         props: {planned: true},
-        formValues: {},
+        formValues: {
+          tags: []
+        },
         fn: async (broadcast) => {
           await this.$api.post(`broadcasts`, {
             ...broadcast,
@@ -198,34 +163,6 @@ export default {
         },
       })
     },
-    editBroadcast(broadcastToEdit) {
-      this.$store.commit('modals/showStandardModal', {
-        confirm: true,
-        component: BroadcastMetadataEditor,
-        buttonColor: '',
-        buttonText: this.$t('global.save'),
-        title: this.$t('dashboard.broadcast.create'),
-        props: {planned: true},
-        formValues: {
-          ...broadcastToEdit,
-        },
-        fn: async (broadcast) => {
-          await this.$api.put(`broadcasts/${broadcastToEdit.id}`, broadcast);
-          this.$refs.list.reload();
-        },
-      })
-    },
-    deleteBroadcast(broadcast) {
-      this.$store.commit('modals/showStandardModal', {
-        confirm: true,
-        title: this.$t('dashboard.broadcast.delete'),
-        fn: async () => {
-          await this.$api.delete(`broadcasts/${broadcast.id}`);
-          this.$refs.list.reload();
-        },
-      })
-    },
-
     generateNewKey() {
       this.reloading = true;
       this.$api.get(`/channels/${this.channel.id}/stream/key?generate_new_key=true`).then( key => {

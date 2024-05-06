@@ -69,10 +69,7 @@ class ChannelsController extends Controller {
             $channel->save();
             StatisticsHelper::increment($channel);
         }
-        if (request()->has('load_additional_settings')) {
-            $channel->append('additional_settings');
-        }
-
+        $channel->append('additional_settings');
         return $channel;
     }
 
@@ -86,17 +83,17 @@ class ChannelsController extends Controller {
             'description' => 'sometimes',
             'tags' => 'sometimes',
         ];
-        $data = request()->validate($validation_rules, LocalizationHelper::getFormErrors('dashboard.create._errors'));
+        $data = request()->validate($validation_rules, LocalizationHelper::getFormErrors('dashboard.create.errors'));
         $type = request()->input('channel_type', Channel::TYPE_TV);
         if (!ConfigHelper::channelTypeAllowed($type)) {
-            return CommonResponses::validationError(['name' => ['dashboard.create._errors.channel_type_disabled']]);
+            return CommonResponses::validationError(['name' => ['dashboard.create.errors.channel_type_disabled']]);
         }
 
         $limit = ConfigHelper::maxChannelsCount($type);
         $type_id = Channel::TYPE_NAMES_MAP[$type];
         $already_created_count = Channel::where(['user_id' => $user->id, 'channel_type' => $type_id])->count();
         if ($already_created_count >= $limit) {
-            return CommonResponses::validationError(['name' => [['text' => 'dashboard.create._errors.channels_limit_exceeded', 'params' => ['limit' => $limit]]]]);
+            return CommonResponses::validationError(['name' => [['text' => 'dashboard.create.errors.channels_limit_exceeded', 'params' => ['limit' => $limit]]]]);
         }
 
 
@@ -158,7 +155,7 @@ class ChannelsController extends Controller {
             $shortname_occupied = Channel::where(['shortname' => $data['shortname']])->count() > 0;
             if ($shortname_occupied) {
                 return CommonResponses::validationError([
-                    'shortname' => ['dashboard.info._errors.shortname_unique']
+                    'shortname' => ['dashboard.info.errors.shortname_unique']
                 ]);
             }
         }

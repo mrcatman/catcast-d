@@ -85,7 +85,7 @@
       },
     },
     async asyncData({ app, params, redirect }) {
-      const media = await app.$api.get(`/media/${params.media_id}?load_additional_settings=1&load_permissions=1`);
+      const media = await app.$api.get(`/media/${params.media_id}?load_permissions=1`);
       if (!media.permissions.can_edit) {
         return redirect(`/dashboard/${params.id}/media`);
       }

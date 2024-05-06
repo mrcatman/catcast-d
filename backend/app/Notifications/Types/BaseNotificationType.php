@@ -54,6 +54,16 @@ class BaseNotificationType extends Notification {
     }
 
     /**
+     * Get list of notification channels
+     *
+     * @return string[] list of channels
+     */
+    public function via(): array
+    {
+        return $this->via;
+    }
+
+    /**
      * Set list of notification channels by which we should send notifications
      *
      * @param string[] $via list of channels
@@ -65,17 +75,15 @@ class BaseNotificationType extends Notification {
         }
         $via = array_merge($via, $this->default_channels);
         $channels = [];
-        foreach ($via as $item) {
-            if ($item == "telegram") {
+        foreach ($via as $channel_id) {
+            if ($channel_id == "telegram") {
                 $channels[] = TelegramChannel::class;
-            } elseif ($item == "vk") {
+            } elseif ($channel_id == "vk") {
                 $channels[] = VKChannel::class;
-            } elseif ($item == 'broadcast') {
+            } elseif ($channel_id == 'broadcast') {
                 /* Broadcast the notification and also put it in the database */
                 $channels[] = BroadcastChannel::class;
                 $channels[] = DatabaseExtendedChannel::class;
-            } else {
-                $channels[] = $item;
             }
         }
         $this->via = $channels;
@@ -128,7 +136,7 @@ class BaseNotificationType extends Notification {
      */
     public function sendToChannelSubscribers(Channel $channel) {
         $subscriptions = NotificationSubscription::where([
-            'event_type' => self::getEventTypeId(),
+            'event_type' => $this->getEventTypeId(),
             'entity_id' => $channel->id
         ])->get();
 
@@ -144,17 +152,13 @@ class BaseNotificationType extends Notification {
             $bindings_list[$binding->user_id][] = $binding->notification_channel_type;
         }
 
-        $users = collect([]);
-        foreach ($subscriptions as $subscription) {
-            if (isset($bindings_list[$subscription->user_id])) {
-                $users->push([
-                    'channels' => $bindings_list[$subscription->user_id],
-                    'user' => $subscription->user
-                ]);
-            }
-        }
+        $users = $subscriptions->map(function($subscription) use ($bindings_list) {
+            return [
+                'channels' => $bindings_list[$subscription->user_id] ?? [],
+                'user' => $subscription->user
+            ];
+        });
         $users = $this->filterUsers($users);
-
         foreach ($users as $user_data) {
             $this->setVia($user_data['channels']);
             $user_data['user']->notify($this);

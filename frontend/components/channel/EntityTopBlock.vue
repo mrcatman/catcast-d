@@ -31,7 +31,7 @@
 <script>
 import ChannelLogoAndName from "@/components/ChannelLogoAndName";
 import Rating from "@/components/Rating";
-import SubscribeButton from "@/components/buttons/SubscribeButtonOld.vue";
+import SubscribeButton from "@/components/subscriptions/SubscribeButton.vue";
 import TagsAndLinks from "@/components/channel/TagsAndLinks.vue";
 export default {
 

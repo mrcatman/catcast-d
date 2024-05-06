@@ -32,8 +32,8 @@ services:
     restart: always
     working_dir: /echo
   tusd:
-    image: tusproject/tusd:v1.9
-    command: -verbose -behind-proxy -base-path /api/files -upload-dir=/backend/public/uploads -hooks-http http://php:4002/api/internal/tus
+    image: tusproject/tusd:v2
+    command: -verbose -behind-proxy -port=1080 -base-path /api/files -upload-dir=/backend/storage/temp-uploads -hooks-http http://php:4002/api/internal/tus
     volumes:
       - ./backend:/backend
   php:

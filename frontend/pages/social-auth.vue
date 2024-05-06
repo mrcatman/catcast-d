@@ -139,10 +139,10 @@
             this.$set(this.warnings,'password',['errors.field_required']);
           } else {
             if (val.length < 7) {
-              this.$set(this.warnings,'password',['auth.user._errors.password_short']);
+              this.$set(this.warnings,'password',['auth.user.errors.password_short']);
             } else {
               if (!/^[a-z0-9]+$/i.test(val)) {
-                this.$set(this.warnings,'password',['auth.user._errors.password_alphanumeric']);
+                this.$set(this.warnings,'password',['auth.user.errors.password_alphanumeric']);
               } else {
                 this.$set(this.warnings,'password',[]);
               }
@@ -151,7 +151,7 @@
         }
         if (key === "password_confirmation") {
           if (val !== this.form.password) {
-            this.$set(this.warnings,'password_confirmation',['auth.user._errors.password_match']);
+            this.$set(this.warnings,'password_confirmation',['auth.user.errors.password_match']);
           } else {
             this.$set(this.warnings,'password_confirmation',[]);
           }

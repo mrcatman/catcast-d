@@ -10,7 +10,7 @@
           <subscribe-button entity-type="channels" :entity-id="channel.id" />
         </div>
       </div>
-      <active-broadcast-display v-if="activeBroadcast" :channel="channel" :broadcast="activeBroadcast" :can-edit="canEditBroadcastName" />
+      <active-broadcast-display v-if="activeBroadcast" :channel="channel" :broadcast="activeBroadcast"  />
     </div>
   </div>
 </template>
@@ -44,35 +44,7 @@
 
   export default {
     components: {ActiveBroadcastDisplay, Rating, SubscribeButton},
-    computed: {
-      ...mapState('auth', ['user']),
-    },
 
-    methods: {
-
-      canEditBroadcastName() {
-        return true; // todo: fix
-        if (!this.activeBroadcast || !this.permissions) {
-          return false;
-        }
-
-        //todo: get 'can edit' permissions from backend
-
-        let list = this.permissions.list;
-        let full_list = this.permissions.full_list;
-
-        if (list.indexOf('admin') !== -1 || list.indexOf('owner') !== -1 || list.indexOf('channel_admin') !== -1) {
-          return true;
-        }
-        if (full_list.indexOf('live_broadcast') !== -1) {
-          return true;
-        }
-        if (list.indexOf('live_broadcast') !== -1 && this.activeBroadcast.live_user && activeBroadcast.broadcast.live_user.id === this.user.id) {
-          return true;
-        }
-        return false;
-      },
-    },
     props: {
       channel: {
         type: Object,

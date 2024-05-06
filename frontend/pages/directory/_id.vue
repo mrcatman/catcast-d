@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <directory-view :directory="directory" :path="$route.path.substring(1)"/>
+    <directory-view :directory="directory" :path="path"/>
   </div>
 </template>
 <script>
@@ -8,12 +8,14 @@ import DirectoryView from "@/components/DirectoryView.vue";
 export default {
   watch: {
     '$route.name'() {
-      console.log('change name');
+      this.$nuxt.refresh();
     }
   },
   async asyncData({app, route}) {
-    const directory = await app.$api.get(`${route.path.substring(1)}`);
+    const path = route.path.substring(1);
+    const directory = await app.$api.get(path.length ? path : 'directory/index');
     return {
+      path,
       directory
     }
   },

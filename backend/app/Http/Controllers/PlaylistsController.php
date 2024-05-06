@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\CommonResponses;
 use App\Helpers\MediaHelper;
 use App\Helpers\PermissionsHelper;
+use App\Helpers\StatisticsHelper;
 use App\Models\Channel;
 use App\Models\Playlist;
 use App\Models\Media;
@@ -137,11 +138,25 @@ class PlaylistsController extends Controller {
         if ($channel->is_banned) {
             return response()->json(['message' => 'errors.channel_is_banned'], 403);
         }
-        if (request()->has('load_additional_settings')) {
-            $playlist->append('additional_settings');
-        }
-      //  StatisticsModule::increment($playlist);
+        $playlist->append('additional_settings');
+        StatisticsHelper::increment($playlist);
         return $playlist;
+    }
+
+    public function getRelated($uuid) {
+        $playlist = Playlist::where(['uuid' => $uuid])->firstOrFail();
+        $channel = $playlist->channel;
+        if (!$channel) {
+            return CommonResponses::notFound();
+        }
+        if ($channel->is_banned) {
+            return response()->json(['message' => 'errors.channel_is_banned'], 403);
+        }
+
+        $playlists = Playlist::visible()->where(['channel_id' => $channel->id])->where('id', '!=', $playlist->id)->inRandomOrder();
+        $playlists = $playlists->paginate(request()->input('count', 10));
+        //todo: recommendations
+        return $playlists;
     }
 
 

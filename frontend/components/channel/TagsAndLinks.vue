@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="channel-layout__description" v-if="hasDescription" v-html="descriptionHTML"> </div>
+    <div class="channel-layout__description" v-html="descriptionHTML"></div>
     <div v-if="entity.links && entity.links.length > 0" class="buttons-row channel-layout__links">
       <c-button target="_blank" :href="link.url" :key="$index" v-for="(link, $index) in entity.links">{{link.name}}</c-button>
     </div>
@@ -14,11 +14,8 @@
 import marked from 'marked';
 export default {
   computed: {
-    hasDescription() {
-      return this.entity.description?.trim().length > 0;
-    },
     descriptionHTML() {
-      return marked.parse(this.entity.description);
+      return this.entity.description?.trim().length ? marked.parse(this.entity.description) : this.$t('global.no_description');
     }
   },
   props: {
@@ -40,7 +37,6 @@ export default {
 
   }
   &__description {
-    margin-top: 1em;
     line-height: 1.6;
   }
   &__links {

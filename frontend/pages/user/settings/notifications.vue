@@ -6,13 +6,13 @@
         <table class="notifications-table">
           <tbody>
           <template v-for="(category, $index) in categories">
-            <tr class="notifications-table__type-name" :key="$index">
+            <tr class="notifications-table__type-name" :key="category.name">
               <td>{{ $t(category.category_name) }}</td>
             </tr>
-            <tr v-for="type in category.types" :key="type.id">
-              <td>{{ $t(type.name) }}</td>
+            <tr v-for="event in category.events" :key="event.id">
+              <td>{{ $t(event.name) }}</td>
               <td>
-                <c-select multiple :options="channelOptions" v-form-input="type.id" />
+                <c-select multiple :options="channelOptions" v-form-input="event.id" />
               </td>
             </tr>
           </template>
@@ -43,9 +43,9 @@ export default {
     const categories = {};
     categoriesList.forEach(category => {
       categories[category.category_name] = category;
-      categories[category.category_name].events.forEach(type => {
-        if (!bindings[events.id]) {
-          bindings[events.id] = [];
+      categories[category.category_name].events.forEach(event => {
+        if (!bindings[event.event_type]) {
+          bindings[event.event_type] = [];
         }
       })
     });
@@ -59,7 +59,7 @@ export default {
   methods: {
     save() {
       this.saving = true;
-      let bindings = [];
+      const bindings = [];
       Object.keys(this.bindings).forEach(key => {
         bindings.push({
           event_type: key,

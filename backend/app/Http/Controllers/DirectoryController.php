@@ -61,8 +61,8 @@ class DirectoryController extends Controller {
                 'children' => [
                     [
                         'id' => 'channels',
-                        'heading' => 'global.all',
-                        'icon' => 'live_tv'
+                        'heading' => 'channels.all',
+                        'icon' => 'fa-tower-broadcast'
                     ],
                     [
                         'id' => 'channels/tv',
@@ -81,18 +81,18 @@ class DirectoryController extends Controller {
                 'children' => [
                     [
                         'id' => 'media',
-                        'heading' => 'global.all',
-                        'icon' => 'play_arrow'
+                        'heading' => 'media.all',
+                        'icon' => 'fa-photo-film'
                     ],
                     [
                         'id' => 'media/video',
                         'heading' => 'media.video',
-                        'icon' => 'play_arrow'
+                        'icon' => 'fa-video'
                     ],
                     [
                         'id' => 'media/audio',
                         'heading' => 'media.audio',
-                        'icon' => 'play_arrow'
+                        'icon' => 'fa-podcast'
                     ]
                 ]
             ]
@@ -199,7 +199,7 @@ class DirectoryController extends Controller {
                 'entity' => 'media',
                 'heading' => 'media.subscriptions',
                 'params' => ['show' => 'subscriptions'],
-            ]
+            ],
         ];
     }
 
@@ -216,6 +216,20 @@ class DirectoryController extends Controller {
                 'entity' => 'media',
                 'heading' => 'media.popular',
                 'params' => ['show' => 'popular'],
+            ],
+            [
+                'id' => 'video',
+                'entity' => 'media',
+                'heading' => 'media.video',
+                'params' => ['type' => 'video'],
+                'hidden' => true
+            ],
+            [
+                'id' => 'audio',
+                'entity' => 'media',
+                'heading' => 'media.audio',
+                'params' => ['type' => 'audio'],
+                'hidden' => true
             ],
         ];
     }

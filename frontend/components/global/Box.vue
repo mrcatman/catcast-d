@@ -103,7 +103,7 @@
   }
 
 }
-.box + .box, .form + .box {
+.box:not([style*="display: none"]) + .box, .form:not([style*="display: none"]) + .box {
   margin-top: 1em;
 }
 .theme-modern .box {

@@ -46,7 +46,7 @@ class ProcessMedia implements ShouldQueue {
         ];
     }
 
-    protected function removeFilesAndSendError($error = 'dashboard.media._errors.wrong_format') {
+    protected function removeFilesAndSendError($error = 'dashboard.media.errors.wrong_format') {
         broadcast(new MediaConvertFailEvent($this->media, $error));
         if (File::exists($this->path_to_uploaded_file)) {
             File::delete($this->path_to_uploaded_file);
@@ -62,7 +62,7 @@ class ProcessMedia implements ShouldQueue {
 
     protected function saveFileToDB($quality, $storage_paths) {
         $file_size = File::size($storage_paths['full_path']);
-
+        // todo: add dimensions
         $file = new MediaFile([
             'media_id' => $this->media->id,
             'type' => MediaFile::TYPE_LOCAL,
@@ -91,7 +91,7 @@ class ProcessMedia implements ShouldQueue {
         }
         $file_size = filesize($this->path_to_uploaded_file);
         if ($channel->getOccupiedDiskSpace() + $file_size > $channel->getTotalDiskSpace()) {
-            $this->removeFilesAndSendError('dashboard.media._errors.not_enough_space');
+            $this->removeFilesAndSendError('dashboard.media.errors.not_enough_space');
             return;
         }
 
@@ -150,7 +150,7 @@ class ProcessMedia implements ShouldQueue {
         }
 
         if ($channel->getOccupiedDiskSpace() + $this->getTotalFilesSize() > $channel->getTotalDiskSpace()) {
-            $this->removeFilesAndSendError('dashboard.media._errors.not_enough_space');
+            $this->removeFilesAndSendError('dashboard.media.errors.not_enough_space');
             return;
         }
 

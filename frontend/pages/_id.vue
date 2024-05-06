@@ -1,7 +1,7 @@
 <template>
 <channel-layout :channel="channel">
   <template slot="main">
-    <c-box no-padding>
+    <c-box no-padding v-show="!playerDetached">
       <template slot="main">
         <div class="channel-layout__player-container" ref="player_container" :class="{'channel-layout__player-container--video': !channel.is_radio, 'channel-layout__player-container--radio': channel.is_radio}">
           <radio-player :currentTrack="currentTrack" :channel="channel" v-if="channel.channel_type === 'radio'" class="channel-layout__player" />
@@ -20,13 +20,14 @@
         <c-tabs :data="tabs" v-model="currentTab"/>
         <channel-page-tab-info :channel="channel" v-if="loadedTabs.info" v-show="currentTab === 'info'"/>
         <channel-page-tab-team :channel="channel" v-if="loadedTabs.team" v-show="currentTab === 'team'"/>
+        <channel-page-tab-announces :channel="channel" v-if="loadedTabs.announces" v-show="currentTab === 'announces'"/>
         <channel-page-tab-media :channel="channel" v-if="loadedTabs.media" v-show="currentTab === 'media'"/>
         <channel-page-tab-playlists :channel="channel" v-if="loadedTabs.playlists" v-show="currentTab === 'playlists'"/>
-        <channel-page-tab-announces :channel="channel" v-if="loadedTabs.announces" v-show="currentTab === 'announces'"/>
+
       </template>
     </c-box>
 
-    <comments-list entity-type="channels" :entity-id="channel.id"  />
+    <comments-list entity-type="channels" :entity-id="channel.id" v-if="loadedTabs.info" v-show="currentTab === 'info'"  />
 
   </template>
   <template slot="sidebar">
@@ -84,7 +85,7 @@ export default {
     },
     currentTab(tab) {
       this.loadedTabs[tab] = true;
-      if (tab === 'media') {
+      if (tab === 'media' || tab === 'playlists') {
         this.detachPlayer();
       } else {
         this.attachPlayer();

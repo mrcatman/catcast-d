@@ -118,6 +118,13 @@ module.exports = {
           ]
         }
       })
+      routes.unshift({
+        name: 'directory-index',
+        path: '/',
+        component: resolve(__dirname, 'pages/directory/_id.vue'),
+        chunkName: 'pages/directory/_id',
+      })
+      console.log(routes);
     }
   },
   vue: {

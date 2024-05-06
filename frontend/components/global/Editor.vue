@@ -1,6 +1,6 @@
 <template>
   <input-base class="editor" :inputValue="val" :title="title" :errors="errorsList">
-    <vue-simplemde v-if="val !== null" v-model="val" ref="markdownEditor" />
+    <vue-simplemde v-if="val !== null" v-model="val"  />
   </input-base>
 </template>
 <style lang="scss">
@@ -11,16 +11,11 @@
     flex: 1;
   }
   .CodeMirror {
-    color: #fff;
+    color: var(--text-color);
     background: var(--input-bg-color);
     border: 1px solid var(--input-border-color);
     font-size: 1em;
-    overflow: auto;
-    overflow-x: hidden;
-    min-height: unset!important;
-    &-scroll {
-      min-height: unset;
-    }
+
   }
 
   .editor-statusbar {
@@ -59,9 +54,7 @@
 import VueSimplemde from 'vue-simplemde'
 import InputBase from "@/components/global/InputBase";
 
-
 export default {
-
   computed: {
     errorsList() {
       return [...(this.errors ? this.errors : []), ...(this.formErrors ? this.formErrors : [])];
@@ -72,7 +65,6 @@ export default {
     VueSimplemde
   },
   props: {
-    simple: Boolean,
     errors: Array,
     value: String,
     title: String,

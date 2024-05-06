@@ -199,6 +199,7 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
 
     // PLAYLISTS
     Route::resource('playlists', 'PlaylistsController');
+    Route::any('playlists/{id}/related','PlaylistsController@getRelated');
     Route::get('playlists/{id}/media','PlaylistsController@getMedia');
     Route::get('playlists/{id}/records','PlaylistsController@getRecords');
     Route::get('channels/{id}/playlists', 'PlaylistsController@getForChannel');
@@ -209,8 +210,6 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
     Route::get('channels/{id}/broadcasts', 'BroadcastsController@getByChannel');
     Route::get('channels/{id}/broadcasts/active', 'BroadcastsController@getActive');
     Route::put('channels/{id}/broadcasts/active', 'BroadcastsController@updateActive');
-    Route::get('broadcasts/categories', 'BroadcastsController@categories');
-    Route::get('broadcasts/categories/{id}', 'BroadcastsController@category');
     Route::resource('broadcasts', 'BroadcastsController');
 
     // CHAT

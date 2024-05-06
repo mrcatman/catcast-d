@@ -306,7 +306,7 @@ class TimetableController extends Controller {
                 'is_subscribed' => $is_subscribed
             ];
         } else {
-            return response()->json(['message' => 'timetable.subscription._errors.wrong_type'], 422);
+            return response()->json(['message' => 'timetable.subscription.errors.wrong_type'], 422);
         }
     }
 
@@ -409,7 +409,7 @@ class TimetableController extends Controller {
                 'is_subscribed' => $state
             ];
         } else {
-            return response()->json(['message' => 'timetable.subscription._errors.wrong_type'], 422);
+            return response()->json(['message' => 'timetable.subscription.errors.wrong_type'], 422);
         }
     }
 

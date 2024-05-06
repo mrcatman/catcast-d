@@ -65,8 +65,7 @@ class BroadcastsController extends Controller{
     }
 
     public function store() {
-        PermissionsHelper::check(['live_broadcast']);
-        $channel = Channel::findOrFail(request()->input('channel_id'));
+        $channel = PermissionsHelper::getChannelIfAllowed(request()->input('channel_id'), ['live_broadcast']);
         $broadcast = new Broadcast([
             'channel_id' => $channel->id,
             'user_id' => auth()->user()->id

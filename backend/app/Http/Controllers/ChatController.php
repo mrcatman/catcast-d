@@ -36,34 +36,34 @@ class ChatController extends Controller {
         $channel = Channel::findOrFail($id);
         $settings = $channel->additional_settings['chat'];
         if ($settings['disabled']) {
-            return response()->json(['message' => 'chat._errors.chat_is_off'], 403);
+            return response()->json(['message' => 'chat.errors.chat_is_off'], 403);
         }
         $user = auth()->user();
 
         if ( !$user && !$settings['allow_guests']) {
-            return response()->json(['message' => 'chat._errors.guests_are_not_allowed'], 403);
+            return response()->json(['message' => 'chat.errors.guests_are_not_allowed'], 403);
         }
 
         $ip = request()->ip();
         if (!$user) {
             $banned = IPBan::where(['channel_id'=>$channel->id, 'ip_address'=> $ip])->first();
             if ($banned) {
-                return response()->json(['message' => 'chat._errors.your_ip_is_banned'], 403);
+                return response()->json(['message' => 'chat.errors.your_ip_is_banned'], 403);
             }
         } else {
             $banned = UserBan::where(['channel_id'=>$channel->id, 'user_id' => $user->id])->first();
             if ($banned) {
-                return response()->json(['message' => 'chat._errors.your_account_is_banned'], 403);
+                return response()->json(['message' => 'chat.errors.your_account_is_banned'], 403);
             }
         }
         $text = strip_tags(trim(request()->input('text', '')));
         if (strlen($text) === 0) {
-            return response()->json(['message' => 'chat._errors.enter_message'], 422);
+            return response()->json(['message' => 'chat.errors.enter_message'], 422);
         }
         $forbidden_words = $settings['forbidden_words'];
         foreach ($forbidden_words as $word) {
             if (strpos($text, $word['word']) !== false) {
-                return response()->json(['message' => 'chat._errors.message_has_forbidden_words'], 422);
+                return response()->json(['message' => 'chat.errors.message_has_forbidden_words'], 422);
             }
         }
         $smiles = $this->getSmilesReplacements($settings);
@@ -174,7 +174,7 @@ class ChatController extends Controller {
         $channel = PermissionsHelper::getChannelIfAllowed($channel_id, ['moderation']);
 
         if (!request()->has('user_id') || !request()->has('state')) {
-            return response()->json(['message' => 'chat._errors.no_parameters'], 422);
+            return response()->json(['message' => 'chat.errors.no_parameters'], 422);
         }
         $user_to_ban = User::findOrFail(request()->input('user_id'));
         $state = !!request()->input('state', true);
@@ -208,7 +208,7 @@ class ChatController extends Controller {
             }
         }
         if (!$ip_address) {
-            return response()->json(['message' => 'chat._errors.no_parameters'], 422);
+            return response()->json(['message' => 'chat.errors.no_parameters'], 422);
         }
 
         $state = !!request()->input('state', true);

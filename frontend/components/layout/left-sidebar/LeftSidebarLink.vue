@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link v-if="data" :to="`/directory/${data.id}`" class="left-sidebar__link">
+  <nuxt-link v-if="data" :to="data.id !== 'index' ? `/directory/${data.id}` : '/'" class="left-sidebar__link">
     <c-tooltip v-if="!sidebarOpened" position="center-right">{{$t(data.heading)}}</c-tooltip>
     <div v-if="data.icon" class="left-sidebar__link__icon">
       <c-icon :icon="data.icon"/>

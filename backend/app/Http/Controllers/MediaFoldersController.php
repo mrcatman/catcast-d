@@ -17,7 +17,7 @@ class MediaFoldersController extends Controller {
 
     protected function fillData($folder) {
         if (!request()->filled('title')) {
-            return CommonResponses::validationError(['title' => ['dashboard.videos.folders._errors.enter_title']]);
+            return CommonResponses::validationError(['title' => ['dashboard.videos.folders.errors.enter_title']]);
        }
         $data = request()->validate([
             'title' => 'sometimes|string',
@@ -38,7 +38,7 @@ class MediaFoldersController extends Controller {
                 if ($folder->id) {
                     $subfolder_ids = MediaHelper::getSubFolders($folder->id);
                     if (in_array($parent->id, $subfolder_ids)) {
-                        return CommonResponses::validationError(['title' => ['dashboard.videos.folders._errors.wrong_structure']]);
+                        return CommonResponses::validationError(['title' => ['dashboard.videos.folders.errors.wrong_structure']]);
                     }
                 }
                 $folder->parent_id = $parent->id;

@@ -118,9 +118,6 @@
   .response {
     margin-top: 1em;
   }
-  .form {
-    margin-top: -1em;
-  }
 
 
 }

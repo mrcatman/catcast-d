@@ -45,7 +45,7 @@
       flex-direction: column;
     }
     &__order-select {
-      margin: 0;
+      margin: -.75em 0;
     }
 
     &__list {
@@ -103,7 +103,7 @@
         currentAccessSettings: {
           ban: null,
           comments_display: false,
-          comments_enabled: false,
+          comments_enabled: true,
           permissions: {}
         },
         currentPage: 1,
@@ -205,6 +205,7 @@
           this.currentPage++;
           const data = await this.$api.get(`${this.baseUrl}`, {onError: this.$api.defaultPaginator});
           this.comments.data = [...this.comments.data, ...data.data];
+          this.comments.total = data.total;
           this.loading = false;
         }
       },

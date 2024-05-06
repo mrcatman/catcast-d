@@ -54,7 +54,9 @@ class Channel extends Model
     protected $guarded = ['user_id', 'views'];
     protected $hidden = ['private_key', 'stream_password'];
     protected $with = ['pictures'];
-    protected $dates = ['last_online_at'];
+    public $casts = [
+        'last_online_at' => 'date'
+    ];
 
     protected $pictures_fields = ['logo', 'banner', 'background', 'player_background'];
 
@@ -90,7 +92,7 @@ class Channel extends Model
     }
 
     public function getTotalDiskSpace() { // todo: admin panel with settings
-        return ConfigHelper::diskSpace($this->type_id);
+        return ConfigHelper::diskSpace($this->type_name);
     }
 
 

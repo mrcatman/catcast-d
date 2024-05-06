@@ -7,7 +7,8 @@
       <div class="comments-panel__login" v-else-if="!canWrite && !isEditing" v-html="$t('comments.off')"></div>
       <div class="comments-panel__login" v-else-if="ban" v-html="banText"></div>
       <c-input v-if="fromChannelName && showInputs" v-model="title" :title="$t('comments.title')"/>
-      <c-text-editor :simple="!fromChannelName" v-if="showInputs" v-model="text" :title="$t('comments.text')" />
+      <c-text-editor v-if="showInputs && fromChannelName" v-model="text" :title="$t('comments.text')" />
+      <c-input v-if="showInputs && !fromChannelName" v-model="text" :title="$t('comments.text')" />
     </div>
     <div class="comments-panel__bottom" v-if="showInputs">
       <attachments-panel @ready="onAttachmentsReady" @error="onAttachmentsError" v-model="attachments" :videos="fromChannelName" :channel-id="fromChannelName ? entityId : null">

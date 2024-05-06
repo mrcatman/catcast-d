@@ -1,5 +1,5 @@
 <template>
-  <custom-colors class="channel-layout" ref="page" :colors-scheme="currentColorsScheme" :style="pageStyle">
+  <custom-colors class="channel-layout" :class="{'channel-layout--without-sidebar': !$slots.sidebar}" ref="page" :colors-scheme="currentColorsScheme" :style="pageStyle">
     <div class="channel-layout__inner">
       <div class="channel-layout__content" ref="content">
         <nuxt-link target="_blank" :to="bannerLink" v-if="banner">
@@ -54,12 +54,13 @@ export default {
 </script>
 <style lang="scss">
 .channel-layout {
-  padding-top: 1em;
+  padding: 1em 0;
+  min-height: calc(100% - 2em);
   background: var(--channel-colors-page-background);
-
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
+
   &__banner {
     max-width: 100%;
     margin-bottom: 1em;
@@ -69,7 +70,7 @@ export default {
   }
 
   &__inner {
-    width: calc(100% - 35em);
+    width: calc(100% - 34em);
     display: flex;
     align-items: center;
     position: relative;
@@ -113,6 +114,9 @@ export default {
     right: 0;
     width: 35em;
     height: calc(100vh - 3.5em);
+    &:empty {
+      display: none;
+    }
   }
 
   &__title-container {

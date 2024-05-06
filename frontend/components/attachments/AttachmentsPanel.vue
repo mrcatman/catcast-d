@@ -217,7 +217,7 @@
             picture.attachment_id = data.id;
             resolve();
           }).catch(err => {
-            picture.upload_error = this.$t('upload._errors.upload_error', {error: err.message ? this.$t(err.message) : err.toString()});
+            picture.upload_error = this.$t('upload.errors.upload_error', {error: err.message ? this.$t(err.message) : err.toString()});
             reject();
           }).finally(() => {
             picture.uploading = false;

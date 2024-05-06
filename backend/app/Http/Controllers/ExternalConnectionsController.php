@@ -89,7 +89,7 @@ class ExternalConnectionsController extends Controller {
                                 'text'=>'connections.errors.connected_user_already_exists',
                                 'errors'=>[
                                     'account_id'=>[
-                                        'connections._errors.connected_user_already_exists',
+                                        'connections.errors.connected_user_already_exists',
                                     ]
                                 ]
                             ];
@@ -104,7 +104,7 @@ class ExternalConnectionsController extends Controller {
             }
             return [
                 'status'=>0,
-                'text'=>'connections._errors.wrong_params',
+                'text'=>'connections.errors.wrong_params',
             ];
         } else {
             return CommonResponses::unauthorized();
