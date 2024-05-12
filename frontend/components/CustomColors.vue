@@ -23,6 +23,9 @@ export default {
   },
   methods: {
     setColors() {
+      if (!this.colorsScheme) {
+        return;
+      }
       for (let key in this.colorsScheme) {
         this.$refs.main.style.setProperty(`--channel-colors-${key.replace(/_/g, '-')}`, this.colorsScheme[key]);
         this.$refs.main.style.setProperty(`--channel-colors-${key.replace(/_/g, '-')}--rgb`, this.hexToRgb(this.colorsScheme[key]));
@@ -38,10 +41,10 @@ export default {
   },
   computed: {
     bright() {
-      return this.colorsScheme.page_panels ? isBright(this.colorsScheme.page_panels) : false;
+      return this.colorsScheme?.page_panels ? isBright(this.colorsScheme.page_panels) : false;
     },
     buttonsBright() {
-      return this.colorsScheme.page_buttons ? isBright(this.colorsScheme.page_buttons) : false;
+      return this.colorsScheme?.page_buttons ? isBright(this.colorsScheme.page_buttons) : false;
     },
   }
 }

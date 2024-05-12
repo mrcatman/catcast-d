@@ -134,8 +134,8 @@ export default {
         message: '',
 			};
 			if (e.keyCode === 13) {
-			  let activeElement =  document.activeElement;
-			  if (!activeElement.classList.contains('ql-editor')) {
+			  const activeElement = document.activeElement;
+        if (activeElement.tagName !== 'textarea') {
           this.submit();
         }
 			}

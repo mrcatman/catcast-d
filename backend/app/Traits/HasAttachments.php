@@ -7,7 +7,7 @@ use App\Models\Attachment;
 trait HasAttachments {
 
     public function attachments() {
-        return $this->hasMany(Attachment::class,'entity_id')->where(['entity_type'=>$this->attachments_entity_type]);
+        return $this->hasMany(Attachment::class,'entity_id')->where(['entity_type' => $this->attachments_entity_type]);
     }
 
     public function updateAttachments($items) {

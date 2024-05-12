@@ -2,7 +2,7 @@
   <div class="comments-panel" :class="{'comments-panel--edit': isEditing}" v-if="visible">
     <div class="comments-panel__inputs">
       <div class="comments-panel__login" v-if="!loggedIn">
-        <nuxt-link class="comments-panel__login__link" :to="'/login?return='+$route.fullPath">{{$t('comments.login_or_register')}}</nuxt-link>{{$t('comments.to_add')}}
+        <nuxt-link class="comments-panel__login__link" :to="'/auth/login?return='+$route.fullPath">{{$t('comments.login_or_register')}}</nuxt-link>{{$t('comments.to_add')}}
       </div>
       <div class="comments-panel__login" v-else-if="!canWrite && !isEditing" v-html="$t('comments.off')"></div>
       <div class="comments-panel__login" v-else-if="ban" v-html="banText"></div>
@@ -11,7 +11,7 @@
       <c-input v-if="showInputs && !fromChannelName" v-model="text" :title="$t('comments.text')" />
     </div>
     <div class="comments-panel__bottom" v-if="showInputs">
-      <attachments-panel @ready="onAttachmentsReady" @error="onAttachmentsError" v-model="attachments" :videos="fromChannelName" :channel-id="fromChannelName ? entityId : null">
+      <attachments-panel @ready="onAttachmentsReady" @error="onAttachmentsError" v-model="attachments" :channel-id="fromChannelName ? entityId : null">
         <div class="comments-panel__buttons" slot="buttons">
           <c-button :loading="loading" v-if="!isEditing" @click="sendComment()" :disabled="text.length === 0">{{$t('comments.send')}}</c-button>
           <c-button :loading="loading" v-else @click="sendEditedComment()" :disabled="text.length === 0">{{$t('comments.save')}}</c-button>

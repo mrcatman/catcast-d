@@ -6,13 +6,12 @@
       </div>
       <div class="attachments-panel__buttons">
         <div class="comments-panel__attachment-buttons">
-          <c-button @click="attachPhoto()" icon="photo" flat>{{$t('comments.attach_picture')}}</c-button>
-          <c-button v-if="videos" @click="videoPanelVisible = true" icon="video_library" flat>{{$t('comments.attach_video')}}</c-button>
+          <c-button @click="attachPicture()" icon="photo" flat>{{$t('comments.attach_picture')}}</c-button>
+          <c-button @click="attachMedia()" icon="video_library" flat>{{$t('comments.attach_video')}}</c-button>
         </div>
       </div>
     </div>
-    <input ref="filepicker" @change="onFileInputChange" type="file" style="display:none"/>
-    <MediaSearchSelect v-if="videoPanelVisible" @close="videoPanelVisible = false" v-model="videoToAdd" :channel-id="channelId"/>
+    <input ref="filepicker" multiple @change="onFileInputChange" type="file" style="display:none"/>
     <div class="attachments-panel__list" :class="{'attachments-panel__list--not-empty': attachments.length > 0}">
       <div :key="attachment.id" v-for="(attachment, $index) in attachments" class="attachments-panel__preview">
         <a @click="attachments.splice($index, 1)" class="attachments-panel__preview__close">
@@ -31,7 +30,7 @@
         </div>
         <img v-if="attachment.data && attachment.data.full_url" :src="attachment.data.full_url" class="attachments-panel__preview__picture"/>
         <img v-else-if="attachment.attachment_type === 'picture'" :ref="attachment.uid" class="attachments-panel__preview__picture"/>
-        <img v-else-if="attachment.attachment_type === 'video'" :src="attachment.data.thumbnail" class="attachments-panel__preview__picture"/>
+        <img v-else-if="attachment.attachment_type === 'media'" :src="attachment.data.thumbnail.full_url" class="attachments-panel__preview__picture"/>
       </div>
     </div>
   </div>
@@ -61,10 +60,9 @@
       position: relative;
       min-width: 2.5em;
       max-width: 25%;
-      background: rgba(0, 0, 0, 0.25);
-      padding: .5em .75em;
-      margin: 0 .5em 0 0;
-      border-radius: .5em;
+      background: var(--darken-2);
+      margin-right: .5em;
+      border-radius: .25em;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -103,8 +101,9 @@
       }
 
       &__picture {
-        max-height: 10em;
-        max-width: 100%;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
 
     }
@@ -122,16 +121,8 @@
 </style>
 <script>
   import MediaSearchSelect from "@/components/MediaSearchSelect.vue";
-  const maxPhotosCount = 3;
+  import {uuid} from "@/helpers/uuid";
 
-  function guid() {
-    function s4() {
-      return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-  }
 
   export default {
     components: {
@@ -141,27 +132,13 @@
       value(newValue) {
         this.attachments = newValue;
       },
-      attachments(newAttachments) {
+      attachments() {
         this.onChange();
       },
-      videoPanelVisible(visible) {
-        if (!visible) {
-          if (this.videoToAdd) {
-            this.attachments.push({
-              attachment_type: 'video',
-              attachment_id: this.videoToAdd.id,
-              data: this.videoToAdd
-            });
-            this.videoToAdd = null;
-          }
-        }
-      }
     },
     data() {
       return {
         attachments: this.value || [],
-        videoPanelVisible: false,
-        videoToAdd: null,
       }
     },
     mounted() {
@@ -180,7 +157,6 @@
     props: {
       channelId: Number,
       value: Array,
-      videos: Boolean,
     },
     methods: {
       onChange() {
@@ -200,6 +176,7 @@
           this.$emit('error');
         }
       },
+
       uploadPicture(picture) {
         return new Promise((resolve, reject) => {
           let fd = new FormData();
@@ -224,26 +201,49 @@
           })
         })
       },
-      attachPhoto() {
+      attachPicture() {
         this.$refs.filepicker.click();
       },
+      attachMedia() {
+        this.$store.commit('modals/showStandardModal', {
+          confirm: true,
+          title: this.$t('comments.attach_video'),
+          text: '',
+          buttonColor: '',
+          buttonText: this.$t('global.add'),
+          component: MediaSearchSelect,
+          props: {},
+          formValues: {},
+          buttonDisabledFn: (mediaSearchInstance) => {
+            return mediaSearchInstance ? !Object.values(mediaSearchInstance.selectedItemIds).filter(selected => !!selected).length : false;
+          },
+          fn: async (data, mediaSearchInstance) => {
+            mediaSearchInstance.selectedItems.forEach(media => {
+              this.attachments.push({
+                attachment_type: 'media',
+                attachment_id: media.id,
+                data: media
+              });
+            })
+          },
+        })
+      },
       onFileInputChange(e) {
-        let files = e.target.files;
-        if (files) {
-          let image = files[0];
-          let re = /(?:\.([^.]+))?$/;
-          let ext = re.exec(image.name)[1];
-          ext = ext.toLowerCase();
-          let extensions = ['png', 'jpg', 'jpeg', 'gif'];
+        const re = /(?:\.([^.]+))?$/;
+        const extensions = ['png', 'jpg', 'jpeg', 'gif'];
+
+        const files = e.target.files;
+        files.forEach(file => {
+          const ext = re.exec(file.name)[1].toLowerCase();
           if (extensions.indexOf(ext) !== -1) {
-            let attachment = {
-              uid: guid(),
+            const attachment = {
+              uid: uuid(),
               attachment_type: 'picture',
               uploaded: false,
               upload_error: null,
               uploading: false,
               loading: true,
-              file: image
+              file
             };
             this.attachments.push(attachment);
             const reader = new FileReader();
@@ -254,9 +254,9 @@
                 this.$emit('update');
               })
             };
-            reader.readAsDataURL(image);
+            reader.readAsDataURL(file);
           }
-        }
+        });
       }
     }
   }

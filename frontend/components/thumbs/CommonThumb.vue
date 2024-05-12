@@ -127,7 +127,6 @@
     height: unset;
     &__inner {
       display: flex;
-      margin-bottom: 1em;
       font-size: .875em;
     }
     &__picture-container {

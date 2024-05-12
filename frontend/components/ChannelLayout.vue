@@ -60,13 +60,16 @@ export default {
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
-
+  color: var(--channel-colors-page-texts);
+  a:not(.button) {
+    color: var(--channel-colors-page-links);
+  }
   &__banner {
     max-width: 100%;
     margin-bottom: 1em;
     width: 100%;
     max-height: 12em;
-    object-fit: cover;
+    object-fit: contain;
   }
 
   &__inner {
@@ -75,11 +78,8 @@ export default {
     align-items: center;
     position: relative;
     z-index: 1;
-    color: var(--channel-colors-page-texts);
   }
-  a:not(.button) {
-    color: var(--channel-colors-page-links);
-  }
+
   &__content {
     overflow: auto;
     overflow-x: hidden;

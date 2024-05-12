@@ -1,8 +1,8 @@
 <template>
   <nuxt-link v-if="data" :to="data.id !== 'index' ? `/directory/${data.id}` : '/'" class="left-sidebar__link">
     <c-tooltip v-if="!sidebarOpened" position="center-right">{{$t(data.heading)}}</c-tooltip>
-    <div v-if="data.icon" class="left-sidebar__link__icon">
-      <c-icon :icon="data.icon"/>
+    <div v-if="data.icon" class="left-sidebar__link__icon-container">
+      <c-icon :icon="data.icon" class="left-sidebar__link__icon"/>
     </div>
     <div class="left-sidebar__link__title">{{$t(data.heading)}}</div>
   </nuxt-link>
@@ -44,10 +44,13 @@ export default {
     margin-left: .5em;
     font-weight: 400;
   }
-  &__icon {
+  &__icon-container {
     padding: 0 1em;
     width: 1.5em;
     height: 1.5em;
+  }
+  &__icon {
+    font-size: 1.5em;
   }
 }
 </style>

@@ -73,19 +73,19 @@
       return {
         sortOptions: [
           {
-            name: this.$t('videos.search.sort.new'),
+            name: this.$t('media.search.sort.new'),
             value: 'new'
           },
           {
-            name: this.$t('videos.search.sort.most_watched'),
+            name: this.$t('media.search.sort.most_watched'),
             value: 'most_watched'
           },
           {
-            name: this.$t('videos.search.sort.best'),
+            name: this.$t('media.search.sort.best'),
             value: 'best'
           },
           {
-            name: this.$t('videos.search.sort.old'),
+            name: this.$t('media.search.sort.old'),
             value: 'old'
           }
         ],

@@ -9,7 +9,7 @@ class Attachment extends Model {
     protected $appends = ['data'];
 
     public const TYPE_PICTURE = 'picture';
-    public const TYPE_VIDEO = 'video';
+    public const TYPE_MEDIA = 'media';
 
     public function getDataAttribute() {
         return $this->relation;
@@ -18,8 +18,8 @@ class Attachment extends Model {
     public function relation() {
         if ($this->attachment_type == self::TYPE_PICTURE) {
            return $this->belongsTo(Picture::class,'attachment_id','id');
-        } else if ($this->attachment_type == self::TYPE_VIDEO) {
-            return $this->belongsTo(Media::class, 'attachment_id','id');
+        } else if ($this->attachment_type == self::TYPE_MEDIA) {
+            return $this->belongsTo(Media::class, 'attachment_id','id')->with(['channel']);
         }
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <input-base class="editor" :inputValue="val" :title="title" :errors="errorsList">
-    <vue-simplemde v-if="val !== null" v-model="val"  />
+    <vue-simplemde :configs="editorConfig" v-model="editorContent" />
   </input-base>
 </template>
 <style lang="scss">
@@ -15,9 +15,10 @@
     background: var(--input-bg-color);
     border: 1px solid var(--input-border-color);
     font-size: 1em;
-
   }
-
+  .CodeMirror, .CodeMirror-scroll {
+    min-height: 5em;
+  }
   .editor-statusbar {
     display: none;
   }
@@ -52,7 +53,12 @@
 </style>
 <script>
 import VueSimplemde from 'vue-simplemde'
-import InputBase from "@/components/global/InputBase";
+import InputBase from '@/components/global/InputBase';
+
+const editorConfig = {
+
+  toolbar: ['bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', 'image'],
+}
 
 export default {
   computed: {
@@ -69,25 +75,25 @@ export default {
     value: String,
     title: String,
   },
+
   watch: {
     value(newVal) {
       this.val = newVal;
     },
-    val(newContent) {
+    val(val) {
+      this.editorContent = val || '';
+    },
+    editorContent(newContent) {
       this.$emit('input', newContent);
     }
   },
   data() {
     return {
-      val: this.value || '',
+      editorContent: this.value || '',
+      val: '',
       formErrors: [],
+      editorConfig
     }
   },
-
-  methods: {
-    onEditorChange({html}) {
-      this.$emit('input', html);
-    }
-  }
 }
 </script>

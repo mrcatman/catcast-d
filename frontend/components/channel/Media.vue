@@ -2,21 +2,20 @@
   <div class="channel-layout__media">
     <media-list :url="`/channels/${channel.id}/media?order=${order}`" :config="{search: true}" >
       <template slot="filters">
-        <c-select :options="orderOptions" v-model="order"></c-select>
+        <c-select :options="orderOptions" v-model="order" />
       </template>
     </media-list>
   </div>
 </template>
-<style lang="scss">
-  .channel-layout{
+<style lang="scss" scoped>
+  .channel-layout {
     &__media {
       width: 100%;
       height: 100%;
-      .media-item__inner {
-        background: rgba(0, 0, 0, 0.25);
-      }
-      .media-item__channel {
-         display: none;
+
+
+      ::v-deep .media-thumb__channel-logo-and-name {
+        display: none;
       }
     }
   }
@@ -29,19 +28,19 @@
         order: 'new',
         orderOptions: [
           {
-            name: this.$t('videos.search.sort.new'),
+            name: this.$t('media.search.sort.new'),
             value: 'new'
           },
           {
-            name: this.$t('videos.search.sort.most_watched'),
+            name: this.$t('media.search.sort.most_watched'),
             value: 'most_watched'
           },
           {
-            name: this.$t('videos.search.sort.best'),
+            name: this.$t('media.search.sort.best'),
             value: 'best'
           },
           {
-            name: this.$t('videos.search.sort.old'),
+            name: this.$t('media.search.sort.old'),
             value: 'old'
           }
         ],

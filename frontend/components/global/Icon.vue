@@ -3,7 +3,7 @@
 </template>
 <style lang="scss" scoped>
 i {
-  font-size: 1.5em;
+
 }
 .material-icons {
   font-family: 'Material Icons';

@@ -242,7 +242,7 @@ class CommentsController extends Controller {
         }
         $comment->text = strip_tags(request()->input('text'));
         if (request()->input('from_channel_name') && request()->filled('title')) {
-            PermissionsHelper::check( ['news'], $comment->channel->id);
+            PermissionsHelper::check( ['news'], $comment->channel);
             $comment->title = request()->input('title', '');
         }
         $comment->save();

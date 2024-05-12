@@ -1,5 +1,5 @@
 <template>
-  <custom-colors class="chat" :colors-scheme="channel.colors_scheme">
+  <custom-colors class="chat" :colors-scheme="channel?.colors_scheme">
     <standard-modal />
 
     <div class="chat__top">
