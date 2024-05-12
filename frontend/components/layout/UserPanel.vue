@@ -13,9 +13,9 @@
 
       <c-popup-menu position="bottom-left">
         <c-popup-menu-item to="/dashboard">{{$t('auth.dashboard')}}</c-popup-menu-item>
-        <c-popup-menu-item @click="themesPanelVisible = true" >{{$t('themes.heading')}}</c-popup-menu-item>
         <c-popup-menu-item :to="`/users/${user.id}`" >{{$t('auth.profile')}}</c-popup-menu-item>
         <c-popup-menu-item to="/user/settings">{{$t('auth.settings')}}</c-popup-menu-item>
+        <c-popup-menu-item v-if="user.is_admin" to="/admin/channels">{{$t('admin.heading')}}</c-popup-menu-item>
         <c-popup-menu-item @click="logout()" >{{$t('auth.logout')}}</c-popup-menu-item>
       </c-popup-menu>
 
@@ -53,7 +53,6 @@
      </div>
    </div>
  </div>
- <ThemesPanel v-if="themesPanelVisible" @close="themesPanelVisible = false" />
 </div>
 </template>
 <style lang="scss">
@@ -217,7 +216,6 @@
 </style>
 <script>
 import { mapState } from 'vuex';
-import ThemesPanel from '@/components/layout/ThemesPanel';
 import NotificationsPanel from '@/components/layout/notifications/NotificationsPanel';
 import SiteSearch from "@/components/layout/SiteSearch";
 
@@ -225,14 +223,12 @@ export default{
   components: {
     SiteSearch,
     NotificationsPanel,
-    ThemesPanel
   },
   computed: mapState('auth', ['loggedIn', 'user']),
   data() {
     return {
       importantTicketModalVisible: true,
       mobilePanelVisible: false,
-      themesPanelVisible: false,
     }
   },
   methods: {

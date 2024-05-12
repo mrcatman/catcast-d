@@ -1,0 +1,24 @@
+
+.table {
+  width: 100%;
+  & thead td {
+    background: var(--title-box-color);
+    font-weight: 600;
+  }
+
+  & td {
+    padding: .5em;
+  }
+
+  & tbody td {
+    background: rgba(255, 255, 255, .025);
+  }
+
+  & tbody tr:nth-child(2n) td {
+    background: rgba(255, 255, 255, .05);
+  }
+
+  & tbody tr:hover td {
+    background: rgba(255, 255, 255, .1);
+  }
+}

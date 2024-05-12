@@ -1,22 +1,22 @@
-@import url("https://fonts.googleapis.com/css?family=Raleway:200,300,500,600,700,900");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:200,300,500,600,700,900");
 @import url("https://fonts.googleapis.com/css2?family=Material+Icons");
 @import url("https://use.fontawesome.com/releases/v6.4.0/css/all.css");
 
-@import "themes/theme-default.scss";
 @import "themes/theme-flat.scss";
-@import "themes/theme-modern.scss";
 
 @import "transitions.scss";
 @import "statistics.scss";
 @import "support-page.scss";
 @import "notifications.scss";
+@import "tables.scss";
+
 html {
   height: 100vh;
 }
 body {
   margin: 0;
   padding: 0;
-  font-family: Raleway, sans-serif;
+  font-family: Montserrat, sans-serif;
   font-weight: 300;
   font-size: 16px;
   scrollbar-color: #eee rgba(0, 0, 0, 0);
@@ -147,30 +147,6 @@ p {
   .infinite-scroll.thumbs-list .thumbs-list__block {
     overflow: auto;
     flex: 1;
-  }
-}
-
-.table {
-  width: 100%;
-  & thead td {
-    background: var(--title-box-color);
-    font-weight: 600;
-  }
-
-  & td {
-    padding: .5em;
-  }
-
-  & tbody td {
-    background: rgba(255, 255, 255, .025);
-  }
-
-  & tbody tr:nth-child(2n) td {
-    background: rgba(255, 255, 255, .05);
-  }
-
-  & tbody tr:hover td {
-    background: rgba(255, 255, 255, .1);
   }
 }
 
