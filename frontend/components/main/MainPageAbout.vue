@@ -193,7 +193,7 @@
       &__block {
         flex: 1;
         text-align: center;
-        border-radius: .5em;
+        border-radius: var(--border-radius);
         padding: 1em;
         background: rgba(4, 27, 43, 0.75);
       }

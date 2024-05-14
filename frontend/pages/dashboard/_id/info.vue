@@ -17,8 +17,6 @@
       </template>
     </c-box>
 
-    <div class="vertical-delimiter"  ></div>
-
     <c-box>
       <template slot="title">
         {{$t('dashboard.info.common.links')}}
@@ -30,8 +28,6 @@
     </c-box>
 
     // todo: channel layout (live/vod/etc)
-
-    <div class="vertical-delimiter"></div>
 
     <c-box>
       <template slot="title">
@@ -51,18 +47,18 @@
       </template>
     </c-box>
     <privacy-settings />
-
-    <c-box>
-      <template slot="title">
-        {{$t('dashboard.info.delete.heading')}}
-      </template>
-      <template slot="main">
-        {{$t('dashboard.info.delete.text')}}
-        <div class="vertical-delimiter"></div>
-        <c-button icon="delete" color="red" @click="deleteChannel()">{{$t('dashboard.info.delete.button_text')}}</c-button>
-      </template>
-    </c-box>
   </c-form>
+  <div class="vertical-delimiter"></div>
+  <c-box>
+    <template slot="title">
+      {{$t('dashboard.info.delete.heading')}}
+    </template>
+    <template slot="main">
+      {{$t('dashboard.info.delete.text')}}
+      <div class="vertical-delimiter"></div>
+      <c-button icon="delete" color="red" @click="deleteChannel()">{{$t('dashboard.info.delete.button_text')}}</c-button>
+    </template>
+  </c-box>
 </div>
 </template>
 <script>

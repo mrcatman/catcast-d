@@ -11,11 +11,10 @@
               <div class="list-item__title">
                 {{props.item.user.username}}
               </div>
-              <span class="list-item__title__sub">
+
+              <div class="list-item__under-title">
                 <span class="dashboard__team__user__position" v-if="props.item.position">{{props.item.position}}</span>
                 <span class="dashboard__team__user__waiting-for-confirmation" v-if="!props.item.confirmed">{{$t('dashboard.team.waiting_for_confirmation')}}</span>
-              </span>
-              <div class="list-item__under-title">
                 <c-tag :key="$index" v-for="(key, $index) in getShortPermissionsList(props.item)">{{key}}</c-tag>
               </div>
             </template>
@@ -157,8 +156,12 @@ export default {
         title: this.$t('dashboard.team.add'),
         buttonColor: '',
         buttonText: this.$t('global.add'),
+        buttonDisabledFn: (componentInstance, formInstance) => {
+          const user = formInstance?.allValues()?.user;
+          return !user || user.username.length === 0;
+        },
         fn: async (values) => {
-          await this.$api.post(`/channels/${this.channel.id}/team/`, values);
+          await this.$api.post(`/channels/${this.channel.id}/team`, values);
           this.$refs.list.load();
         },
       })
@@ -180,8 +183,12 @@ export default {
         title: this.$t('dashboard.team.edit', {username: member.user.username}),
         buttonColor: '',
         buttonText: this.$t('global.save'),
+        buttonDisabledFn: (componentInstance, formInstance) => {
+          const user = formInstance?.allValues()?.user;
+          return !user || user.username.length === 0;
+        },
         fn: async (values) => {
-          await this.$api.post(`/channels/${this.channel.id}/team/`, values);
+          await this.$api.post(`/channels/${this.channel.id}/team`, values);
           this.$refs.list.load();
         },
       })

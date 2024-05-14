@@ -179,7 +179,7 @@
 
     &__view-change__item {
       cursor: pointer;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       padding: .5em .75em;
       margin: 0 .25em;
       &--active {

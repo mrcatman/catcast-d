@@ -3,7 +3,7 @@
        :class="{'picture-uploader--big': big, 'picture-uploader--with-errors': errors && errors.length > 0}">
     <c-input-title>{{title}}</c-input-title>
     <div class="picture-uploader__container">
-      <div class="picture-uploader__element" :class="{'picture-uploader__element--wide': wide}">
+      <div class="picture-uploader__element" :style="proportion ? {width: `calc(7em * ${proportion})`} : ''">
         <c-tooltip-icon icon="fa fa-exclamation-triangle" position="bottom-left" class="picture-uploader__error" v-if="errors && errors.length > 0">
           <div v-for="(error, $index) in errors" :key="$index">
             <c-translated-message :message="error"/>
@@ -14,10 +14,9 @@
         </div>
         <input style="display:none" type="file" ref="fileinput" @change="onFileInputChange"/>
         <c-preloader block v-if="loading"/>
-        <div v-if="!big && val && val.id > 0"
+        <div v-if="val && val.id > 0"
              :style="`background:url(${val.full_url}) no-repeat center center; background-size:contain;`"
-             class="picture-uploader__img"></div>
-        <img v-else-if="val && val.id > 0" :src="val.full_url" class="picture-uploader__img-block"/>
+             class="picture-uploader__image"></div>
       </div>
       <div class="picture-uploader__texts">
         <c-button big @click="fileInputClick()">{{ buttonText || $t('upload.select') }}</c-button>
@@ -38,14 +37,10 @@
     position: relative;
     background: var(--darken-5);
     text-align: center;
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     display: flex;
     align-items: center;
     justify-content: center;
-
-    &--wide {
-      width: 12.4em;
-    }
   }
 
   &__reset {
@@ -71,26 +66,18 @@
   }
 
 
-  &__img {
-    background-size: contain !important;
+  &__image {
+    background-size: contain;
     background-repeat: no-repeat;
     width: 100%;
     height: 100%;
-  }
-
-  &__img-block {
-    max-width: 100%;
-    max-height: 50em;
   }
 
   &__texts {
     margin: .5em 0 0;
   }
 
-
-
   &--big {
-    width: 100%;
     display: block;
   }
 
@@ -132,6 +119,7 @@ export default {
     big: Boolean,
     wide: Boolean,
     folder: String,
+    proportion: Number,
     errors: {
       type: Array,
       required: false,

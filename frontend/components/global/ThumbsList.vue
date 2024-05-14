@@ -250,8 +250,9 @@ export default {
     },
     onConfigChange() {
       if (this.config.innerScroll && !isMobile()) {
+        const margin = 2;
         const top = this.$refs.list.getBoundingClientRect().top;
-        this.$refs.list.style.height = `${window.innerHeight - top}px`;
+        this.$refs.list.style.height = `${window.innerHeight - top - margin}px`;
       } else {
         this.$refs.list.style.height = '';
       }

@@ -103,14 +103,14 @@
   }
 
   &--block &__items {
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     overflow: hidden;
     display: inline-flex;
     font-size: 1.125em;
   }
 
   &--block &__items {
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     overflow: hidden;
     display: inline-flex;
     font-size: 1.125em;

@@ -62,7 +62,7 @@
       max-width: 25%;
       background: var(--darken-2);
       margin-right: .5em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       display: flex;
       align-items: center;
       justify-content: center;

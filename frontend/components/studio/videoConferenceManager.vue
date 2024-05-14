@@ -95,7 +95,7 @@
       display: inline-block;
       background: rgba(255, 255, 255, 0.1);
       padding: .5em 1em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       cursor: pointer;
       transition: all .4s;
       width: calc(50% - 2em);

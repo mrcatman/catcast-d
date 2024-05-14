@@ -61,7 +61,7 @@
 		cursor: pointer;
 		width: 3.5em;
 		height: 1.75em;
-		border-radius: .5em;
+		border-radius: var(--border-radius);
 	}
 	&__title {
 		font-size: 1.25em;

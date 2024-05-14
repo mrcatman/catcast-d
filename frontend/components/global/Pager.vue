@@ -126,7 +126,7 @@ export default {
   align-items: center;
   background: var(--darken-5);
   padding: .5em;
-  border-radius: .25em;
+  border-radius: var(--border-radius);
   &-vertical {
     flex-direction: column;
   }

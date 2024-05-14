@@ -57,7 +57,7 @@
 .rating {
   position: relative;
   padding: .4em .5em;
-  border-radius: .25em;
+  border-radius: var(--border-radius);
 
   &__background {
     background: #fff;

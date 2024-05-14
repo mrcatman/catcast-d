@@ -130,7 +130,7 @@
   }
 
   .theme-modern & {
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     box-shadow: 0 .5em 1.25em -.25em;
     &:hover {
       box-shadow: 0 .5em 1.25em .25em;
@@ -138,7 +138,7 @@
   }
 
   .theme-flat & {
-    border-radius: .25em;
+    border-radius: var(--border-radius);
   }
 
   .theme-modern &--disabled, .theme-modern &--disabled:hover {
@@ -229,7 +229,7 @@ export default {
     }
   },
   mounted() {
-    this.textColor = window.getComputedStyle(this.$refs.content).getPropertyValue('color');
+    //this.textColor = window.getComputedStyle(this.$refs.content).getPropertyValue('color');
     this.loaded = true;
   },
   computed: {

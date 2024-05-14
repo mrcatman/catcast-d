@@ -3,6 +3,7 @@
    <c-form box class="dashboard-page__section" :postData="design" method="put" :url="'/channels/'+channel.id" :useAlerts="true">
      <design-editor v-model="design" :channel="channel" :data="channel"  />
    </c-form>
+   <div class="vertical-delimiter"></div>
    <logos-editor :channel="channel"/>
   </div>
 </template>

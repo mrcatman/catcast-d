@@ -13,7 +13,7 @@
   background: var(--darken-5);
   padding: .5em;
   z-index: 10001;
-  border-radius: .25em;
+  border-radius: var(--border-radius);
   font-size: .875rem;
   font-weight: 500;
   color: var(--text-color);

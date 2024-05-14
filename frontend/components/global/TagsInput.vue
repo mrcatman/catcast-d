@@ -31,7 +31,7 @@
     padding: .25em .5em;
     border: 0;
     font-size: .875em;
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     background: var(--active-color);
     margin: .5em 0 .5em .5em;
 

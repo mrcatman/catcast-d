@@ -34,7 +34,7 @@
       z-index: 1000;
       font-weight: 600;
       padding: .25em .5em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       opacity: .75;
       font-size: .75em;
       &--live {

@@ -15,7 +15,7 @@
     background: var(--channel-colors-inside-panels);
     margin: .5em;
     padding: 0 .5em;
-    border-radius: .5em;
+    border-radius: var(--border-radius);
     font-size: 1.125em;
     font-weight: bold;
   }

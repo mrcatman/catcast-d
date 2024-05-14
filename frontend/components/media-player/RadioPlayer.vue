@@ -208,7 +208,7 @@
       color: var(--channel-colors-inside-buttons) !important;
       cursor: pointer;
       padding: .25em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       transition: all .4s;
       position: relative;
       &--active {
@@ -239,7 +239,7 @@
         font-size: .65em;
         white-space: nowrap;
         padding: .35em .5em;
-        border-radius: .25em;
+        border-radius: var(--border-radius);
         position: absolute;
         top: -2em;
         z-index: 10;

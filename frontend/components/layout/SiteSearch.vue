@@ -166,7 +166,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: .25em;
+        border-radius: var(--border-radius);
         margin: 0 .5em 0 0;
       }
     }

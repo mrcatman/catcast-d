@@ -44,7 +44,7 @@
       background: var(--red);
       font-size: .875em;
       padding: .25em .5em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
     }
   }
 }

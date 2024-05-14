@@ -14,7 +14,7 @@
     flex-wrap: wrap;
   }
   .attachment {
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     overflow: hidden;
     min-width: 10em;
     height: 10em;

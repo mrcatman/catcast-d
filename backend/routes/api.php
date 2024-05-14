@@ -61,7 +61,7 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
     // CHANNELS
     Route::group(['prefix' => 'channels'], function() {
         Route::get('', 'ChannelsController@index');
-        Route::get('{id}/team','ChannelTeamController@getTeamForChannel');
+        Route::get('{id}/team','ChannelTeamController@getForChannel');
         // todo: change
         Route::any('{id}/media', 'MediaController@getForChannel');
 

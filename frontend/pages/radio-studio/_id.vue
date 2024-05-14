@@ -165,7 +165,7 @@
       &__button {
         background: rgba(255, 255, 255, .05);
         padding: .5em 1em;
-        border-radius: .25em;
+        border-radius: var(--border-radius);
         margin: 0 0 0 .5em;
         cursor: pointer;
         transition: all .4s;
@@ -199,7 +199,7 @@
     &__source {
       margin: 1em;
       background: var(--box-color);
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       position: relative;
 
       &__name {
@@ -254,7 +254,7 @@
       }
 
       &__volume {
-        border-radius: .25em;
+        border-radius: var(--border-radius);
         overflow: hidden;
         height: 1em;
         margin: 1em;

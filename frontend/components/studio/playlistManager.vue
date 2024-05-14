@@ -274,7 +274,7 @@
       padding: .5em .5em .25em;
       display: inline-flex;
       align-items: center;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       cursor: pointer;
       &:hover {
         background: rgba(255, 255, 255, .1);

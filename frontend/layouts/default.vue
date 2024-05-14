@@ -2,7 +2,7 @@
   <div id="app" class="theme" :class="'theme-'+currentTheme">
     <main class="main" :class="{'main--sidebar-opened': sidebarOpened}">
       <left-sidebar />
-      <div class="content">
+      <div class="content" ref="content">
         <nuxt/>
       </div>
     </main>
@@ -56,6 +56,11 @@ export default {
   computed: {
     ...mapState('auth', ['loggedIn', 'user']),
     ...mapState(['sidebarOpened', 'currentTheme'])
+  },
+  watch: {
+    $route() {
+      this.$refs.content.scrollTop = 0;
+    }
   },
   mounted() {
     if (this.loggedIn) {

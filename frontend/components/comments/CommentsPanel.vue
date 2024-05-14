@@ -36,7 +36,7 @@
     &__login {
       background: var(--lighten-1);
       padding: 1em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       box-shadow: 0 0.5em 1.5em -0.25em var(--lighten-1);
       &__link {
         text-decoration: none;

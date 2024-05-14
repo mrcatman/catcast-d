@@ -51,7 +51,7 @@ export default{
 	justify-content: space-between;
   z-index: 10000000;
   border-bottom: 1px solid var(--input-border-color);
-  background: var(--sidebar-bg);
+  background: var(--sidebar-color);
 	&__left {
 		display: flex;
 		align-items: center;

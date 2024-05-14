@@ -1256,7 +1256,7 @@
     }
 
     &__scene {
-      border-radius: .5em;
+      border-radius: var(--border-radius);
       margin: 0 .5em 0 0;
       background: var(--title-box-color);
       cursor: pointer;
@@ -1347,7 +1347,7 @@
       &__audio-meter {
         background: var(--input-bg-color);
         height: 1em;
-        border-radius: .25em;
+        border-radius: var(--border-radius);
         overflow: hidden;
 
         &__bar {
@@ -1503,7 +1503,7 @@
           left: .5em;
           font-size: 1.25em;
           cursor: pointer;
-          border-radius: .25em;
+          border-radius: var(--border-radius);
           background: rgba(0, 0, 0, 0.5);
           padding: .5em .5em .25em;
 
@@ -1584,7 +1584,7 @@
       margin: 1em 0 2.5em;
       font-size: .875em;
       padding: 1em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
     }
 
     &__preview {
@@ -1650,7 +1650,7 @@
         background: rgba(255, 255, 255, .05);
         padding: .1em .5em;
         cursor: pointer;
-        border-radius: .25em;
+        border-radius: var(--border-radius);
       }
     }
   }

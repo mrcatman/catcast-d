@@ -16,7 +16,7 @@
     padding: .5em;
     padding-right: 4em;
     background: var(--input-bg-color);
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     border: 1px solid var(--input-border-color);
   }
 

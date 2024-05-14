@@ -11,11 +11,12 @@
   </div>
 </template>
 <script>
-import marked from 'marked';
+import { parseMarkdown } from "@/helpers/markdown";
+
 export default {
   computed: {
     descriptionHTML() {
-      return this.entity.description?.trim().length ? marked.parse(this.entity.description) : this.$t('global.no_description');
+      return this.entity.description?.trim().length ? parseMarkdown(this.entity.description) : this.$t('global.no_description');
     }
   },
   props: {

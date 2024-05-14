@@ -47,7 +47,7 @@
         </template>
       </c-box>
       <div class="dashboard-page__design__mockup-container">
-        <ChannelPageMockup :channel="data" :picturesData="picturesData" />
+        <channel-page-mockup :channel="data" :picturesData="picturesData" />
       </div>
     </div>
 
@@ -90,7 +90,7 @@
         </template>
       </c-box>
       <div class="dashboard-page__design__mockup-container">
-        <PlayerAndChatMockup :channel="data" :picturesData="picturesData" />
+        <player-and-chat-mockup :channel="data" :picturesData="picturesData" />
       </div>
     </div>
   </div>
@@ -105,7 +105,7 @@
       flex-direction: column;
     }
     &__title {
-      width: 50%;
+      width: 100%;
     }
     &__row {
       display: flex;

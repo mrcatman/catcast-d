@@ -27,7 +27,7 @@
               </c-col>
               <c-col mobile-full-width>
                 <c-tags-input v-form-input="'tags'" :title="$t('dashboard.media.tags')"/>
-                <c-picture-uploader big wide :title="$t('dashboard.media.thumbnail')" v-form-input="'thumbnail'"  />
+                <c-picture-uploader big :proportion="16/9" :title="$t('dashboard.media.thumbnail')" v-form-input="'thumbnail'"  />
                 <privacy-status-select v-form-input="'privacy_status'" />
                 <c-select multiple :options="playlistsOptions" :title="$t('dashboard.media.playlists')" v-form-input="'playlist_ids'"/>
                 <privacy-settings can-disable-rating />

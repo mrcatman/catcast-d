@@ -313,7 +313,7 @@ export default  {
       display: block;
       position: relative;
       height: 1.5em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       overflow: hidden;
       width: calc(100% - .75em);
       &__bar {

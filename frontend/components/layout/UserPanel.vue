@@ -76,7 +76,7 @@
       background: var(--red);
       padding: 0 .25em;
       font-size: .75em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       font-weight: 600;
     }
 

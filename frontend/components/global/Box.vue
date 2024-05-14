@@ -111,7 +111,7 @@
 }
 .theme-flat .box {
   border: 1px solid var(--input-border-color);
-  border-radius: .25em;
+  border-radius: var(--border-radius);
   &__header {
     padding: 1em;
     border-bottom: 1px solid var(--input-border-color);

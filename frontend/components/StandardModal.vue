@@ -9,7 +9,7 @@
         </c-form>
       </template>
       <template slot="buttons">
-        <c-button v-if="loadedComponents && standard.confirm" :disabled="standard.buttonDisabledFn ? standard.buttonDisabledFn($refs.custom_component) : false" :color="standard.buttonColor !== null ? standard.buttonColor : 'red'" :loading="loading" @click="save()" >{{standard.buttonText || $t('global.delete')}}</c-button>
+        <c-button v-if="loadedComponents && standard.confirm" :disabled="standard.buttonDisabledFn ? standard.buttonDisabledFn($refs.custom_component, $refs.form) : false" :color="standard.buttonColor !== null ? standard.buttonColor : 'red'" :loading="loading" @click="save()" >{{standard.buttonText || $t('global.delete')}}</c-button>
         <c-button v-if="standard.confirm" flat @click="cancel()" >{{standard.cancelText || $t('global.cancel')}}</c-button>
       </template>
 

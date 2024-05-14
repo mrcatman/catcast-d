@@ -29,7 +29,7 @@ class ChannelTeamController extends Controller {
         ];
     }
 
-    public function getTeamForChannel($channel_id) {
+    public function getForChannel($channel_id) {
         $channel = Channel::findOrFail($channel_id);
 
         $all_types = PermissionsHelper::getAvailableTypeIds();

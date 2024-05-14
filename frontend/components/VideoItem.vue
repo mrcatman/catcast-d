@@ -59,7 +59,7 @@
       opacity: .85;
       padding: .25em .5em;
       background: rgba(0, 0, 0, 0.75);
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       &__text {
         margin: 0 0 0 .5em;
       }

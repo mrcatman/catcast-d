@@ -187,7 +187,7 @@ export default {
     }
 
     &__thumbnail {
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       border: 1px solid var(--channel-colors-inside-buttons);
     }
 

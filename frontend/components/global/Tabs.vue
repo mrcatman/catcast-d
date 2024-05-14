@@ -91,7 +91,7 @@
   &--toggle &__item {
     line-height: 1.75;
     padding: .5em .75em;
-    border-radius: .5em;
+    border-radius: var(--border-radius);
     font-size: 1em;
     border-bottom: 0 !important;
   }

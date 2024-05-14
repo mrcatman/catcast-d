@@ -139,7 +139,7 @@
         height: .75em;
         background: #fff;
         z-index: 100;
-        border-radius: .25em;
+        border-radius: var(--border-radius);
         overflow: hidden;
         opacity: .25;
         transition: opacity .35s;

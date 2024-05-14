@@ -124,7 +124,6 @@ module.exports = {
         component: resolve(__dirname, 'pages/directory/_id.vue'),
         chunkName: 'pages/directory/_id',
       })
-      console.log(routes);
     }
   },
   vue: {

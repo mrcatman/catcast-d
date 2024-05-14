@@ -33,7 +33,7 @@
   transition: all .4s;
   z-index: 10;
   border-right: 1px solid var(--border-color);
-  background: var(--sidebar-bg);
+  background: var(--sidebar-color);
   display: flex;
   flex-direction: column;
 

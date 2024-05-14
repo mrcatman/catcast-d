@@ -47,7 +47,7 @@
       bottom: 1em;
       font-size: .875em;
       padding: .25em .5em;
-      border-radius: .25em;
+      border-radius: var(--border-radius);
       background: var(--darken-3);
     }
 

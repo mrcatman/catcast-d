@@ -87,11 +87,7 @@
     font-size: 1.125em;
     margin-bottom: .25em;
     font-weight: 600;
-    &__sub {
-      margin: -.75em 0 .25em;
-      display: block;
-      font-size: .75em;
-    }
+
   }
   &__under-title {
     margin-top: .5em;
@@ -165,7 +161,7 @@
   &__number {
     background: var(--green);
     padding: .5em 1em;
-    border-radius: .5em;
+    border-radius: var(--border-radius);
   }
 
 

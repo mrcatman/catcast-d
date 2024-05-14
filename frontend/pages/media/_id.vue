@@ -211,7 +211,7 @@ export default {
     background: var(--lighten-1);
     margin: .5em;
     padding: .25em 1em;
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     display: flex;
     align-items: center;
     justify-content: center;

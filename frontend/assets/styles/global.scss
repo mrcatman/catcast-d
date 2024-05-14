@@ -8,15 +8,13 @@
 @import "statistics.scss";
 @import "support-page.scss";
 @import "notifications.scss";
-@import "tables.scss";
-
 html {
   height: 100vh;
 }
 body {
   margin: 0;
   padding: 0;
-  font-family: Montserrat, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 300;
   font-size: 16px;
   scrollbar-color: #eee rgba(0, 0, 0, 0);
@@ -147,6 +145,30 @@ p {
   .infinite-scroll.thumbs-list .thumbs-list__block {
     overflow: auto;
     flex: 1;
+  }
+}
+
+.table {
+  width: 100%;
+  & thead td {
+    background: var(--title-box-color);
+    font-weight: 600;
+  }
+
+  & td {
+    padding: .5em;
+  }
+
+  & tbody td {
+    background: rgba(255, 255, 255, .025);
+  }
+
+  & tbody tr:nth-child(2n) td {
+    background: rgba(255, 255, 255, .05);
+  }
+
+  & tbody tr:hover td {
+    background: rgba(255, 255, 255, .1);
   }
 }
 

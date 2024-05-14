@@ -50,7 +50,7 @@
 
   &__file {
     text-align: center;
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     margin: 0 .5em .5em 0;
     min-width: 7em;
     position: relative;
@@ -92,7 +92,7 @@
     padding: 1em 1em .5em;
     border: 2px solid rgba(255, 255, 255, .1);
     background: var(--box-color);
-    border-radius: .25em;
+    border-radius: var(--border-radius);
     display: flex;
     align-items: center;
     flex-wrap: wrap;

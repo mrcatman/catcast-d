@@ -1,6 +1,6 @@
 <template>
   <div>
-    <c-autocomplete v-form-input="'username'" v-if="!editing" autocomplete-key="id" autocomplete-value="username" url="users/autocomplete"  :title="$t('global.enter_username')" />
+    <c-autocomplete v-form-input="'user'" v-if="!editing" autocomplete-key="id" autocomplete-value="username" url="users/autocomplete"  :title="$t('global.enter_username')" />
 
     <c-radio-buttons v-if="data.permissions && !data.permissions.owner" v-form-input="'permissions.channel_admin'" :values="[
         {name: $t('dashboard.team.user_is_channel_admin'), value: 1},

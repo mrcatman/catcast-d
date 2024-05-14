@@ -102,7 +102,7 @@
           left: 0;
           width: 100%;
           height: 100%;
-          border-radius: .25em;
+          border-radius: var(--border-radius);
           overflow: hidden;
           &__bar {
             background: var(--active-color);
@@ -116,7 +116,7 @@
         margin: 1em;
         background: rgba(0, 0, 0, .25);
         padding: .5em;
-        border-radius: .25em;
+        border-radius: var(--border-radius);
         &--empty {
           min-height: 5em;
         }
@@ -145,7 +145,7 @@
         background: rgba(255, 255, 255, .1);
         padding: .25em;
         margin: 0 .25em 0 0;
-        border-radius: .25em;
+        border-radius: var(--border-radius);
         &--active {
           background: var(--active-color);
         }

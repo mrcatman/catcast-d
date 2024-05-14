@@ -182,7 +182,7 @@
         padding: 1em;
         background: var(--box-element-color);
         margin: 0 0 0 1em;
-        border-radius: .25em;
+        border-radius: var(--border-radius);
         box-shadow: 0 .5em 1em -.5em var(--active-color);
         display: flex;
         flex-direction: column;

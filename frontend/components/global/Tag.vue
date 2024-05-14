@@ -9,7 +9,7 @@
   font-size: .875em;
   margin: .25em 0 0 .5em;
   padding: .25em .5em;
-  border-radius: .25em;
+  border-radius: var(--border-radius);
   text-decoration: none;
   display: inline-flex;
   align-items: center;

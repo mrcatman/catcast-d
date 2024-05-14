@@ -203,7 +203,7 @@
       position: relative;
       background: var(--box-element-color);
       padding: .5em;
-      border-radius: .5em;
+      border-radius: var(--border-radius);
       width: 25em;
       flex: 1;
       margin: 0 .5em;

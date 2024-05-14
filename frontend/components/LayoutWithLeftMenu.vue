@@ -21,7 +21,8 @@
   }
   &__sidebar {
     position: relative;
-    background: var(--box-footer-color);
+    background: var(--second-sidebar-color);
+    border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -36,7 +37,6 @@
       width: 100%;
       min-height: 100%;
       flex: 1;
-      padding: 1em;
       @media screen and (max-width: 768px) {
         min-height: unset;
         padding: 0;

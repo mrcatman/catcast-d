@@ -42,14 +42,14 @@ class LogosController extends Controller {
     }
 
     public function store($channel_id) {
-        PermissionsHelper::check(['edit_info'], $channel_id);
+        $channel = PermissionsHelper::getChannelIfAllowed($channel_id, ['edit_info']);
         $picture = Picture::findOrFail(request()->input('picture_id'));
         $user = auth()->user();
         if ($picture->user_id != $user->id) {
             return CommonResponses::unauthorized();
         }
         $logo = new Logo([
-            'channel_id' => $channel_id,
+            'channel_id' => $channel->id,
             'user_id' => $user->id,
             'is_active' => false,
             'picture_id' => $picture->id
@@ -71,8 +71,7 @@ class LogosController extends Controller {
     }
 
     public function set($channel_id) {
-        PermissionsHelper::check(['edit_info'], $channel_id);
-        $channel = Channel::findOrFail($channel_id);
+        $channel = PermissionsHelper::getChannelIfAllowed($channel_id, ['edit_info']);
         if (request()->input('unset')) {
             Logo::where(['channel_id' => $channel->id])->update(['is_active' => false]);
             return [
