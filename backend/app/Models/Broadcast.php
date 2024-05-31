@@ -3,8 +3,8 @@ namespace App\Models;
 use App\Helpers\ConfigHelper;
 use App\Traits\HasTags;
 use Carbon\Carbon;
-use Composer\Cache;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Parsedown;
 
 class Broadcast extends Model {
