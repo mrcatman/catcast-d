@@ -9,6 +9,8 @@ use App\Models\Tag;
 use App\Models\VideoGridThumbnail;
 use FFMpeg\FFMpeg;
 use FFMpeg\FFProbe;
+use YoutubeDl\Options;
+use YoutubeDl\YoutubeDl;
 
 
 class MediaHelper {
@@ -34,19 +36,20 @@ class MediaHelper {
         return FFProbe::create(self::getFFMpegConfig());
     }
 
-    public static function getExternalInfo($video_url) {
-        $command = 'youtube-dl -J '.$video_url;
-        $output = json_decode(shell_exec($command));
+    public static function getExternalInfo($video_url, $with_formats = false) {
+        $output = json_decode(shell_exec('yt-dlp -J '.$video_url));
         if (!$output) {
-            throw new \Exception('dashboard.videos.errors.external_media_not_found');
+            throw new \Exception('dashboard.media.errors.external_media_not_found');
         }
-
-        //Cache::put('video_'.$data->type.'_'.$data->video_id, json_encode($data), 30);
         $data = [
-            'title' => isset($output->title) ? $output->title : '',
-            'description' => isset($output->description) ? $output->description : '',
-            'thumbnail' => isset($output->thumbnail) ? $output->thumbnail : '',
+            'title' => $output->title ?? '',
+            'description' => $output->description ?? '',
+          //
+            //'thumbnail' => $output->thumbnail ?? '',
         ];
+        if ($with_formats) {
+            $data['formats'] = $output->formats ?? [];
+        }
         return $data;
     }
 

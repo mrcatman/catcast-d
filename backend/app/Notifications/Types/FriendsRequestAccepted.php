@@ -29,7 +29,7 @@ class FriendsRequestAccepted extends BaseNotificationType {
     }
 
     public static function getDisplayName() {
-        return 'notifications.types.users.subtypes.friends_request_accepted.title';
+        return 'notifications.types.users.subtypes.friends_request_accepted.heading';
     }
 
     public static function getEntity() {
@@ -40,29 +40,29 @@ class FriendsRequestAccepted extends BaseNotificationType {
         return $this->data->id;
     }
 
-    public function getLink() {
+    public function getRelativeUrl() {
         return "/users/".$this->me->id."?t=friends";
     }
 
 
     public function toTelegram($notifiable) {
         $url = $this->getFullURL();
-        $content = "*".($this->data->username)."*".LocalizationHelper::translate('notifications.texts.friends_request_accepted.full_title');
+        $content = "*".($this->data->username)."*".LocalizationHelper::translate('notifications.types.friends_request_accepted.full_title');
         return TelegramMessage::create()
             ->to($notifiable->telegram_id)
             ->content($content)
-            ->button(LocalizationHelper::translate("notifications.texts.friends_request_accepted._button_text"), $url);
+            ->button(LocalizationHelper::translate("notifications.types.friends_request_accepted._button_text"), $url);
     }
 
     public function toVK() {
         $url = $this->getFullURL();
-        $content = $this->data->username.LocalizationHelper::translate('notifications.texts.friends_request_accepted.full_title').PHP_EOL.PHP_EOL.$url;
+        $content = $this->data->username.LocalizationHelper::translate('notifications.types.friends_request_accepted.full_title').PHP_EOL.PHP_EOL.$url;
         return (new VKMessage())->content($content);
     }
 
 
     public function toMail($notifiable) {
-        return (new MailMessage)->subject($this->data->username.LocalizationHelper::translate('notifications.texts.friends_request_accepted.full_title'))->view('emails.friends_request_accepted', [
+        return (new MailMessage)->subject($this->data->username.LocalizationHelper::translate('notifications.types.friends_request_accepted.full_title'))->view('emails.friends_request_accepted', [
             'data' => $this->data,
             'url' => $this->getFullURL(),
             'lang' => $this->lang,
@@ -72,7 +72,7 @@ class FriendsRequestAccepted extends BaseNotificationType {
     public function toBroadcast($notifiable) {
       return new BroadcastMessage([
           'notification_type' => 'FriendsRequestAccepted',
-          'title' => 'notifications.texts.friends_request_accepted.title',
+          'title' => 'notifications.types.friends_request_accepted.heading',
           'picture' => $this->data->avatar,
           'text' => $this->data->username,
           'notification_link' => $this->getRelativeURL()

@@ -38,12 +38,12 @@ class PlaylistNewMedia extends BaseNotificationType {
 
 
     public function getTitle() {
-        $text = LocalizationHelper::translate('notifications.texts.new_media.title');
+        $text = LocalizationHelper::translate('notifications.types.new_media.heading');
         $text.= $this->playlist->name;
         return $text;
     }
 
-    public function getLink() {
+    public function getRelativeUrl() {
         return $this->is_radio ? "records/".$this->data->id : "videos/".$this->data->id;
     }
 
@@ -61,11 +61,11 @@ class PlaylistNewMedia extends BaseNotificationType {
 
     public function toTelegram($notifiable) {
         $url = $this->getFullURL();
-        $content = LocalizationHelper::translate('notifications.texts.playlists_new_recording.text_1').' *'.$this->data->channel->name.'* '.LocalizationHelper::translate('notifications.texts.playlists_new_recording.text_2').PHP_EOL.PHP_EOL."*".($this->data->title)."*";
+        $content = LocalizationHelper::translate('notifications.types.playlists_new_recording.text_1').' *'.$this->data->channel->name.'* '.LocalizationHelper::translate('notifications.types.playlists_new_recording.text_2').PHP_EOL.PHP_EOL."*".($this->data->title)."*";
         $message = TelegramFile::create()
             ->to($notifiable->telegram_id)
             ->content($content)
-            ->button($this->is_radio ? LocalizationHelper::translate("notifications.texts.playlists_new_recording._button_text_radio") : LocalizationHelper::translate("notifications.texts.playlists_new_recording._button_text_tv"), $url);
+            ->button($this->is_radio ? LocalizationHelper::translate("notifications.types.playlists_new_recording._button_text_radio") : LocalizationHelper::translate("notifications.types.playlists_new_recording._button_text_tv"), $url);
         if ($this->data->thumbnail) {
             $message->file($this->data->thumbnail, 'photo');
         }
@@ -74,7 +74,7 @@ class PlaylistNewMedia extends BaseNotificationType {
 
     public function toVK() {
         $url = $this->getFullURL();
-        $content = LocalizationHelper::translate('notifications.texts.playlists_new_recording.text_1').' '.$this->data->channel->name.' '.LocalizationHelper::translate('notifications.texts.playlists_new_recording.text_2').PHP_EOL.PHP_EOL.($this->data->title).PHP_EOL.PHP_EOL.$url;
+        $content = LocalizationHelper::translate('notifications.types.playlists_new_recording.text_1').' '.$this->data->channel->name.' '.LocalizationHelper::translate('notifications.types.playlists_new_recording.text_2').PHP_EOL.PHP_EOL.($this->data->title).PHP_EOL.PHP_EOL.$url;
         $message = (new VKMessage())->content($content);
         if ($this->data->thumbnail) {
             $message->picture($this->data->thumbnail);
@@ -86,7 +86,7 @@ class PlaylistNewMedia extends BaseNotificationType {
     {
         return new BroadcastMessage([
             'notification_type' => 'playlistNewRecording',
-            'title' => LocalizationHelper::translate('notifications.texts.playlists_new_recording.title').$this->data->channel->name,
+            'title' => LocalizationHelper::translate('notifications.types.playlists_new_recording.heading').$this->data->channel->name,
             'picture' => $this->data->channel->logo,
             'text' => $this->data->title,
             'translate' => [],

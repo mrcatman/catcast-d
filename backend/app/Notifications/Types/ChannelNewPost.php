@@ -41,7 +41,7 @@ class ChannelNewPost extends BaseNotificationType {
         ]);
     }
 
-    public function getLink() {
+    public function getRelativeUrl() {
         return "/".$this->comment->channel->shortname."?comment_id=".$this->comment->id.'&t=wall';
     }
 

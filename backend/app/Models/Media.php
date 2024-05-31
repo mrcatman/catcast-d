@@ -8,6 +8,7 @@ use App\Models\SettingsModels\Common\PrivacySettingsModel;
 use App\Traits\HasPrivacyStatus;
 use App\Traits\HasSettings;
 use App\Traits\HasTags;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -85,15 +86,7 @@ class Media extends Model {
         });
     }
 
-    public function scopeFromLikedChannels($query) {
-        if ($user = auth()->user()) {
-            $channels = Like::where(['user_id' => $user->id, 'entity_type'=> Channel::getEntityType()])->get()->pluck('entity_id');
-            return $query->whereIn('channel_id', $channels);
-        }
-        return $query;
-    }
-
-    public function scopeFromLikedChannelsAndPlaylists($query) {
+    public function scopeFilterSubscriptions($query) {
         if ($user = auth()->user()) {
             $channel_ids = Like::where(['user_id' => $user->id, 'entity_type' => Channel::getEntityType()])->get()->pluck('entity_id');
             $playlist_ids = Like::where(['user_id' => $user->id, 'entity_type'=> Playlist::getEntityType()])->get()->pluck('entity_id');
@@ -105,6 +98,20 @@ class Media extends Model {
             return $query;
         }
         return $query;
+    }
+
+    public function scopeFilterPopular($query) {
+        return $query->withCount('statisticsSessionsInLastDays')->orderBy('statistics_sessions_in_last_days_count', 'desc');
+    }
+
+    public function statisticsSessions()
+    {
+        return $this->hasMany(StatisticsSession::class, 'entity_id', 'id')->where(['entity_type' => self::getEntityType()]);
+    }
+
+    public function statisticsSessionsInLastDays()
+    {
+        return $this->statisticsSessions()->whereDate('created_at', '>=', Carbon::now()->subDays(5));
     }
 
     public function scopeRecommended($query) {
@@ -119,35 +126,7 @@ class Media extends Model {
         return $query;
     }
 
-    public function scopePopular($query) {
-        $days_count = 7;
-        $time_start = time() - $days_count * 24 * 60 * 60;
-        $query = $query->orderBy('views', 'DESC');
-        $query->where('created_at', '>=', $time_start);
-        return $query;
-    }
-
-
-    public function scopeMostWatched($query) {
-        $query = $query->orderBy('views', 'DESC');
-        return $query;
-    }
-
-    public function scopeMostLiked($query) {
-        $query = $query->orderBy('likes_count', 'DESC');
-        return $query;
-    }
-
-
-    public function scopeNowWatching($query) {
-        $viewed = StatisticsSession::where(['type_name' => $this->statistics_type_name])->orderBy('id', 'desc')->pluck('entity_id')->unique();
-        $viewed = $viewed->toArray();
-        $query = $query->whereIn('id', $viewed);
-        $query = $query->orderByRaw('FIND_IN_SET (id, "'.implode(", ", $viewed).'") DESC');
-        return $query;
-    }
-
-    public function scopefromNotBlockedChannels($query) {
+    public function scopeFromNotBlockedChannels($query) {
         $blocked_channel_ids = Channel::whereNotNull('blocked_at')->pluck('id');
         return $query->whereNotIn('channel_id', $blocked_channel_ids);
     }

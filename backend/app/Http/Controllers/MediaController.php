@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Enums\PrivacyStatuses;
 use App\Helpers\CommonResponses;
+use App\Helpers\FiltersHelper;
 use App\Helpers\RelationsHelper;
 use App\Helpers\PermissionsHelper;
 use App\Helpers\MediaHelper;
-use App\Jobs\DownloadExternalVideo;
+use App\Jobs\DownloadExternalMedia;
+use App\Models\BroadcastCategory;
 use App\Models\Channel;
 use App\Models\Folder;
 use App\Models\Picture;
@@ -169,36 +171,15 @@ class MediaController extends Controller {
 
 
     public function index() {
-        $media = Media::visible();
-        switch (request()->input('show')) {
-            case 'feed':
-               $media = $media->fromLikedChannelsAndPlaylists();
-               break;
-            case 'recommended':
-                $media = $media->recommended();
-                break;
-            case 'now_watching':
-                $media = $media->nowWatching();
-                break;
-            case 'most_liked':
-                $media = $media->mostLiked();
-                break;
-            case 'most_watched':
-                $media = $media->mostWatched();
-                break;
-            default:
-                break;
-        }
-        return MediaHelper::filterAndSort($media);
+        $media = Media::visible()->with('channel:id,name,shortname,channel_type');
+        return FiltersHelper::applyFromRequest($media, Media::class);
     }
-
 
     public function getForChannel($id) {
         $channel = Channel::findOrFail($id);
         $media = Media::where(['channel_id' => $channel->id])->visible();
-        return MediaHelper::filterAndSort($media);
+        return FiltersHelper::applyFromRequest($media, Media::class);
     }
-
 
     public function getInfoByURL() {
         if (auth()->user()) {
@@ -292,8 +273,7 @@ class MediaController extends Controller {
         $data = request()->validate([
             'url' => 'required|url',
         ]);
-        $class = $media->channel->is_radio ? DownloadExternalVideo::class : DownloadExternalVideo::class; // todo: audio
-        $class::dispatch($media, $data['url']);
+        DownloadExternalMedia::dispatch($media, $data['url']);
         return $media;
     }
 

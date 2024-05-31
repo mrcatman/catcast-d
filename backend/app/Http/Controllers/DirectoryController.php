@@ -16,7 +16,7 @@ class DirectoryController extends Controller {
             [
                 'id' => 'index',
                 'entity' => 'directory',
-                'children' => []
+                'children' => $this->indexPage()
             ],
             [
                 'id' => 'channels',
@@ -40,21 +40,25 @@ class DirectoryController extends Controller {
     }
 
     public function menu() {
+        $explore_menu = [
+            [
+                'id' => 'index',
+                'heading' => 'global.home',
+                'icon' => 'fa-home'
+            ],
+
+        ];
+        if (auth()->user()) {
+            $explore_menu[] =  [
+                'id' => 'subscriptions',
+                'heading' => 'global.subscriptions',
+                'icon' => 'subscriptions'
+            ];
+        }
         return [
             [
                 'heading' => 'global.explore',
-                'children' => [
-                    [
-                        'id' => 'index',
-                        'heading' => 'global.home',
-                        'icon' => 'fa-home'
-                    ],
-                    [
-                        'id' => 'subscriptions',
-                        'heading' => 'global.subscriptions',
-                        'icon' => 'subscriptions'
-                    ]
-                ]
+                'children' => $explore_menu
             ],
             [
                 'heading' => 'channels.heading',
@@ -118,6 +122,33 @@ class DirectoryController extends Controller {
             }
         }
         return $directory;
+    }
+
+    private function indexPage()
+    {
+        $online_broadcasts_exist = Broadcast::online()->count() > 0;
+        return [
+            [
+                'entity' => 'welcome'
+            ],
+            $online_broadcasts_exist ? [
+                'id' => '/channels',
+                'entity' => 'channels',
+                'heading' => 'channels.online',
+                'params' => ['show' => 'online'],
+            ] : [
+                'id' => '/channels',
+                'entity' => 'channels',
+                'heading' => 'channels.popular',
+                'params' => ['show' => 'popular'],
+            ],
+            [
+                'id' => '/media',
+                'entity' => 'media',
+                'heading' => 'media.popular',
+                'params' => ['show' => 'popular'],
+            ],
+        ];
     }
 
     private function channels() {

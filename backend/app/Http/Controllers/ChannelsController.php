@@ -133,6 +133,7 @@ class ChannelsController extends Controller {
 
     public function update($id) {
         $channel = Channel::findOrFail($id);
+        PermissionsHelper::checkHasAny($channel);
 
         $validation_rules = [ // todo: unify rules for create and update
             'name' => 'sometimes|required|max:255',
@@ -160,7 +161,6 @@ class ChannelsController extends Controller {
             }
         }
 
-        // todo: error if no permissions
 
         if (PermissionsHelper::getStatus(['edit_info'], $channel)) {
             foreach($data as $key => $value) {
@@ -171,7 +171,6 @@ class ChannelsController extends Controller {
         if (request()->filled('additional_settings')) {
             $channel->additional_settings = request()->input('additional_settings');
             $channel->save();
-
         }
         return $channel;
     }

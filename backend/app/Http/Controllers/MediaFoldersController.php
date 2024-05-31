@@ -5,22 +5,15 @@ namespace App\Http\Controllers;
 use App\Helpers\CommonResponses;
 use App\Helpers\PermissionsHelper;
 use App\Helpers\MediaHelper;
-use App\Models\Channel;
 use App\Models\Folder;
-use App\Models\Playlist;
 use App\Models\Media;
 use App\Models\MediaFolder;
-use Illuminate\Http\Request;
 
 class MediaFoldersController extends Controller {
 
-
-    protected function fillData($folder) {
-        if (!request()->filled('title')) {
-            return CommonResponses::validationError(['title' => ['dashboard.videos.folders.errors.enter_title']]);
-       }
+    private function fillData($folder) {
         $data = request()->validate([
-            'title' => 'sometimes|string',
+            'title' => 'required|string',
             'is_private' => 'sometimes|boolean'
         ]);
         if (isset($data['is_private'])) {
@@ -54,10 +47,10 @@ class MediaFoldersController extends Controller {
 
 
     public function store($channel_id){
-        PermissionsHelper::check(['media'], $channel_id);
+        $channel = PermissionsHelper::getChannelIfAllowed($channel_id, ['media']);
         $folder = new MediaFolder([
             'user_id' => auth()->user()->id,
-            'channel_id' => $channel_id,
+            'channel_id' => $channel->id,
         ]);
         return $this->fillData($folder);
     }
@@ -106,9 +99,9 @@ class MediaFoldersController extends Controller {
         } else {
             $subfolder_ids = MediaHelper::getSubFolders($id);
             MediaFolder::whereIn('id', $subfolder_ids)->delete();
-            $videos = Media::whereIn('folder_id', $subfolder_ids)->get();
-            foreach ($videos as $video) {
-                MediaHelper::deleteVideo($video);
+            $media = Media::whereIn('folder_id', $subfolder_ids)->get();
+            foreach ($media as $media_item) {
+                MediaHelper::deleteMedia($media_item);
             }
         }
         return $folder;

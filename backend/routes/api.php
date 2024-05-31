@@ -206,11 +206,14 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
     Route::get('channels/{id}/playlists/manager', 'PlaylistsController@getForManager');
     Route::get('channels/{id}/playlists/all', 'PlaylistsController@getAllByChannel');
 
-    // Broadcasts
+    // BROADCASTS
     Route::get('channels/{id}/broadcasts', 'BroadcastsController@getByChannel');
     Route::get('channels/{id}/broadcasts/active', 'BroadcastsController@getActive');
     Route::put('channels/{id}/broadcasts/active', 'BroadcastsController@updateActive');
     Route::resource('broadcasts', 'BroadcastsController');
+
+    // LIVE
+    Route::get('live/{id}.m3u8', 'LiveController@stream')->name('live.stream');
 
     // CHAT
     Route::group(['prefix' => 'chat'], function() {
@@ -242,26 +245,13 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
     Route::post('media/{id}/upload', 'MediaController@upload');
     Route::post('media/{id}/upload/external', 'MediaController@externalUpload');
     Route::resource('media','MediaController');
-
     Route::any('media/{id}/related','MediaController@getRelated');
-
     Route::any('media/tags', 'MediaController@getTags');
 
-
-
-    // PREMIUMS
-    Route::any('premiumservices/getForChannel/{id}', 'PremiumServicesController@getForChannel');
-    Route::any('premiumservices/buy', 'PremiumServicesController@buy');
-    Route::any('premiumservices/settings', 'PremiumServicesController@saveSettings');
 
     // PERMISSIONS
     Route::any('permissions/set', 'PermissionsController@set');
 
-    // OVERLAYS
-    Route::any('overlays/getForChannel/{id}', 'OverlaysController@getForChannel');
-    Route::get('overlays/media/getForChannel/{id}', 'OverlaysController@getMediaByChannel');
-    Route::delete('overlays/media/{id}', 'OverlaysController@deleteMedia');
-    Route::resource('overlays', 'OverlaysController');
 
     // STATISTICS
     Route::get('statistics/config/{entity_type}', 'StatisticsController@getConfig');
@@ -309,6 +299,9 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
 
     });
 
+    // SERVER STATISTICS
+    Route::get('nodeinfo/2.0', 'FederationController@nodeinfo');
+
     //ADMINISTRATION
     Route::group(['prefix' => 'admin', 'middleware' => [\App\Http\Middleware\AuthenticateAdmin::class]], function () {
         Route::get('donaterequests', 'AdminController@donateRequests');
@@ -321,6 +314,8 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
         Route::get('servers', 'AdminController@getServers');
         Route::resource('admin/help', 'HelpPagesController');
     });
+
+
 
 });
 
@@ -335,4 +330,3 @@ Route::any('/locales', function () {
         'default' => $default
     ];
 });
-

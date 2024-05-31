@@ -104,14 +104,14 @@ class ProgramIsOnline extends BaseNotificationType {
         $entity_name = $this->getEntityName();
         if ($entity_name) {
             $text = '"' . $entity_name . '" ';
-            $text .= LocalizationHelper::translate('notifications.texts.program_is_online.heading');
+            $text .= LocalizationHelper::translate('notifications.types.program_is_online.heading');
             return $text;
         } else {
             return null;
         }
     }
 
-    public function getLink() {
+    public function getRelativeUrl() {
         return "/".$this->channel->shortname;
     }
 
@@ -127,13 +127,13 @@ class ProgramIsOnline extends BaseNotificationType {
 
     public function toTelegram($notifiable) {
         $url = $this->getFullURL();
-        $content = LocalizationHelper::translate("notifications.texts.program_is_online.text_1")." *".$this->channel->name." *".LocalizationHelper::translate("notifications.texts.program_is_online.text_2");
+        $content = LocalizationHelper::translate("notifications.types.program_is_online.text_1")." *".$this->channel->name." *".LocalizationHelper::translate("notifications.types.program_is_online.text_2");
         $content.=PHP_EOL.PHP_EOL;
         $content.="*".$this->getEntityName()."*";
         $message =  TelegramFile::create()
             ->to($notifiable->telegram_id)
             ->content($content)
-            ->button(LocalizationHelper::translate("notifications.texts.program_is_online._button_text"), $url);
+            ->button(LocalizationHelper::translate("notifications.types.program_is_online._button_text"), $url);
         if ($picture = $this->getPicture()) {
             $message->file($picture, 'photo');
         }
@@ -142,7 +142,7 @@ class ProgramIsOnline extends BaseNotificationType {
 
     public function toVK($notifiable, $connection) {
         $url = $this->getFullURL();
-        $content = LocalizationHelper::translate("notifications.texts.program_is_online.text_1")." ".$this->channel->name." ".LocalizationHelper::translate("notifications.texts.program_is_online.text_2");
+        $content = LocalizationHelper::translate("notifications.types.program_is_online.text_1")." ".$this->channel->name." ".LocalizationHelper::translate("notifications.types.program_is_online.text_2");
         $content.=PHP_EOL.PHP_EOL;
         $content.=$this->getEntityName();
         $content.=PHP_EOL.$url;
@@ -159,7 +159,7 @@ class ProgramIsOnline extends BaseNotificationType {
             'notification_type' => 'ProgramIsOnline',
             'title' => $this->getEntityName(),
             'picture' => $this->channel->logo,
-            'text' => LocalizationHelper::translate('notifications.texts.program_is_online.heading'),
+            'text' => LocalizationHelper::translate('notifications.types.program_is_online.heading'),
             'translate' => [],
             'notification_link' => $this->getRelativeURL()
         ]);

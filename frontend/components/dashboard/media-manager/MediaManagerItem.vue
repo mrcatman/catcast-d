@@ -23,7 +23,7 @@
             {icon: 'thumb_up', value: item.object.likes_count},
             {icon: 'fa-clock', value: item.object.created_at ? formatPublishDate(item.object.created_at, false) : null}
         ]" />
-        <c-tag v-if="uploadError" color="red">{{$t('dashboard.media.upload_error')}}</c-tag>
+        <c-tag v-if="uploadError" color="red">{{$t('dashboard.media.not_uploaded')}}</c-tag>
       </div>
     </template>
     <template slot="buttons" v-if="item.object.id && !config.disableEditing">

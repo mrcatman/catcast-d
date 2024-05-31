@@ -45,6 +45,7 @@ export default {
 	  buttonClass: String,
 	  disabled: Boolean,
 		buttonText: String,
+    successMessage: String,
 		url: String,
 		postData: [Object, Array],
     useAlerts: Boolean,
@@ -160,7 +161,7 @@ export default {
             }
           }).then(response => {
             this.response = response && response.message ? response : {
-              message: 'global.saved'
+              message: this.successMessage || 'global.saved'
             };
             this.$emit('success', response);
             this.$emit('response', response);

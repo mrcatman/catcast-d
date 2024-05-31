@@ -2,40 +2,52 @@
 
 namespace App\Helpers;
 
-use App\Models\Channel;
-use App\Models\Like;
-use App\Models\RadioServer;
 use App\Models\StatisticsSession;
 
+use Carbon\Carbon;
 use GeoIp2\Database\Reader;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class StatisticsHelper {
 
-
+    /**
+     * Get hash from IP address and User-Agent to not store sensitive information in DB
+     * @param string $ip
+     * @param string $user_agent
+     * @return string
+     */
     public static function getDeviceHash($ip, $user_agent) {
         $id = $ip.'_'.$user_agent;
         return sha1($id);
     }
 
+    /**
+     * Get country code from an IP address using a GeoIP database (returns LOC if IP is local or not found)
+     * @param string $ip
+     * @return string
+     */
     public static function getCountryCode($ip) {
         if ($ip == '127.0.0.1') {
-            return 'LOCAL';
+            return 'LOC';
         }
         try {
             $reader = new Reader(storage_path(ConfigHelper::statisticsGeoIPDatabase()));
             $data = $reader->country($ip);
             return $data->country->isoCode;
         } catch (\Exception $e) {
-            return null;
+            return 'LOC';
         }
     }
 
-    public static function increment($entity, $ip = null) {
-        if (!$ip) {
-            $ip = request()->ip();
-        }
-        $user_agent = request()->header('User-Agent');
+    /**
+     * Increment views count for an entity
+     * @param Model $entity
+     * @void
+     */
+    public static function increment($entity) {
+        $ip = request()->ip();
+        $user_agent = request()->header('User-Agent'); // todo: make async
         $hash = self::getDeviceHash($ip, $user_agent);
         $data = [
             'device_hash' => $hash,
@@ -47,11 +59,15 @@ class StatisticsHelper {
         }
 
         $session_duration = ConfigHelper::statisticsSessionDurationSeconds();
+        $view = StatisticsSession::where($data)->orderBy('created_at', 'desc')->first();
 
-        $view = StatisticsSession::where('created_at', '>', time() - $session_duration)->firstOrNew($data);
-        if (!$view->exists) {
+        if (!$view || $view->created_at->lte(Carbon::now()->subSeconds($session_duration))) {
             $entity->views++;
             $entity->save();
+            $view = new StatisticsSession($data);
+            $view->save();
+        } elseif ($view) {
+            $view->updated_at = Carbon::now();
             $view->save();
         }
     }
@@ -176,179 +192,5 @@ class StatisticsHelper {
     }
 
 
-    public static function updateOnlineViewers() {
 
-        $views_data = [];
-        $live = Channel::live()->get();
-        foreach ($live as $channel) {
-            $channel->loadLiveData();
-            if ($channel->viewers > 0) {
-                $views_data[] = [$channel->id, (int)$channel->viewers, time(), true, 0, $channel->progname];
-            }
-
-        };
-
-        $live = Channel::autopilot()->get();
-        foreach ($live as $channel) {
-            $channel->loadAutopilotData();
-            if ($channel->viewers > 0) {
-                $views_data[] = [$channel->id, (int)$channel->viewers, time(), false, 0, $channel->program_name];
-            }
-        };
-
-        $radio_servers = RadioServer::all();
-        foreach ($radio_servers as $server) {
-            $server_ip = $server->ip_address;
-            $server_port = $server->port;
-            $server_address = $server_ip;
-            if ($server_port) {
-                $server_address.= ':'.$server_port;
-            }
-            $listeners = file_get_contents("http://$server_address/status-json.xsl");
-            $listeners = json_decode($listeners);
-            if (isset($listeners->icestats)) {
-                if (isset($listeners->icestats->source)) {
-                    $source = $listeners->icestats->source;
-                    if (is_array($source)) {
-                        foreach ($source as $stream) {
-                            $url_data = explode("/", $stream->listenurl);
-                            $url_data = $url_data[count($url_data) - 1];
-                            $channel_id = (int)explode(".", $url_data)[0];
-                            $views_data[] = [$channel_id, (int)$stream->listeners, time(), false, 0, isset($source['title']) ? $source['title'] : ''];
-                        }
-                    } else {
-                        $url_data = explode("/", $source->listenurl);
-                        $url_data = $url_data[count($url_data) - 1];
-                        $channel_id = (int)explode(".", $url_data)[0];
-                        $views_data[] = [$channel_id, (int)$source->listeners, time(), false, 0, isset($source->title) ? $source->title : ''];
-                    }
-                }
-            }
-        }
-
-        if (request()->filled('debug')) {
-            var_dump($views_data);
-        }
-        $db = new \ClickHouseDB\Client(self::config());
-        $db->database('default');
-        //$db->write("CREATE TABLE default.statistics_online_channels (ChannelId UInt16, ViewersCount UInt16, IsLive UInt8, BroadcasterId UInt16, Date Date DEFAULT toDate(Time), Time DateTime, ProgramName String) ENGINE = MergeTree(Date, (ChannelId, IsLive, BroadcasterId, ProgramName), 8192)");
-
-        $db->insert('statistics_online_channels',
-            $views_data,
-            ['ChannelId', 'ViewersCount', 'Time', 'IsLive', 'BroadcasterId', 'ProgramName']
-        );
-        echo count($views_data)." rows inserted into Clickhouse";
-    }
-
-    public static function getOnlineViewersData($channel_id, $start, $end) {
-        $viewers_data = [];
-        $start_date = date('Y-m-d H:i:s', $start);
-        $end_date = date('Y-m-d H:i:s', $end);
-        $db = new \ClickHouseDB\Client(self::config());
-        $db->database('default');
-        $select = "select ViewersCount, Time, ProgramName, IsLive, BroadcasterId from statistics_online_channels where Time>='$start_date' AND Time<='$end_date' AND ChannelId=$channel_id order by Time ASC";
-        $data = $db->select($select);
-        if (request()->filled('debug')) {
-
-        }
-        foreach ($data->rows() as $row) {
-           $item = [
-               'time' => $row['Time'],
-               'count' => $row['ViewersCount'],
-               'program_name' => $row['ProgramName'],
-               'is_live' => (boolean)$row['IsLive']
-           ];
-           if ($row['IsLive']) {
-               $item['broadcaster_id'] = $row['BroadcasterId'];
-           }
-           $viewers_data[] = $item;
-        }
-        return $viewers_data;
-    }
-
-    public function getLikesData($likes_module_id, $entity_id, $start_time, $end_time) {
-        //$start_time = time() - 86400 * 365 * 3;
-        //$end_time = time();
-        $all_before = Like::where(['entity_type' => $likes_module_id, 'entity_id' => $entity_id])->where('created_at', '<=', $start_time)->get();
-        $rating_before = 0;
-        $likes_before = 0;
-        $dislikes_before = 0;
-        foreach ($all_before as $like) {
-            $rating_before += $like->weight;
-            if ($like->weight > 0) {
-                $likes_before+= $like->weight;
-            } else {
-                $dislikes_before += -1 * $like->weight;
-            }
-        }
-
-        $items_in_interval = Like::where(['entity_type' => $likes_module_id, 'entity_id' => $entity_id])->where('created_at', '>', $start_time)->where('created_at', '<', $end_time)->get();
-
-        $rating_total_data = [];
-        $likes_total_data = [];
-        $dislikes_total_data = [];
-
-        $likes_by_day_data = [];
-        $dislikes_by_day_data = [];
-        $rating_by_day_data = [];
-        $days = (int)ceil(($end_time - $start_time) / 86400);
-        for ($i = 0; $i <= $days; $i++) {
-            $date_ts = $start_time + $i*86400;
-            $date = date('d.m.Y', $date_ts);
-
-            $items_before = $items_in_interval->filter(function($like) use ($date_ts) {
-                return $like->addtime <= $date_ts;
-            });
-
-            $rating_total_data[$date] = $rating_before + $items_before->sum('weight');
-             $likes_total_data[$date] = $likes_before + $items_before->filter(function($like) {
-                return $like->weight > 0;
-            })->sum('weight');
-            $dislikes_total_data[$date] = $dislikes_before + -1 * $items_before->filter(function($like) {
-                return $like->weight < 0;
-            })->sum('weight');
-
-            $likes_by_day_data[$date] = 0;
-            $dislikes_by_day_data[$date] = 0;
-            $rating_by_day_data[$date] = 0;
-        }
-        foreach ($items_in_interval as $like) {
-            $date = date('d.m.Y', $like->addtime);
-            $rating_by_day_data[$date] += $like->weight;
-            if ($like->weight > 0) {
-                $likes_by_day_data[$date] += $like->weight;
-            } else {
-                $dislikes_by_day_data[$date] += -1 * $like->weight;
-            }
-        }
-
-        $all_items =  Like::where(['entity_type' => $likes_module_id, 'entity_id' => $entity_id])->get();
-        $all_rating = $all_items->sum('weight');
-        $all_likes = $all_items->filter(function($like) {
-            return $like->weight > 0;
-        })->sum('weight');
-        $all_dislikes = -1 * $all_items->filter(function($like) {
-            return $like->weight < 0;
-        })->sum('weight');
-        $all_total = count($all_items);
-        return [
-            'by_day' => [
-                'rating' => $rating_by_day_data,
-                'likes' => $likes_by_day_data,
-                'dislikes' => $dislikes_by_day_data
-            ],
-            'total' => [
-                'rating' => $rating_total_data,
-                'likes' => $likes_total_data,
-                'dislikes' => $dislikes_total_data
-            ],
-            'now' => [
-                'rating' => $all_rating,
-                'likes' => $all_likes,
-                'dislikes' => $all_dislikes,
-                'likes_percent' => $all_total > 0 ? $all_likes / $all_total * 100 : 0,
-                'dislikes_percent' => $all_total > 0 ?  $all_dislikes / $all_total * 100 : 0
-            ]
-        ];
-    }
 }

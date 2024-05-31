@@ -15,7 +15,7 @@ class ProcessVideo extends ProcessMedia {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $type = 'video';
-    protected $allowed_codecs = ['h264', 'h265'];
+    protected $allowed_codecs = ['h264', 'h265', 'vp8', 'vp9', 'av1'];
     protected $file_extension = 'mp4';
     protected $dimensions;
 

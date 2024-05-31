@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\CommonResponses;
+use App\Helpers\FiltersHelper;
 use App\Helpers\MediaHelper;
 use App\Helpers\PermissionsHelper;
 use App\Helpers\StatisticsHelper;
@@ -185,7 +186,7 @@ class PlaylistsController extends Controller {
             return response()->json(['message' => 'errors.channel_is_banned'], 403);
         }
 
-        $media = MediaHelper::filterAndSort($playlist->visibleMedia());
+        $media = FiltersHelper::applyFromRequest($playlist->visibleMedia(), Media::class);
         $media->getCollection()->transform(function($media_item) use ($playlist) {
             $media_item->playlist_id = $playlist->uuid;
             $media_item->index_in_playlist = $media_item->pivot->index;

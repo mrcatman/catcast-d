@@ -1,9 +1,9 @@
 <template>
   <div class="site-search">
     <div class="site-search__input-container" @click="showResults">
-      <c-input :loading="loading" v-model="search" :inlinePlaceholder="true" icon="search"></c-input>
+      <c-input :loading="loading" v-model="search" :inlinePlaceholder="true" icon="search" :placeholder="$t('search.placeholder')"></c-input>
       <a v-show="visible" class="site-search__close" @click="closeResults()">
-        <i class="fa fa-times"></i>
+        <c-icon icon="fa-times"/>
       </a>
     </div>
     <div v-show="visible" v-click-outside="hideResults" class="site-search__results">
@@ -74,7 +74,8 @@
 <style lang="scss">
   .site-search {
     position: relative;
-    top: -.125em;
+    max-width: 50em;
+    margin: 0 auto;
     &__results {
       color: var(--text-color);
       position: absolute;
@@ -84,7 +85,6 @@
       background: var(--input-bg-color);
       display: flex;
       background: var(--box-color);
-      box-shadow: 0 0.5em 1em rgba(16, 127, 208, .2);
       &__count {
         display: flex;
         align-items: center;
@@ -228,6 +228,7 @@
 <script>
   import { CancelToken } from "axios"
   import clickOutside from 'vue-click-outside';
+  import {MIN_SEARCH_LENGTH} from "@/constants/search";
   let searchTimeout = null;
 
   export default {
@@ -236,7 +237,7 @@
     },
     computed: {
       searchLink() {
-        return `/${this.type === 'channels' ? 'tv' : this.type}/search?q=${this.search}`;
+        return `/search?q=${this.search}`;
       },
       results() {
         let list = this.searchResponse.data;
@@ -305,7 +306,7 @@
         if (searchTimeout) {
           clearTimeout(searchTimeout);
         }
-        if (this.search.length >= 3) {
+        if (this.search.length >= MIN_SEARCH_LENGTH) {
           this.visible = true;
           this.onSearchChange();
         }
@@ -314,7 +315,7 @@
         if (searchTimeout) {
           clearTimeout(searchTimeout);
         }
-        if (searchVal.length >= 3) {
+        if (searchVal.length >= MIN_SEARCH_LENGTH) {
           this.visible = true;
           searchTimeout = setTimeout(() => {
             this.onSearchChange();
@@ -405,25 +406,8 @@
         this.cancelTokenSource = CancelToken.source();
         this.loading = true;
 
-        let url = '';
-        if (this.type === 'channels') {
-          url = `channels?type=tv&count=5&search=${this.search}`;
-        }
-        if (this.type === 'radio') {
-          url = `channels?type=radio&count=5&search=${this.search}`;
-        }
-        if (this.type === 'videos') {
-          url = `videos?count=5&search=${this.search}`;
-        }
-        if (this.type === 'records') {
-          url = `records?count=5&search=${this.search}`;
-        }
-        if (this.type === 'users') {
-          url = `users?count=5&search=${this.search}`;
-        }
-        if (this.type === 'playlists') {
-          url = `playlists?count=5&search=${this.search}`;
-        }
+        let url = `${this.type}?count=5&search=${this.search}`;
+
 
         this.$api.get(url, {
           axios: {

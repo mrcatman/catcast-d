@@ -22,7 +22,7 @@ class MediaConvertFailEvent implements ShouldBroadcast
     }
 
     public function broadcastOn() {
-        return new PrivateChannel('App.User.'.$this->media->user->id);
+        return new PrivateChannel('App.Dashboard.'.$this->media->channel_id);
     }
 
     public function broadcastAs() {

@@ -3,6 +3,7 @@ namespace App\Models;
 use App\Helpers\ConfigHelper;
 use App\Traits\HasTags;
 use Carbon\Carbon;
+use Composer\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Parsedown;
 
@@ -12,7 +13,7 @@ class Broadcast extends Model {
 
     protected $guarded = [];
     protected $with = ['category', 'user:id,username'];
-    protected $appends = ['playback_url', 'thumbnail_url', 'display_description', 'is_online', 'tags'];
+    protected $appends = ['playback_url', 'thumbnail_url', 'display_description', 'is_online', 'tags', 'viewers'];
     protected $casts = [
         'will_start_at' => 'datetime',
         'will_end_at' => 'datetime',
@@ -40,8 +41,9 @@ class Broadcast extends Model {
         return $this->started_at && !$this->ended_at;
     }
 
-    public function getPlaybackUrlAttribute() {
-        return ConfigHelper::streamsURL().'/live/'.$this->channel_id.'/index.m3u8';
+    public function getPlaybackUrlAttribute() { // todo: change
+        return route('live.stream', $this->channel_id);
+        //return ConfigHelper::streamsURL().'/api/live/'.$this->channel_id.'/index.m3u8';
     }
 
     public function getRtmpUrlAttribute() {
@@ -76,6 +78,18 @@ class Broadcast extends Model {
 
     public function getDisplayDescriptionAttribute() {
         return app()->make(Parsedown::class)->setBreaksEnabled(true)->text($this->description);
+    }
+
+    public function statisticsSessions()
+    {
+        return $this->hasMany(StatisticsSession::class, 'entity_id', 'id')->where(['entity_type' => self::getEntityType()]);
+    }
+
+    public function getViewersAttribute()
+    {
+        return Cache::remember('broadcast-viewers-'.$this->id, 60, function() {
+            return $this->statisticsSessions()->where('updated_at', '>=', Carbon::now()->subMinutes(5))->count();
+        });
     }
 
 }

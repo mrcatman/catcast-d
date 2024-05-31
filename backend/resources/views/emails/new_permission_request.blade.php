@@ -20,8 +20,8 @@
     <tr>
     <tr>
         <td class="email__text">
-            {{ LocalizationHelper::translate("notifications.texts.new_permission_request.text_1") }}
-            <strong>{{$user->username}}</strong> {{ LocalizationHelper::translate("notifications.texts.new_permission_request.text_2") }}
+            {{ LocalizationHelper::translate("notifications.types.new_permission_request.text_1") }}
+            <strong>{{$user->username}}</strong> {{ LocalizationHelper::translate("notifications.types.new_permission_request.text_2") }}
         </td>
     </tr>
     <td>
@@ -39,7 +39,7 @@
     <tr>
         <td class="email__link-container">
             <a target="_blank" class="email__link"
-               href="{{$url}}">  {{ LocalizationHelper::translate("notifications.texts.new_permission_request._button_text") }}</a>
+               href="{{$url}}">  {{ LocalizationHelper::translate("notifications.types.new_permission_request._button_text") }}</a>
         </td>
     </tr>
     <tr>

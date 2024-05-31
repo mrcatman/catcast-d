@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import {mapGetters, mapState} from 'vuex';
 import LeftSidebar from '@/components/layout/left-sidebar/LeftSidebar';
 import TopBar from '@/components/layout/TopBar';
 
@@ -53,13 +53,26 @@ export default {
     OnSiteNotifications,
     Alerts
   },
+  head() {
+    return {
+      titleTemplate(title) {
+        const siteName = this.$store.getters['config/siteName'];
+        if (!title) {
+          return siteName;
+        }
+        return `${title} | ${siteName}`;
+      },
+    }
+  },
   computed: {
     ...mapState('auth', ['loggedIn', 'user']),
     ...mapState(['sidebarOpened', 'currentTheme'])
   },
   watch: {
-    $route() {
-      this.$refs.content.scrollTop = 0;
+    $route(newRoute, oldRoute) {
+      if (newRoute.path !== oldRoute.path) {
+        this.$refs.content.scrollTop = 0;
+      }
     }
   },
   mounted() {

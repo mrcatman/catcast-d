@@ -46,15 +46,15 @@
     "media": {
         "max_simultaneous_uploads": 5,
         "video": {
-            "reencode_all": false,
-            "encode_qualities": [360],
-            "store_original_quality": true,
+            "encode_qualities": [240,360,480],
+            "reencode_original_file": false,
+            "store_original_file": false,
             "enable_hls": true
         },
         "audio": {
-            "reencode_all": false,
             "encode_qualities": [],
-            "store_original_quality": true
+            "reencode_original_file": false,
+            "store_original_file": false
         }
     },
     "statistics": {
@@ -92,6 +92,10 @@
     "bot_public_urls": {
         "telegram": "https://t.me/test",
         "vk": "https://vk.com/test"
+    },
+    "welcome": {
+        "title": "Добро пожаловать на новый узел Catcast!",
+        "description": "Измените это описание в настройках, укажите информацию об узле, его особенностях и т.д."
     }
 }
 

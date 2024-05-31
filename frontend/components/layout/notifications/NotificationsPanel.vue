@@ -76,13 +76,16 @@
     &__heading {
       display: flex;
       align-items: center;
-      padding: 1em;
+      padding: .5em 1em;
       white-space: nowrap;
       border-bottom: 1px solid var(--border-color);
     }
     &__title {
       font-size: 1.125em;
       font-weight: 600;
+    }
+    &__main {
+      font-size: .875em;
     }
     ::v-deep .thumbs-list__heading-container {
       padding: 0;

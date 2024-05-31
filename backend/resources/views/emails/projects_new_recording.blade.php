@@ -3,11 +3,11 @@
     <tr>
         <td class="email__text">
             <p style="text-align: center; font-size: 20px;">
-                {{ LocalizationHelper::translate("notifications.texts.playlists_new_recording.text_1") }}
+                {{ LocalizationHelper::translate("notifications.types.playlists_new_recording.text_1") }}
                 <a href="{{$domain}}/{{$channel->shortname}}?from_notify=mail">
                      <strong>{{$channel->name}}</strong>
                 </a>
-                {{ LocalizationHelper::translate("notifications.texts.playlists_new_recording.text_2") }}
+                {{ LocalizationHelper::translate("notifications.types.playlists_new_recording.text_2") }}
             </p>
         </td>
     </tr>
@@ -23,7 +23,7 @@
     </tr>
     <tr>
         <td class="email__link-container">
-            <a target="_blank" class="email__link" href="{{$url}}">  {{ $is_radio ?  LocalizationHelper::translate("notifications.texts.playlists_new_recording._button_text_radio")  :  LocalizationHelper::translate("notifications.texts.playlists_new_recording._button_text_tv") }}</a>
+            <a target="_blank" class="email__link" href="{{$url}}">  {{ $is_radio ?  LocalizationHelper::translate("notifications.types.playlists_new_recording._button_text_radio")  :  LocalizationHelper::translate("notifications.types.playlists_new_recording._button_text_tv") }}</a>
         </td>
     </tr>
 @endsection

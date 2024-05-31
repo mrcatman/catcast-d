@@ -5,7 +5,6 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "7.1",
         "ext-json": "*",
         "ankitpokhrel/tus-php": "*",
         "erusev/parsedown": "^1.7",
@@ -17,6 +16,7 @@
         "laravel/framework": "^10",
         "laravel/octane": "^2.0",
         "laravel/tinker": "^2.5",
+        "norkunas/youtube-dl-php": "dev-master",
         "php-ffmpeg/php-ffmpeg": "^1.0",
         "php-open-source-saver/jwt-auth": "^2.1"
     },

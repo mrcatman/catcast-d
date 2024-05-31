@@ -33,12 +33,12 @@ class NewPermissionRequest extends BaseNotificationType {
     }
 
     public function getTitle() {
-        $text = LocalizationHelper::translate('notifications.texts.new_permission_request.title');
+        $text = LocalizationHelper::translate('notifications.types.new_permission_request.heading');
         $text.= $this->data->entity_name;
         return $text;
     }
 
-    public function getLink() {
+    public function getRelativeUrl() {
         return '/user/permissions';
     }
 
@@ -56,19 +56,19 @@ class NewPermissionRequest extends BaseNotificationType {
         return TelegramMessage::create()
             ->to($notifiable->telegram_id)
             ->content($content)
-            ->button(LocalizationHelper::translate("notifications.texts.new_permission_request._button_text"), $url);
+            ->button(LocalizationHelper::translate("notifications.types.new_permission_request._button_text"), $url);
     }
 
     public function toVK() {
         $url = $this->getFullURL();
-        $content = LocalizationHelper::translate('notifications.texts.new_permission_request.title').$this->data->entity_name.PHP_EOL.PHP_EOL.$this->data->title.PHP_EOL.$url;
+        $content = LocalizationHelper::translate('notifications.types.new_permission_request.heading').$this->data->entity_name.PHP_EOL.PHP_EOL.$this->data->title.PHP_EOL.$url;
         return (new VKMessage())->content($content);
     }
 
     public function toBroadcast($notifiable) {
         return new BroadcastMessage([
             'notification_type' => 'new_permission_request',
-            'title' => 'notifications.texts.new_permission_request.title',
+            'title' => 'notifications.types.new_permission_request.heading',
             'picture' => "",
             'text' => $this->data->entity_name,
             'translate' => ['title'],

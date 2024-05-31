@@ -1,6 +1,6 @@
 <?php
 
-Route::post('statistics/increment', 'Internal\StatisticsController@increment');
+//Route::post('statistics/increment', 'Internal\StatisticsController@increment');
 
 Route::group(['prefix' => 'stream'], function () {
     Route::post('on-publish', 'Internal\StreamController@onPublish');

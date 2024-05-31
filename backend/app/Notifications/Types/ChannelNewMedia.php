@@ -36,7 +36,7 @@ class ChannelNewMedia extends BaseNotificationType {
     }
 
     public function getTitle() {
-        $text = $this->is_radio ? LocalizationHelper::translate('notifications.texts.channels_new_recording.title_radio') : LocalizationHelper::translate('notifications.texts.channels_new_recording.title_tv');
+        $text = $this->is_radio ? LocalizationHelper::translate('notifications.types.channels_new_recording.heading_radio') : LocalizationHelper::translate('notifications.types.channels_new_recording.heading_tv');
         $text.= $this->data->channel->name;
         return $text;
     }
@@ -51,7 +51,7 @@ class ChannelNewMedia extends BaseNotificationType {
         return $users;
     }
 
-    public function getLink() {
+    public function getRelativeUrl() {
         return 'media/'.$this->data->id;
     }
 
@@ -69,14 +69,14 @@ class ChannelNewMedia extends BaseNotificationType {
     public function toTelegram($notifiable) {
         $url = $this->getFullURL();
         if ($this->is_radio) {
-            $content = LocalizationHelper::translate('notifications.texts.channels_new_recording.text_1_radio').' *'.$this->data->channel->name.'* '.LocalizationHelper::translate('notifications.texts.channels_new_recording.text_2_radio').PHP_EOL.PHP_EOL."*".($this->data->title)."*";
+            $content = LocalizationHelper::translate('notifications.types.channels_new_recording.text_1_radio').' *'.$this->data->channel->name.'* '.LocalizationHelper::translate('notifications.types.channels_new_recording.text_2_radio').PHP_EOL.PHP_EOL."*".($this->data->title)."*";
         } else {
-            $content = LocalizationHelper::translate('notifications.texts.channels_new_recording.text_1_tv').' *'.$this->data->channel->name.'* '.LocalizationHelper::translate('notifications.texts.channels_new_recording.text_2_tv').PHP_EOL.PHP_EOL."*".($this->data->title)."*";
+            $content = LocalizationHelper::translate('notifications.types.channels_new_recording.text_1_tv').' *'.$this->data->channel->name.'* '.LocalizationHelper::translate('notifications.types.channels_new_recording.text_2_tv').PHP_EOL.PHP_EOL."*".($this->data->title)."*";
         }
          $message = TelegramFile::create()
             ->to($notifiable->telegram_id)
             ->content($content)
-            ->button($this->is_radio ?  LocalizationHelper::translate("notifications.texts.channels_new_recording._button_text_radio") : LocalizationHelper::translate("notifications.texts.channels_new_recording._button_text_tv"), $url);
+            ->button($this->is_radio ?  LocalizationHelper::translate("notifications.types.channels_new_recording._button_text_radio") : LocalizationHelper::translate("notifications.types.channels_new_recording._button_text_tv"), $url);
         if ($this->data->thumbnail) {
             $message->file($this->data->thumbnail, 'photo');
         }
@@ -87,9 +87,9 @@ class ChannelNewMedia extends BaseNotificationType {
         $url = $this->getFullURL();
         $content = "";
         if ($this->is_radio) {
-            $content = LocalizationHelper::translate('notifications.texts.channels_new_recording.text_1_radio') . ' ' . $this->data->channel->name . ' ' . LocalizationHelper::translate('notifications.texts.channels_new_recording.text_2_radio') . PHP_EOL . PHP_EOL . ($this->data->title) . PHP_EOL . PHP_EOL . $url;
+            $content = LocalizationHelper::translate('notifications.types.channels_new_recording.text_1_radio') . ' ' . $this->data->channel->name . ' ' . LocalizationHelper::translate('notifications.types.channels_new_recording.text_2_radio') . PHP_EOL . PHP_EOL . ($this->data->title) . PHP_EOL . PHP_EOL . $url;
         } else {
-            $content = LocalizationHelper::translate('notifications.texts.channels_new_recording.text_1_tv') . ' ' . $this->data->channel->name . ' ' . LocalizationHelper::translate('notifications.texts.channels_new_recording.text_2_tv') . PHP_EOL . PHP_EOL . ($this->data->title) . PHP_EOL . PHP_EOL . $url;
+            $content = LocalizationHelper::translate('notifications.types.channels_new_recording.text_1_tv') . ' ' . $this->data->channel->name . ' ' . LocalizationHelper::translate('notifications.types.channels_new_recording.text_2_tv') . PHP_EOL . PHP_EOL . ($this->data->title) . PHP_EOL . PHP_EOL . $url;
         }
         $message = (new VKMessage())->content($content);
         if ($this->data->thumbnail) {
@@ -102,7 +102,7 @@ class ChannelNewMedia extends BaseNotificationType {
     {
         return new BroadcastMessage([
             'notification_type' => 'ChannelNewRecording',
-            'title' => ($this->is_radio ? LocalizationHelper::translate('notifications.texts.channels_new_recording.title_radio') : LocalizationHelper::translate('notifications.texts.channels_new_recording.title_tv')).$this->data->channel->name,
+            'title' => ($this->is_radio ? LocalizationHelper::translate('notifications.types.channels_new_recording.heading_radio') : LocalizationHelper::translate('notifications.types.channels_new_recording.heading_tv')).$this->data->channel->name,
             'picture' => $this->data->channel->logo,
             'text' => $this->data->title,
             'translate' => [],

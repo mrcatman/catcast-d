@@ -79,7 +79,7 @@ export default {
   computed: {
 
     listConfig() {
-      let queryParams = {
+      const queryParams = {
         order: this.order
       };
 
@@ -89,6 +89,7 @@ export default {
       return {
         url: `/channels/${this.channel.id}/media/file-manager`,
         queryParams,
+        itemWidth: 320,
         localStorageKey: 'media_manager_view',
         paginate: true,
         infiniteScroll: true,
@@ -96,6 +97,7 @@ export default {
         search: true,
         innerScroll: true,
         hideNothingFoundBlock: true,
+        noPadding: true
       }
     },
     sortOptions() {

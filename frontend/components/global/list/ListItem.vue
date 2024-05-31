@@ -91,8 +91,6 @@
   }
   &__under-title {
     margin-top: .5em;
-    display: flex;
-    align-items: center;
     line-height: 1.4;
     &--small {
       font-size: .875em;
@@ -168,11 +166,13 @@
   .view-grid & {
     flex-direction: column;
     padding: 1em;
+    border-bottom-width: 0;
     &__left {
       flex-direction: column;
       width: 100%;
     }
     &__picture-container {
+      margin-right: 0;
       width: 100%;
       height: unset;
       padding-top: 60%;

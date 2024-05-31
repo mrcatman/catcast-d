@@ -365,6 +365,7 @@ class CommentsController extends Controller {
         if ($entity_type === 'channels') {
             $entity = $channel = Channel::findOrFail($entity_id);
         } else {
+            // todo: check uuid for media/playlists
             $entity = $this->entity_classes[$entity_type]::findOrFail($entity_id);
             $channel = $entity->channel;
         }

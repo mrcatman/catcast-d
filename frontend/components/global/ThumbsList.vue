@@ -14,7 +14,7 @@
           <slot name="before_filters"></slot>
         </c-col>
         <c-col class="thumbs-list__search" v-if="config.search">
-          <c-input @input="reload()" v-model="search" :placeholder="$t('search.heading')" icon="search" :debounce="true" />
+          <c-input @input="reload()" v-model="search" :placeholder="$t('search.placeholder_section')" icon="search" :debounce="true" />
         </c-col>
 
         <c-col auto-width v-if="$slots.filters">
@@ -76,7 +76,7 @@
     }
   }
   &__inner {
-    padding: 0 1em;
+    padding: 0 .5em;
     display: flex;
     flex-direction: column;
     &--no-padding {
@@ -127,6 +127,9 @@
 
   &__items {
     margin: 0 -.5em;
+    &.view-grid {
+      margin: 0;
+    }
   }
 
 
@@ -250,7 +253,7 @@ export default {
     },
     onConfigChange() {
       if (this.config.innerScroll && !isMobile()) {
-        const margin = 2;
+        const margin = 4;
         const top = this.$refs.list.getBoundingClientRect().top;
         this.$refs.list.style.height = `${window.innerHeight - top - margin}px`;
       } else {

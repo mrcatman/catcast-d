@@ -1,7 +1,8 @@
 <template>
   <div class="directory-view">
     <div class="directory-view__section" v-for="(config, $index) in getConfig">
-      <c-thumbs-list :config="config">
+      <welcome v-if="config.entity === 'welcome'" />
+      <c-thumbs-list :config="config" v-else>
         <template slot="item" slot-scope="props">
           <channel-thumb :data="props.item" v-if="config.entity === 'channels'" />
           <video-thumb :data="props.item" v-else-if="config.entity === 'media'" />
@@ -27,6 +28,7 @@
 import ChannelThumb from "@/components/thumbs/ChannelThumb.vue";
 import VideoThumb from "@/components/thumbs/VideoThumb.vue";
 import CategoryThumb from "@/components/thumbs/CategoryThumb.vue";
+import Welcome from "@/components/index/Welcome.vue";
 
 const baseConfig = {
   view: 'grid'
@@ -39,6 +41,7 @@ const baseItemConfig = {
 
 export default {
   components: {
+    Welcome,
     CategoryThumb,
     VideoThumb,
     ChannelThumb
@@ -55,6 +58,8 @@ export default {
       }
       if (!one) {
         fullConfig.rowsToLoad = config.entity === 'categories' ? 1 : 2;
+      } else {
+        fullConfig.search = true;
       }
       return fullConfig;
     }
@@ -67,7 +72,7 @@ export default {
             ...baseConfig,
             ...this.generateDirectoryConfig(config),
           }
-          fullConfig.expandLink = `/${this.path}/${config.id}`;
+          fullConfig.expandLink = `${config.id && config.id.startsWith('/') ? '/directory' : ''}${this.path}${config.id && config.id.startsWith('/') ? config.id : `/${config.id}`}`;
           return fullConfig;
         });
       } else {

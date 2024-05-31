@@ -45,7 +45,7 @@
     <tr>
         <td class="email__link-container">
             <a target="_blank" class="email__link"
-               href="{{$url}}">  {{ LocalizationHelper::translate("notifications.texts.channels_new_feed_post._button_text") }}</a>
+               href="{{$url}}">  {{ LocalizationHelper::translate("notifications.types.channels_new_feed_post._button_text") }}</a>
         </td>
     </tr>
     <tr>

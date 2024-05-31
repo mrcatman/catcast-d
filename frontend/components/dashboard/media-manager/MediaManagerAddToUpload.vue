@@ -75,7 +75,7 @@ export default  {
               thumbnail: externalMediaData.thumbnail,
               channel_id: this.channel.id,
               folder_id: this.currentFolderId,
-              url: this.externalMedia.url
+              url
             },
             external: true
           })

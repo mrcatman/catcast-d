@@ -1,6 +1,6 @@
 <template>
   <div class="channel-layout__info">
-    <tags-and-links :entity="channel" entity-tags-type="channels" />
+    <tags-and-links :entity="channel" />
   </div>
 </template>
 <style lang="scss">

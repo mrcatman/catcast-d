@@ -121,27 +121,36 @@ class ProcessMedia implements ShouldQueue {
         }
 
         $codec = $streams->first()->get('codec_name');
-        $reencode_all = config('site.media.'.$this->type.'.reencode_all', false);
+        $reencode_original_file = config('site.media.'.$this->type.'.reencode_original_file', false);
+        $store_original_file = config('site.media.'.$this->type.'.store_original_file', false);
 
-        $should_reencode_default_file = !in_array($codec, $this->allowed_codecs) || $reencode_all || $this->media->source_type === Media::SOURCE_TYPE_RECORD;
+        $qualities = config('site.media.' . $this->type . '.encode_qualities', []);
 
-        $qualities = config('site.media.'.$this->type.'.encode_qualities', []);
-        if ($should_reencode_default_file) {
-            $qualities[] = null;
-        }
+        if ($store_original_file) {
+            $should_reencode_original_file = !in_array($codec, $this->allowed_codecs)
+                || $reencode_original_file
+                || $this->media->source_type === Media::SOURCE_TYPE_RECORD;
 
-        foreach ($qualities as $quality) {
-            try {
-                $this->convert($quality);
-            } catch (\Exception $e) {
-
+            if ($should_reencode_original_file) {
+                $qualities[] = null;
+            } else {
+                $storage_paths = $this->getStoragePaths();
+                File::move($this->path_to_uploaded_file, $storage_paths['full_path']);
+                $this->saveFileToDB(null, $storage_paths);
             }
         }
 
-        if (!$should_reencode_default_file) {
-            $storage_paths = $this->getStoragePaths();
-            rename($this->path_to_uploaded_file, $storage_paths['full_path']);
-            $this->saveFileToDB(null, $storage_paths);
+        $default_file_quality = $this->getQualityForDefaultFile();
+        foreach ($qualities as $quality) {
+            if ($quality < $default_file_quality) {
+                try {
+                    $this->convert($quality);
+                } catch (\Exception $e) {}
+            }
+        }
+
+        if (!$store_original_file) {
+            File::delete($this->path_to_uploaded_file);
         }
 
         if (count($this->ready_files) === 0) {
@@ -177,4 +186,8 @@ class ProcessMedia implements ShouldQueue {
 
     }
 
+    protected function getQualityForDefaultFile()
+    {
+        return 0;
+    }
 }

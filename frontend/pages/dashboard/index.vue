@@ -92,7 +92,7 @@ export default {
   },
   head() {
     return {
-      title: this.$t('dashboard.title')
+      title: this.$t('dashboard.heading')
     }
   },
   data() {

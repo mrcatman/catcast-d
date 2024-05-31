@@ -36,9 +36,7 @@
 </template>
 <style lang="scss">
 .dashboard-page__playlists {
-  height: calc(100vh - 3.5em);
-  margin: -1em 0;
-  overflow: hidden;
+
 }
 </style>
 <script>
@@ -65,9 +63,9 @@ export default {
   computed: {
     orderOptions() {
       return [
-        {'name': this.$t('videos.order.new'), 'value': 'new'},
-        {'name': this.$t('videos.order.old'), 'value': 'old'},
-        {'name': this.$t('videos.order.popular'), 'value': 'popular'},
+        {'name': this.$t('media.search.sort.new'), 'value': 'new'},
+        {'name': this.$t('media.search.sort.old'), 'value': 'old'},
+        {'name': this.$t('media.search.sort.popular'), 'value': 'popular'},
       ]
     },
     listConfig() {
@@ -80,6 +78,7 @@ export default {
         search: true,
         innerScroll: true,
         usePreloadingListItem: true,
+        noPadding: true
       }
     }
   },

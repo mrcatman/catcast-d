@@ -44,11 +44,12 @@ class Channel extends Model
     protected $appends = [
         'type_name',
         'is_radio',
+        'links',
         'tags',
         'pictures_data',
         'logo', 'banner', 'background', 'player_background',
         'local_url',
-        'active_broadcast'
+        'active_broadcast',
     ];
 
     protected $guarded = ['user_id', 'views'];

@@ -25,7 +25,7 @@
        <channel-logo-and-name :channel="channel"/>
       </c-col>
     </c-row>
-    <tags-and-links :entity="entity" :entity-tags-type="entityTagsType || entityType" />
+    <tags-and-links :entity="entity"  />
   </div>
 </template>
 <script>
@@ -44,10 +44,6 @@ export default {
     entityType: {
       type: String,
       required: true
-    },
-    entityTagsType: {
-      type: String,
-      required: false
     },
     subscribe: {
       type: Boolean,

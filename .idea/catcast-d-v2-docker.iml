@@ -152,6 +152,8 @@
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/kitloong/laravel-migrations-generator" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/myclabs/php-enum" />
       <excludeFolder url="file://$MODULE_DIR$/backend/vendor/myclabs/deep-copy" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/norkunas/youtube-dl-php" />
+      <excludeFolder url="file://$MODULE_DIR$/backend/vendor/symfony/filesystem" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

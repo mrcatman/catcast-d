@@ -15,6 +15,7 @@ class FiltersHelper {
      * @return Builder
      */
     public static function applyFromRequest(Builder $list, string $model_class) {
+        $list->orderBy('created_at', 'desc');
         if (request()->filled('search')) {
             $list = $list->search(request()->input('search'));
         }

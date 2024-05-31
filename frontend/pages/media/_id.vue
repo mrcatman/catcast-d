@@ -14,7 +14,6 @@
           <channel-entity-top-block
             :entity="media"
             entity-type="media"
-            :entity-tags-type="media.type_name"
             :channel="channel"
             :statistics="statistics"
           />

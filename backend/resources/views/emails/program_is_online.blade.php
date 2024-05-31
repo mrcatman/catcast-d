@@ -19,8 +19,8 @@
     </tr>
     <tr>
         <td class="email__text">
-            {{ LocalizationHelper::translate("notifications.texts.program_is_online.text_1") }}
-            <strong>{{$channel->name}}</strong> {{ LocalizationHelper::translate("notifications.texts.program_is_online.text_2") }}
+            {{ LocalizationHelper::translate("notifications.types.program_is_online.text_1") }}
+            <strong>{{$channel->name}}</strong> {{ LocalizationHelper::translate("notifications.types.program_is_online.text_2") }}
         </td>
     </tr>
     <tr>
@@ -42,7 +42,7 @@
     <tr>
         <td class="email__link-container">
             <a target="_blank" class="email__link"
-               href="{{$url}}">  {{ LocalizationHelper::translate("notifications.texts.program_is_online._button_text") }}</a>
+               href="{{$url}}">  {{ LocalizationHelper::translate("notifications.types.program_is_online._button_text") }}</a>
         </td>
     </tr>
     <tr>

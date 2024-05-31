@@ -114,7 +114,7 @@ class BaseNotificationType extends Notification {
      * @return string
      */
     public function getFullURL() {
-        return ConfigHelper::siteURL().$this->getLink();
+        return ConfigHelper::siteURL().$this->getRelativeUrl();
     }
 
 

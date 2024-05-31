@@ -17,21 +17,23 @@
         <c-form box  method="put" :initial-values="media" :url="`/media/${media.id}`" :use-alerts="true">
           <c-tabs small :data="tabs" v-model="currentTab" v-show="tabs.length > 1" />
           <div v-if="currentTab === 'info'" class="dashboard__media-edit__section">
-            <c-row>
+            <c-row align="start">
+              <c-col mobile-full-width>
+                <div class="dashboard__media-edit__player">
+                  <media-player :media="media" :channel="channel"  />
+                </div>
+                <div class="vertical-delimiter"></div>
+                <c-picture-uploader big :proportion="16/9" :title="$t('dashboard.media.thumbnail')" v-form-input="'thumbnail'"  />
+                <privacy-status-select v-form-input="'privacy_status'" />
+
+              </c-col>
               <c-col mobile-full-width>
                 <c-input :title="$t('dashboard.media.title')" v-form-input="'title'" />
                 <c-text-editor :title="$t('dashboard.media.description')" v-form-input="'description'" />
-                <div class="dashboard__media-edit__player">
-                  <media-player :media="media" :channel="channel" inside-page />
-                </div>
-              </c-col>
-              <c-col mobile-full-width>
                 <c-tags-input v-form-input="'tags'" :title="$t('dashboard.media.tags')"/>
-                <c-picture-uploader big :proportion="16/9" :title="$t('dashboard.media.thumbnail')" v-form-input="'thumbnail'"  />
-                <privacy-status-select v-form-input="'privacy_status'" />
                 <c-select multiple :options="playlistsOptions" :title="$t('dashboard.media.playlists')" v-form-input="'playlist_ids'"/>
                 <privacy-settings can-disable-rating />
-                // todo: audio metadata (maybe)
+                <!-- todo: audio metadata (maybe) -->
               </c-col>
             </c-row>
           </div>
@@ -44,14 +46,23 @@
 
   </div>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
 .dashboard {
   &__media-edit {
     &__section {
-      padding: .5em 1em 0;
+      padding: 1em 1em 0;
     }
     &__player {
-      margin-top: 1em;
+      margin-bottom: 1em;
+      position: relative;
+      padding-top: 60%;
+      ::v-deep .media-player__container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 }

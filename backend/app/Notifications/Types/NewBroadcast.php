@@ -40,13 +40,13 @@ class NewBroadcast extends BaseNotificationType {
     }
 
     public function getTitle() {
-        return LocalizationHelper::translate('notifications.texts.new_broadcast.title_full', [
+        return LocalizationHelper::translate('notifications.types.new_broadcast.heading_full', [
             'channel_name' => $this->broadcast->channel->name,
             'broadcast_title' => $this->broadcast->title,
         ]);
     }
 
-    public function getLink() {
+    public function getRelativeUrl() {
         return "/".$this->broadcast->channel->shortname;
     }
 
@@ -63,19 +63,19 @@ class NewBroadcast extends BaseNotificationType {
         $url = $this->getFullURL();
         $text = "";
         if ($this->is_radio) {
-            $text = LocalizationHelper::translate('notifications.texts.new_broadcast.title_1_radio');
+            $text = LocalizationHelper::translate('notifications.types.new_broadcast.heading_1_radio');
             $text .= '*"' . $this->data->name . '*"';
-            $text .= LocalizationHelper::translate('notifications.texts.new_broadcast.title_2_radio');
+            $text .= LocalizationHelper::translate('notifications.types.new_broadcast.heading_2_radio');
         } else {
-            $text = LocalizationHelper::translate('notifications.texts.new_broadcast.title_1_tv');
+            $text = LocalizationHelper::translate('notifications.types.new_broadcast.heading_1_tv');
             $text .= '*"' . $this->data->name . '*"';
-            $text .= LocalizationHelper::translate('notifications.texts.new_broadcast.title_2_tv');
+            $text .= LocalizationHelper::translate('notifications.types.new_broadcast.heading_2_tv');
         }
         if ($this->program['title'] != '') {
             $text.= PHP_EOL.PHP_EOL;
-            $text.= LocalizationHelper::translate('notifications.texts.new_broadcast.now_broadcasting');
+            $text.= LocalizationHelper::translate('notifications.types.new_broadcast.now_broadcasting');
             if (isset($this->program['user'])) {
-                $text.= "*".$this->program['user']->username."* ".LocalizationHelper::translate('notifications.texts.new_broadcast.user_broadcasts');
+                $text.= "*".$this->program['user']->username."* ".LocalizationHelper::translate('notifications.types.new_broadcast.user_broadcasts');
             }
             $text.= "*".$this->program['title']."*";
         }
@@ -85,7 +85,7 @@ class NewBroadcast extends BaseNotificationType {
         } else {
             $message = TelegramMessage::create();
         }
-        $button_text = $this->is_radio ? LocalizationHelper::translate("notifications.texts.new_broadcast._button_text_radio") : LocalizationHelper::translate("notifications.texts.new_broadcast._button_text_tv");
+        $button_text = $this->is_radio ? LocalizationHelper::translate("notifications.types.new_broadcast._button_text_radio") : LocalizationHelper::translate("notifications.types.new_broadcast._button_text_tv");
         return $message
             ->to($notifiable->telegram_id)
             ->content($text)
@@ -96,19 +96,19 @@ class NewBroadcast extends BaseNotificationType {
         $url = $this->getFullURL();
         $text = "";
         if ($this->is_radio) {
-            $text = LocalizationHelper::translate('notifications.texts.new_broadcast.title_1_radio');
+            $text = LocalizationHelper::translate('notifications.types.new_broadcast.heading_1_radio');
             $text .= '"' . $this->data->name . '"';
-            $text .= LocalizationHelper::translate('notifications.texts.new_broadcast.title_2_radio');
+            $text .= LocalizationHelper::translate('notifications.types.new_broadcast.heading_2_radio');
         } else {
-            $text = LocalizationHelper::translate('notifications.texts.new_broadcast.title_1_tv');
+            $text = LocalizationHelper::translate('notifications.types.new_broadcast.heading_1_tv');
             $text .= '"' . $this->data->name . '"';
-            $text .= LocalizationHelper::translate('notifications.texts.new_broadcast.title_2_tv');
+            $text .= LocalizationHelper::translate('notifications.types.new_broadcast.heading_2_tv');
         }
         if ($this->program['title'] != '') {
             $text.= PHP_EOL.PHP_EOL;
-            $text.= LocalizationHelper::translate('notifications.texts.new_broadcast.now_broadcasting');
+            $text.= LocalizationHelper::translate('notifications.types.new_broadcast.now_broadcasting');
             if (isset($this->program['user'])) {
-                $text.= $this->program['user']->username." ".LocalizationHelper::translate('notifications.texts.new_broadcast.user_broadcasts');
+                $text.= $this->program['user']->username." ".LocalizationHelper::translate('notifications.types.new_broadcast.user_broadcasts');
             }
             $text.= $this->program['title'];
         }

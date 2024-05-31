@@ -1,7 +1,7 @@
 <template>
 <auth-form>
   <template slot="main">
-    <c-form button-class="button--big" :button-text="$t('auth.login_action')"  url="/auth/login" @success="loginSuccess" >
+    <c-form button-class="button--big" :button-text="$t('auth.login_action')"  url="/auth/login" @success="loginSuccess" :success-message="$t('auth.login_success')">
       <c-input v-form-input="'username'" v-form-validate="'required'" :title="$t('auth.username')" />
       <c-input v-form-input="'password'" v-form-validate="'required'" type="password" :title="$t('auth.password')" />
     </c-form>
@@ -43,15 +43,13 @@ export default {
       }
     },
 		async loginSuccess(user) {
-     	this.$store.commit('auth/setUser', user);
-			setTimeout(async() => {
-			  if (this.$route.query && this.$route.query.return) {
-          this.$router.push(this.$route.query.return);
-        } else {
-          this.$router.push(`/users/${user.id}`);
-        }
-			},2500)
-		},
+      this.$store.commit('auth/setUser', user);
+      if (this.$route.query && this.$route.query.return) {
+        this.$router.push(this.$route.query.return);
+      } else {
+        this.$router.push(`/users/${user.id}`);
+      }
+    }
 	}
 }
 </script>
