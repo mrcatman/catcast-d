@@ -42,7 +42,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     working_dir: /backend
-    command: bash -c "npm i chokidar && php artisan octane:start --watch --server=swoole --host=0.0.0.0 --port=4002"
+    command: bash -c "printenv > /etc/environment && service cron start && npm i chokidar && php artisan octane:start --watch --server=swoole --host=0.0.0.0 --port=4002"
     volumes:
       - ./backend:/backend
     env_file:

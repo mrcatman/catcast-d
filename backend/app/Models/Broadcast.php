@@ -55,7 +55,7 @@ class Broadcast extends Model {
     }
 
     public function getThumbnailUrlAttribute() {
-        return ConfigHelper::streamsURL().'/live/thumbnails/'.$this->channel_id.'.png?'.time();
+        return url('thumbnails/'.$this->channel_id.'.png').'?'.time();
     }
 
     public function scopeFinished($query) {

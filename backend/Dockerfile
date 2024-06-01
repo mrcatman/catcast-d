@@ -32,7 +32,6 @@ RUN docker-php-ext-configure intl
 
 WORKDIR /backend
 
-RUN touch crontab.tmp
-RUN echo '* * * * * cd /backend && /usr/local/bin/php artisan schedule:run >> /dev/null 2>&1' >> crontab.tmp
-RUN crontab crontab.tmp
-RUN rm -rf crontab.tmp
+RUN touch /var/log/cron.log
+RUN (crontab -l ; echo "* * * * *  cd /backend && /usr/local/bin/php artisan schedule:run >> /var/log/cron.log") | crontab
+CMD cron && tail -f /var/log/cron.log
