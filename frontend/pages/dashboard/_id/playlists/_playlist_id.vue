@@ -68,7 +68,7 @@
   }
 </style>
 <script>
-  import statisticsBlock from '@/components/statisticsBlock';
+  import statisticsBlock from '@/components/dashboard/statistics/StatisticsViewer.vue';
   import {mapGetters} from 'vuex';
   import DesignEditor from '@/components/dashboard/design/DesignEditor';
   import PlaylistsContentEditor from "@/components/dashboard/playlists/PlaylistsContentEditor";

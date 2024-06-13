@@ -78,6 +78,11 @@ class StatisticsHelper {
     }
 
     private static function getCountChart($base_query, $type, $type_config, $params) {
+        $simultaneous = $type_config['simultaneous'] ?? false;
+        if ($simultaneous) {
+            $params['aggregate'] = false;
+        }
+
         if ($params['aggregate']) {
             $query = $base_query->clone()->where('created_at', '<', $params['start_time']);
             $last_values = [
@@ -99,27 +104,33 @@ class StatisticsHelper {
             ]
         ];
 
-
-        $max_statistics_items_count = 100; //todo: config
+        $max_statistics_items_count = 10000; //todo: config
 
         $statistics_items_count = floor(($params['end_time']->getTimestamp() - $params['start_time']->getTimestamp()) / $params['timespan']['duration']);
         if ($statistics_items_count > $max_statistics_items_count) {
             $statistics_items_count = $max_statistics_items_count;
         }
 
+        $total = 0;
         $time = $params['start_time']->clone();
         for ($i = 0; $i < $statistics_items_count; $i++) {
-            $query = $base_query->clone()->where('created_at', '>=', $time)->where('created_at', '<', $time->clone()->addSeconds($params['timespan']['duration']));
+            $query = $simultaneous ?
+                $base_query->clone()->groupBy('device_hash')->where('created_at', '<=', $time->clone()->addSeconds($params['timespan']['duration']))->where('updated_at', '>=', $time)
+                : $base_query->clone()->where('created_at', '>=', $time)->where('created_at', '<', $time->clone()->addSeconds($params['timespan']['duration']));
 
             $value = self::count($query, $type_config);
+            $total+= $value;
+
             if ($params['aggregate']) {
-                $last_values[$type]+= $value;
+                $last_values[$type] += $value;
                 $value = $last_values[$type];
             }
             $statistics[$type]['values'][] = [
                 'time' => $time->toISOString(),
                 'value' => $value
             ];
+
+
             if (isset($type_config['additional_data'])) {
                 foreach ($type_config['additional_data'] as $additional_type => $additional_config) {
                     $additional_query = $additional_config['where']($query->clone());
@@ -148,9 +159,21 @@ class StatisticsHelper {
             $time->addSeconds($params['timespan']['duration']);
         }
         $statistics = array_values($statistics);
+
+        $average = $statistics_items_count > 0 ? round($total / $statistics_items_count) : 0;
         return [
             'chart_type' => 'line',
-            'chart_data' => $statistics
+            'chart_data' => $statistics,
+            'numbers' => [
+                [
+                    'name' => 'statistics.total',
+                    'value' => $total
+                ],
+                [
+                    'name' => 'statistics.average',
+                    'value' => $average
+                ]
+            ]
         ];
     }
 
@@ -164,17 +187,22 @@ class StatisticsHelper {
         return self::getCountChart($base_query, $type, $type_config, $params);
     }
 
-    public static function getViewsByCountryTable($entity, $entity_type, $type, $type_config, $params) {
-        $views = StatisticsSession::where(['entity_type' => $entity_type, 'entity_id' => $entity->id])
+    public static function getTableByCountry($entity, $entity_type, $type, $type_config, $params)
+    {
+        $views_by_country = StatisticsSession::where(['entity_type' => $type_config['children_entity_type']])->whereIn('entity_id', $type_config['children_entity_ids'][$entity_type]($entity))
             ->where('created_at', '>', $params['start_time'])->where('updated_at', '<=', $params['end_time'])
             ->groupBy('country_code')
             ->select(['country_code', DB::raw('COUNT(*) as count')])
-            ->orderBy('count', 'desc')->get()->map(function($country_data) {
-                return [
-                    $country_data->country_code,
-                    $country_data->count
-                ];
-            });
+            ->orderBy('count', 'desc')->get();
+        $total_views = $views_by_country->sum('count');
+
+        $values = $views_by_country->map(function ($country_data) use ($total_views) {
+            return [
+                $country_data->country_code,
+                $country_data->count,
+                round($country_data->count / $total_views * 100).'%'
+            ];
+        });
         return [
             'chart_type' => 'table',
             'chart_data' => [
@@ -183,9 +211,10 @@ class StatisticsHelper {
                     'name' => $type_config['name'],
                     'headings' => [
                         'statistics.country_name',
-                        'statistics.views'
+                        'statistics.views',
+                        'statistics.percent'
                     ],
-                    'values' => $views
+                    'values' => $values
                 ]
             ]
         ];

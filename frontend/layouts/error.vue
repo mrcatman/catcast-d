@@ -1,5 +1,5 @@
 <template>
-  <c-error-page :data="errorData" v-if="showError" />
+    <c-error-page v-if="showError" :data="errorData" />
 </template>
 <style lang="scss">
   .error-page__outer {
@@ -7,9 +7,11 @@
   }
 </style>
 <script>
+
+
 export default {
   mounted() {
-    if (this.error._error_status === 401) {
+    if (this.error._error_status === 401) { // todo: logout
       return this.$router.replace('/auth/login');
     } else if (this.error._error_status === 403) {
       return this.$router.replace('/');
@@ -31,7 +33,6 @@ export default {
       }
     }
   },
-  layout: 'empty',
   props: {
     error: Object
   }

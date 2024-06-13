@@ -1,6 +1,6 @@
 <template>
   <div class="statistics">
-    <c-preloader v-if="!loadedConfig" />
+    <c-preloader v-if="!loadedConfig"/>
     <div v-else>
       <div class="statistics__top">
         <c-row align="end">
@@ -8,58 +8,45 @@
             <c-tabs v-model="params.timespan" :data="timespans"/>
           </c-col>
           <c-col auto-width>
-            <c-datetime-picker :max-date="today" :enable-time="byHour" :title="$t('statistics.time.start')" v-model="params.start_time"/>
+            <c-datetime-picker :max-date="today" :enable-time="byHour" :title="$t('statistics.time.start')"
+                               v-model="params.start_time"/>
           </c-col>
           <c-col auto-width>
-            <c-datetime-picker :max-date="today" :enable-time="byHour" :title="$t('statistics.time.end')" v-model="params.end_time"/>
+            <c-datetime-picker :max-date="today" :enable-time="byHour" :title="$t('statistics.time.end')"
+                               v-model="params.end_time"/>
           </c-col>
-          <c-col auto-width>
+          <c-col auto-width v-if="!selectedTypeConfig.disable_aggregate">
             <c-checkbox :title="$t('statistics.aggregate')" v-model="params.aggregate"/>
           </c-col>
         </c-row>
       </div>
 
-
-      <c-tabs v-model="type" :data="types"/>
-
-      <div class="statistics__chart-container">
-        <c-preloader block v-show="loading" />
-        <line-chart class="chart statistics__chart" v-if="chartType === 'line'" :colors="colors" :tooltips="tooltips" :labels="labels" :data="data" :display-legend="false" />
-        <table v-else-if="chartType === 'table'" class="table" v-for="table in chartData">
-          <thead>
-          <tr>
-            <td :key="$index" v-for="(col, $index) in table.headings">{{$t(col)}}</td>
-          </tr>
-          </thead>
-          <tbody>
-          <tr :key="$index" v-for="(row, $index) in table.values">
-            <td :key="$index2" v-for="(col, $index2) in row">{{col}}</td>
-          </tr>
-          </tbody>
-        </table>
-
-      </div>
-
-      <c-row justify="center" v-if="chartData.length > 1">
-        <c-col auto-width v-for="chart in chartData" :key="chart.id" >
-          <c-checkbox v-model="enabledCharts[chart.id]" :title="$t(chart.name)" :color="getColor(chart.color)" />
+      <c-row>
+        <c-col auto-width>
+          <c-tabs vertical v-model="type" :data="types"/>
         </c-col>
-      </c-row>
+        <c-col>
+          <div class="statistics__chart-container">
+            <c-preloader block v-show="loading"/>
+            <line-chart class="chart statistics__chart" v-if="chartType === 'line'" :colors="colors"
+                        :tooltips="tooltips" :labels="labels" :data="data" :display-legend="false"/>
+            <statistics-table v-else-if="chartType === 'table'" :chartData="chartData" />
+          </div>
 
-
-      <div class="statistics__inner">
-
-        <div class="statistics__info-container">
-          <div class="statistics-page__chart__data statistics-page__chart__data--horizontal" v-if="type === 'views'">
-            <div class="statistics-page__chart__data__item">
-              <span class="statistics-page__chart__data__title">{{ $t('statistics.views_by_day.total') }}</span>
-              <span class="statistics-page__chart__data__number">test</span>
+          <c-row justify="center" v-if="chartData.length > 1">
+            <c-col auto-width v-for="chart in chartData" :key="chart.id">
+              <c-checkbox v-model="enabledCharts[chart.id]" :title="$t(chart.name)" :color="getColor(chart.color)"/>
+            </c-col>
+          </c-row>
+          <div class="statistics__numbers" v-if="chartNumbers.length">
+            <div class="statistics__number" v-for="(number, $index) in chartNumbers" :key="$index">
+              <div class="statistics__number__title">{{ $t(number.name) }}</div>
+              <div class="statistics__number__value">{{ number.value }}</div>
             </div>
           </div>
-        </div>
-      </div>
+        </c-col>
+      </c-row>
     </div>
-
   </div>
 </template>
 <style lang="scss">
@@ -67,6 +54,7 @@
   &__top {
     margin-bottom: 1em;
   }
+
   &__chart-container {
     position: relative;
     min-height: 10em;
@@ -76,45 +64,50 @@
     margin-top: 1em;
   }
 
-  &__inner {
-    margin: 0;
+  &__numbers {
     display: flex;
-    /*align-items: center;*/
-    background: var(--box-element-color);
-    padding: 2.5em 1em 1em;
+    margin-top: 1em;
   }
+  &__number {
+    margin-right: 2.125em;
 
+    &__title {
+      font-size: 1.125em;
+      font-weight: 400;
+    }
 
-
-  &__info-container {
-    margin: 0 0 0 1em;
-    flex: 1;
+    &__value {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: var(--active-color);
+    }
   }
 }
 </style>
 <script>
 import lineChart from '@/components/dashboard/charts/lineChart.js';
 import doughnutChart from '@/components/dashboard/charts/doughnutChart.js';
+import StatisticsTable from "@/components/dashboard/statistics/StatisticsTable.vue";
 
 export default {
   computed: {
-    filteredchartData() {
+    filteredChartData() {
       return this.chartData.filter(chart => this.enabledCharts[chart.id]);
     },
     byHour() {
       return this.params.timespan === 'hour';
     },
     colors() {
-      return this.filteredchartData.map(chart => this.getColor(chart.color));
+      return this.filteredChartData.map(chart => this.getColor(chart.color));
     },
     data() {
-      return this.filteredchartData.map(chart => chart.values.map(filteredchartData => filteredchartData.value));
+      return this.filteredChartData.map(chart => chart.values.map(statistics => statistics.value));
     },
     tooltips() {
-      return this.filteredchartData.map(chart => this.$t(chart.name));
+      return this.filteredChartData.map(chart => this.$t(chart.name));
     },
     labels() {
-      return this.filteredchartData[0] ? this.filteredchartData[0].values.map(statistics => this.byHour ? new Date(statistics.time).toLocaleString() : new Date(statistics.time).toLocaleDateString()) : [];
+      return this.filteredChartData[0] ? this.filteredChartData[0].values.map(statistics => this.byHour ? new Date(statistics.time).toLocaleString() : new Date(statistics.time).toLocaleDateString()) : [];
     },
     types() {
       return this.config.types ? this.config.types.map(type => {
@@ -131,6 +124,9 @@ export default {
           name: this.$t(timespan.name)
         }
       }) : []
+    },
+    selectedTypeConfig() {
+      return this.config.types.find(type => type.id === this.type).config || {};
     }
   },
   async mounted() {
@@ -173,6 +169,7 @@ export default {
 
       this.chartType = statistics.chart_type;
       this.chartData = statistics.chart_data;
+      this.chartNumbers = statistics.numbers || [];
 
       if (enableCharts) {
         this.enabledCharts = {};
@@ -200,8 +197,11 @@ export default {
       },
       type: null,
       loading: true,
+
       chartType: 'line',
       chartData: [],
+      chartNumbers: [],
+
       enabledCharts: {}
     }
   },
@@ -217,6 +217,7 @@ export default {
 
   },
   components: {
+    StatisticsTable,
     lineChart,
     doughnutChart
   }

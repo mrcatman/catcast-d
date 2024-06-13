@@ -23,7 +23,7 @@
             {icon: 'thumb_up', value: item.object.likes_count},
             {icon: 'fa-clock', value: item.object.created_at ? formatPublishDate(item.object.created_at, false) : null}
         ]" />
-        <c-tag v-if="uploadError" color="red">{{$t('dashboard.media.not_uploaded')}}</c-tag>
+        <c-tag v-if="uploadError" color="red" class="media-manager__item__not-uploaded">{{$t('dashboard.media.not_uploaded')}}</c-tag>
       </div>
     </template>
     <template slot="buttons" v-if="item.object.id && !config.disableEditing">
@@ -43,7 +43,6 @@
   </c-list-item>
 </template>
 <script>
-import {mapGetters} from 'vuex';
 import {formatPublishDate} from '@/helpers/dates';
 import {bytesToFileSize} from "@/helpers/file-size";
 import ChannelLogoAndName from "@/components/ChannelLogoAndName.vue";
@@ -123,14 +122,17 @@ export default {
 .media-manager {
   &__item {
     user-select: none;
-    cursor: pointer;
+    cursor: default;
     &--clickable {
-
+      cursor: pointer;
     }
     &--selected {
       background: var(--lighten-2);
     }
-
+    &__not-uploaded {
+      margin-top: .5em!important;
+      font-size: .75em;
+    }
     &__select {
       position: absolute;
       top: -.25em;

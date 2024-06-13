@@ -11,7 +11,7 @@
 </div>
 </template>
 <script>
-  import statisticsBlock from "@/components/statisticsBlock.vue";
+  import statisticsBlock from "@/components/dashboard/statistics/StatisticsViewer.vue";
   export default {
     head() {
       return {

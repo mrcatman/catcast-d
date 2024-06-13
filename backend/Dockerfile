@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
+    libbrotli-dev \
     libwebp-dev \
     zlib1g-dev  \
     git \

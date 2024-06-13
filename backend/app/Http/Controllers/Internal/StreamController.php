@@ -113,6 +113,7 @@ class StreamController extends Controller {
 
         $media = new Media([
             'title' => $broadcast->title,
+            'broadcast_id' => $broadcast->id,
             'uuid' => (new NanoidClient())->generateId(),
             'media_type' => Media::TYPE_VIDEO,
             'source_type' => Media::SOURCE_TYPE_RECORD,

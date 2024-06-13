@@ -65,8 +65,6 @@ class ChannelsController extends Controller {
             ], 403);
         }
         if (!request()->has('do_not_count_stat')) {
-            $channel->today_views++;
-            $channel->save();
             StatisticsHelper::increment($channel);
         }
         $channel->append('additional_settings');

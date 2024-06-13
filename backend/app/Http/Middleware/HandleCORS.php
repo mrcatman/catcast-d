@@ -10,28 +10,23 @@ class HandleCORS
 
     public function handle(Request $request, Closure $next) {
         $response = $next($request);
-        $referer = request()->headers->get('referer');
-        $is_tus = strpos(request()->fullUrl(), '/tus') !== false;
-        if ($is_tus) {
-            $response->headers->set('Access-Control-Allow-Origin', "*");
-            return $response;
-        }
-        if ($referer) {
-            $parsed =  parse_url($referer);
-            $host = $parsed['host'];
+        if (app()->environment('local')) {
+            $referer = request()->headers->get('referer');
 
-            if (isset($parsed['port'])) {
-                $host = $host.":".$parsed['port'];
+            if ($referer) {
+                $parsed = parse_url($referer);
+                $host = $parsed['host'];
+                if (str_starts_with($host, 'localhost')) {
+                    if (isset($parsed['port'])) {
+                        $host = $host . ":" . $parsed['port'];
+                    }
+                    $response->header('Access-Control-Allow-Origin', "http://" . $host)
+                        ->header('Access-Control-Allow-Credentials', 'true')
+                        ->header('Access-Control-Allow-Methods', 'PUT,POST,DELETE,GET,HEAD,OPTIONS')
+                        ->header('Access-Control-Allow-Headers', 'X-Timezone-Offset,Accept,Authorization,Content-Type,X-XSRF-Token');
+                }
             }
-            $protocol = strpos($host, 'localhost') !== false ? 'http' : 'https';
-            $response->header('Access-Control-Allow-Origin', $protocol . "://" . $host);
-            $response->header('Access-Control-Allow-Credentials', 'true');
-        } else {
-           $response->header('Access-Control-Allow-Origin', "*");
         }
-        $response->header('Access-Control-Allow-Methods',"PUT,POST,DELETE,GET,HEAD,OPTIONS")
-            ->header('Access-Control-Allow-Headers',"X-Timezone-Offset,Accept,Authorization,Content-Type,X-XSRF-Token")
-            ->header('Access-Control-Expose-Headers', 'Location');
         return $response;
     }
 

@@ -1145,33 +1145,18 @@
         "dislikes": "Дизлайки",
         "subscribers": "Подписчики",
         "comments": "Комментарии",
+        "broadcasts_viewers": "Зрители трансляций",
         "media_views": "Просмотры медиа",
-        "countries": "По странам",
+        "broadcasts_viewers_by_country": "Зрители трансляций по странам",
+        "media_views_by_country": "Просмотры медиа по странам",
         "country_name": "Страна",
-        "aggregate": "Показывать суммарное значение",
+        "aggregate": "Общее значение",
+        "percent": "Процент",
+        "total": "Всего за выбранный промежуток",
+        "average": "Среднее значение",
         "timespans": {
             "hour": "По часам",
             "day": "По дням"
-        },
-        "realtime": {
-            "heading": "Зрители в реальном времени",
-            "heading_radio": "Слушатели в реальном времени",
-            "total": "Всего"
-        },
-
-        "online": {
-            "heading": "Зрители трансляций",
-            "heading_radio": "Слушатели"
-        },
-        "tabs": {
-            "likes": "Рейтинг",
-            "views": "Просмотры"
-        },
-        "labels": {
-            "rating": "Общий рейтинг",
-            "likes": "Лайки",
-            "dislikes": "Дизлайки",
-            "views": "Просмотры"
         }
     },
     "scheduler": {

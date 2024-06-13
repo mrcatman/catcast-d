@@ -27,7 +27,9 @@ class LiveController extends Controller {
             return $line;
         }, $contents);
 
-        StatisticsHelper::increment($channel->activeBroadcast);
+        if ($channel->activeBroadcast) {
+            StatisticsHelper::increment($channel->activeBroadcast);
+        }
         return implode(PHP_EOL, $contents);
     }
 

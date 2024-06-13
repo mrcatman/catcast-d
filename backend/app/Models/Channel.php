@@ -56,7 +56,7 @@ class Channel extends Model
     protected $hidden = ['private_key', 'stream_password'];
     protected $with = ['pictures'];
     public $casts = [
-        'last_online_at' => 'date'
+        'last_online_at' => 'datetime'
     ];
 
     protected $pictures_fields = ['logo', 'banner', 'background', 'player_background'];

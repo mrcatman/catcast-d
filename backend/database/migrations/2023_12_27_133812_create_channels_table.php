@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('domain')->nullable();
             $table->string('colors_scheme', 512)->nullable();
             $table->integer('broadcast_id')->nullable();
-            $table->integer('today_views')->default(0);
             $table->integer('views')->default(0);
             $table->integer('channel_type')->default(0);
             $table->integer('likes_count')->default(0);

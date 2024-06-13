@@ -72,7 +72,7 @@ export default {
             ...baseConfig,
             ...this.generateDirectoryConfig(config),
           }
-          fullConfig.expandLink = `${config.id && config.id.startsWith('/') ? '/directory' : ''}${this.path}${config.id && config.id.startsWith('/') ? config.id : `/${config.id}`}`;
+          fullConfig.expandLink = `${!this.path.length ? '/directory' : '/'}${this.path}${config.id && config.id.startsWith('/') ? config.id : `/${config.id}`}`;
           return fullConfig;
         });
       } else {

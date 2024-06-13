@@ -71,7 +71,7 @@
   import MediaPlayer from "@/components/media-player/MediaPlayer";
   import PrivacyStatusSelect from "@/components/dashboard/common/PrivacyStatusSelect";
   import PrivacySettings from "@/components/dashboard/common/PrivacySettings.vue";
-  import statisticsBlock from "@/components/statisticsBlock.vue";
+  import statisticsBlock from "@/components/dashboard/statistics/StatisticsViewer.vue";
   export default {
     computed: {
       playlistsOptions() {

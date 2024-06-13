@@ -37,11 +37,14 @@ class BroadcastsController extends Controller{
         $broadcasts = $broadcasts->paginate(request()->input('count', 10));
 
         $full_permissions = PermissionsHelper::getStatus(['live_broadcast'], $channel);
+        $has_statistics_permissions = PermissionsHelper::getStatus(['statistics'],$channel);
+
         $user = auth()->user();
         if ($user) {
-            $broadcasts->getCollection()->transform(function ($broadcast) use ($user, $full_permissions) {
+            $broadcasts->getCollection()->transform(function ($broadcast) use ($user, $full_permissions, $has_statistics_permissions) {
                 $broadcast->can_delete = $full_permissions || $broadcast->user_id == $user->id;
-                $broadcast->can_edit = $broadcast->can_delete && !$broadcast->ended_at;
+                $broadcast->can_edit = $full_permissions || $broadcast->user_id == $user->id;
+                $broadcast->can_view_statistics = $has_statistics_permissions && $broadcast->can_edit;
                 return $broadcast;
             });
         }
@@ -50,12 +53,14 @@ class BroadcastsController extends Controller{
 
     public function getActive($channel_id) {
         $channel = Channel::findOrFail($channel_id);
-        $data = $channel->activeBroadcast ?: $channel->additional_settings['default_broadcast_metadata'];
-        $data['is_online'] = !!$channel->activeBroadcast;
+        $active_broadcast = $channel->activeBroadcast;
+        $data = $active_broadcast ?: $channel->additional_settings['default_broadcast_metadata'];
+        $data['is_online'] = !!$active_broadcast;
 
-        if (!$channel->activeBroadcast && $data['category_id']) {
+        if (!$active_broadcast && $data['category_id']) {
             $data['category'] = BroadcastCategory::find($data['category_id']);
         }
+        $data['can_edit'] = PermissionsHelper::getStatus(['live_broadcast'], $channel, $active_broadcast);
         return $data;
     }
 
