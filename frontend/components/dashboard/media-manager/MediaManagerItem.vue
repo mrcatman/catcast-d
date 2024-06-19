@@ -3,7 +3,7 @@
                @click.native="onItemClick"
                :to="!config.disableLinks ? link : null"
                :class="classes"
-               :length="item.object.length"
+               :duration="item.object.length"
                :showPicturePlaceholder="item.object.type_name === 'video'"
                :picture="item.object.thumbnail ? item.object.thumbnail.full_url : null"
                :icon="item.is_back || item.is_folder ? 'fa-folder' : null"
@@ -17,12 +17,7 @@
       </div>
       <div class="list-item__under-title">
         <channel-logo-and-name class="media-manager__item__channel" v-if="config.showChannel && item.object.channel" :channel="item.object.channel" />
-        <c-statistics-icons :data="[
-            {icon: 'fa-file', value: item.object.total_files_size ? bytesToFileSize(item.object.total_files_size) : null},
-            {icon: item.object.type_name === 'video' ? 'remove_red_eye' : 'headphones', value: item.object.views},
-            {icon: 'thumb_up', value: item.object.likes_count},
-            {icon: 'fa-clock', value: item.object.created_at ? formatPublishDate(item.object.created_at, false) : null}
-        ]" />
+        <c-statistics-icons :data="metadata" />
         <c-tag v-if="uploadError" color="red" class="media-manager__item__not-uploaded">{{$t('dashboard.media.not_uploaded')}}</c-tag>
       </div>
     </template>
@@ -43,7 +38,7 @@
   </c-list-item>
 </template>
 <script>
-import {formatPublishDate} from '@/helpers/dates';
+import {formatDuration, formatPublishDate} from '@/helpers/dates';
 import {bytesToFileSize} from "@/helpers/file-size";
 import ChannelLogoAndName from "@/components/ChannelLogoAndName.vue";
 
@@ -63,6 +58,18 @@ export default {
     }
   },
   computed: {
+    metadata() {
+      const metadata = [
+        {icon: 'fa-file', value: this.item.object.total_files_size ? bytesToFileSize(this.item.object.total_files_size) : null},
+        {icon: this.item.object.type_name === 'video' ? 'remove_red_eye' : 'headphones', value: this.item.object.views},
+        {icon: 'thumb_up', value: this.item.object.likes_count},
+        {icon: 'fa-clock', value: this.item.object.created_at ? formatPublishDate(this.item.object.created_at, false) : null},
+      ]
+      if (this.item.object.duration) {
+        metadata.push({icon: 'fa-clock', value: formatDuration(this.item.object.duration)});
+      }
+      return metadata;
+    },
     uploadError() {
       return !this.item.is_folder && !this.item.object.files?.length;
     },

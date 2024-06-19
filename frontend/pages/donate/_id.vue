@@ -56,7 +56,7 @@
 </template>
 
 <script>
-  import donatesForm from '@/components/donatesForm';
+  import donatesForm from '@/unused/donatesForm.vue';
   export default {
     layout: 'empty',
     components: {

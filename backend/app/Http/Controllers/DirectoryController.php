@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\CommonResponses;
 use App\Models\Broadcast;
-use App\Models\BroadcastCategory;
+use App\Models\Category;
 use App\Models\Channel;
 
 class DirectoryController extends Controller {
@@ -126,7 +126,7 @@ class DirectoryController extends Controller {
 
     private function indexPage()
     {
-        $online_broadcasts_exist = Broadcast::online()->count() > 0;
+        $online_broadcasts_exist = Broadcast::filterOnline()->count() > 0;
         return [
             [
                 'entity' => 'welcome'
@@ -152,7 +152,7 @@ class DirectoryController extends Controller {
     }
 
     private function channels() {
-        $online_broadcasts_exist = Broadcast::online()->count() > 0;
+        $online_broadcasts_exist = Broadcast::filterOnline()->count() > 0;
         return [
             [
                 'id' => 'online',
@@ -266,7 +266,7 @@ class DirectoryController extends Controller {
     }
 
     public function category($url) {
-        $category = BroadcastCategory::where(['url' => $url])->orWhere(['id' => $url])->firstOrFail();
+        $category = Category::where(['url' => $url])->orWhere(['id' => $url])->firstOrFail();
         return [
             'heading' => $category->name,
             'category' => $category,

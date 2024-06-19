@@ -13,7 +13,7 @@
     computed: {
       listConfig() {
         return {
-          url: `channels/${this.channel.id}/broadcasts?type=planned`,
+          url: `channels/${this.channel.id}/broadcasts?show=planned`,
           view: 'list',
           paginate: true,
           infiniteScroll: true,

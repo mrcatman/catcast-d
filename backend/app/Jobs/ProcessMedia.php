@@ -141,6 +141,7 @@ class ProcessMedia implements ShouldQueue {
         }
 
         $default_file_quality = $this->getQualityForDefaultFile();
+
         foreach ($qualities as $quality) {
             if ($quality < $default_file_quality) {
                 try {

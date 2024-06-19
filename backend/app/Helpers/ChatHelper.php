@@ -73,7 +73,7 @@ class ChatHelper {
         $my_permissions = PermissionsHelper::getForChannel($channel);
         $user_permissions = PermissionsHelper::getForChannel($channel, $user_to_ban);
         return (
-            (in_array('channel_admin', $my_permissions) && !(in_array('channel_admin', $my_permissions)))
+            (in_array('channel_admin', $my_permissions) && !(in_array('channel_admin', $user_permissions)))
             || in_array('admin', $my_permissions)
             || in_array('owner', $my_permissions)
             || (in_array('moderation', $my_permissions) && count($user_permissions) == 0)

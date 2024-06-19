@@ -31,7 +31,7 @@
     </div>
 
     <div class="thumbs-list__inner" :class="{'thumbs-list__inner--no-padding': config.noPadding}" ref="itemsList">
-      <div class="thumbs-list__items-container" :is="config.infiniteScroll ? 'c-infinite-scroll' : 'div'" :loading="loading" @scroll="loadMore" @scrollToTop="loadPrevious">
+      <div class="thumbs-list__items-container" :is="config.infiniteScroll ? 'c-infinite-scroll' : 'div'" :loading="loading && loadedInitial" @scroll="loadMore" @scrollToTop="loadPrevious">
         <c-dynamic-row class="thumbs-list__items" :class="viewClasses" :itemWidth="config.itemWidth" ref="dynamic_row">
           <div v-if="!loadedInitial" v-for="$i in lastItemsCount" :key="$i" class="thumbs-list__item">
             <preloading-list-item v-if="config.usePreloadingListItem" />
@@ -253,7 +253,7 @@ export default {
     },
     onConfigChange() {
       if (this.config.innerScroll && !isMobile()) {
-        const margin = 4;
+        const margin = 36;
         const top = this.$refs.list.getBoundingClientRect().top;
         this.$refs.list.style.height = `${window.innerHeight - top - margin}px`;
       } else {

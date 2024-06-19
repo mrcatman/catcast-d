@@ -44,7 +44,7 @@
         }
     },
     "media": {
-        "max_simultaneous_uploads": 5,
+        "max_simultaneous_uploads": 2,
         "video": {
             "encode_qualities": [240,360,480],
             "reencode_original_file": false,

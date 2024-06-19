@@ -37,6 +37,7 @@
       width: 100%;
       min-height: 100%;
       flex: 1;
+      padding: 1em;
       @media screen and (max-width: 768px) {
         min-height: unset;
         padding: 0;

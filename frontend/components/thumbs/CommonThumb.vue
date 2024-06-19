@@ -7,7 +7,7 @@
           <slot name="inside_picture"></slot>
         </div>
       </div>
-      <div class="thumb__bottom">
+      <div class="thumb__bottom" v-if="logo || $slots.texts || $slots.list_texts">
         <div class="thumb__texts-container">
           <div class="thumb__logo" v-if="logo" :style="{backgroundImage: `url(${logo}`}"></div>
           <div class="thumb__texts">

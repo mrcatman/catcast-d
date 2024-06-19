@@ -3,7 +3,7 @@ namespace App\Models;
 use App\Traits\HasPictures;
 use Illuminate\Database\Eloquent\Model;
 
-class BroadcastCategory extends Model {
+class Category extends Model {
 
     use HasPictures;
 
@@ -16,7 +16,7 @@ class BroadcastCategory extends Model {
     public $pictures_fields = ['picture'];
 
     public static function getEntityType() {
-        return 'broadcast_categories';
+        return 'categories';
     }
 
 
@@ -29,7 +29,7 @@ class BroadcastCategory extends Model {
     }
 
     public function scopeFilterPopularOnline($query) {
-        return $query->withCount('online_broadcasts')->orderBy('online_broadcasts_count', 'desc');
+        return $query->whereHas('online_broadcasts')->withCount('online_broadcasts')->orderBy('online_broadcasts_count', 'desc');
     }
 
     public function broadcasts() {
@@ -37,7 +37,7 @@ class BroadcastCategory extends Model {
     }
 
     public function online_broadcasts() {
-        return $this->broadcasts()->online();
+        return $this->broadcasts()->filterOnline();
     }
 
     public function getPictureAttribute() {

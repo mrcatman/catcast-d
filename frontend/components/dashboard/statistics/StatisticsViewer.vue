@@ -2,30 +2,28 @@
   <div class="statistics">
     <c-preloader v-if="!loadedConfig"/>
     <div v-else>
-      <div class="statistics__top">
-        <c-row align="end">
-          <c-col auto-width>
-            <c-tabs v-model="params.timespan" :data="timespans"/>
-          </c-col>
-          <c-col auto-width>
-            <c-datetime-picker :max-date="today" :enable-time="byHour" :title="$t('statistics.time.start')"
-                               v-model="params.start_time"/>
-          </c-col>
-          <c-col auto-width>
-            <c-datetime-picker :max-date="today" :enable-time="byHour" :title="$t('statistics.time.end')"
-                               v-model="params.end_time"/>
-          </c-col>
-          <c-col auto-width v-if="!selectedTypeConfig.disable_aggregate">
-            <c-checkbox :title="$t('statistics.aggregate')" v-model="params.aggregate"/>
-          </c-col>
-        </c-row>
-      </div>
 
-      <c-row>
+      <c-row align="start">
         <c-col auto-width>
           <c-tabs vertical v-model="type" :data="types"/>
         </c-col>
         <c-col>
+          <c-row align="end">
+            <c-col auto-width v-show="timespans.length">
+              <c-select v-model="params.timespan" :options="timespans"  :title="$t('statistics.timespan')" />
+            </c-col>
+            <c-col auto-width>
+              <c-datetime-picker :min-date="minStartTime" :max-date="maxStartTime" :enable-time="enableTime" :title="$t('statistics.time.start')"
+                                 v-model="params.start_time"/>
+            </c-col>
+            <c-col auto-width>
+              <c-datetime-picker :min-date="minEndTime" :max-date="maxEndTime" :enable-time="enableTime" :title="$t('statistics.time.end')"
+                                 v-model="params.end_time"/>
+            </c-col>
+            <c-col auto-width v-if="!selectedTypeConfig.disable_aggregate">
+              <c-checkbox :title="$t('statistics.aggregate')" v-model="params.aggregate"/>
+            </c-col>
+          </c-row>
           <div class="statistics__chart-container">
             <c-preloader block v-show="loading"/>
             <line-chart class="chart statistics__chart" v-if="chartType === 'line'" :colors="colors"
@@ -91,11 +89,23 @@ import StatisticsTable from "@/components/dashboard/statistics/StatisticsTable.v
 
 export default {
   computed: {
+    minStartTime() {
+      return this.timeLimits.start_time;
+    },
+    minEndTime() {
+      return this.params.start_time;
+    },
+    maxStartTime() {
+      return this.params.end_time;
+    },
+    maxEndTime() {
+      return this.timeLimits.end_time || this.now;
+    },
     filteredChartData() {
       return this.chartData.filter(chart => this.enabledCharts[chart.id]);
     },
-    byHour() {
-      return this.params.timespan === 'hour';
+    enableTime() {
+      return this.params.timespan !== 'day';
     },
     colors() {
       return this.filteredChartData.map(chart => this.getColor(chart.color));
@@ -107,7 +117,7 @@ export default {
       return this.filteredChartData.map(chart => this.$t(chart.name));
     },
     labels() {
-      return this.filteredChartData[0] ? this.filteredChartData[0].values.map(statistics => this.byHour ? new Date(statistics.time).toLocaleString() : new Date(statistics.time).toLocaleDateString()) : [];
+      return this.filteredChartData[0] ? this.filteredChartData[0].values.map(statistics => this.enableTime ? new Date(statistics.time).toLocaleString() : new Date(statistics.time).toLocaleDateString()) : [];
     },
     types() {
       return this.config.types ? this.config.types.map(type => {
@@ -118,12 +128,16 @@ export default {
       }) : []
     },
     timespans() {
-      return this.config.timespans ? this.config.timespans.map(timespan => {
+      let timespans = this.config.timespans.map(timespan => {
         return {
-          id: timespan.id,
+          value: timespan.id,
           name: this.$t(timespan.name)
         }
-      }) : []
+      })
+      if (this.selectedTypeConfig.timespans) {
+        timespans = timespans.filter(timespan => this.selectedTypeConfig.timespans.includes(timespan.value));
+      }
+      return timespans;
     },
     selectedTypeConfig() {
       return this.config.types.find(type => type.id === this.type).config || {};
@@ -187,16 +201,19 @@ export default {
     return {
       loadedConfig: false,
       loaded: false,
-      today: new Date(),
+
+      now: new Date(),
+
       config: {},
-      params: {
+      type: null,
+      loading: true,
+
+      params: this.startParams ? this.startParams : {
         start_time: new Date(new Date().getTime() - 86400 * 7 * 1000),
         end_time: new Date(),
         aggregate: true,
         timespan: 'day'
       },
-      type: null,
-      loading: true,
 
       chartType: 'line',
       chartData: [],
@@ -214,7 +231,14 @@ export default {
       type: Number,
       required: true
     },
-
+    startParams: {
+      type: Object,
+      required: false
+    },
+    timeLimits: {
+      type: Object,
+      required: false
+    }
   },
   components: {
     StatisticsTable,

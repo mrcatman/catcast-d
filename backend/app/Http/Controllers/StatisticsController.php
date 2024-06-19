@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Autopilot\AutopilotRepository;
-use App\Autopilot\AutopilotTempItem;
+
 use App\Helpers\CommonResponses;
 use App\Helpers\PermissionsHelper;
 use App\Models\Broadcast;
@@ -29,6 +28,7 @@ class StatisticsController extends Controller {
             Channel::getEntityType() => Channel::class,
             Playlist::getEntityType() => Playlist::class,
             Media::getEntityType() => Media::class,
+            Broadcast::getEntityType() => Broadcast::class,
         ];
 
         $this->types = [
@@ -37,6 +37,15 @@ class StatisticsController extends Controller {
                 'class' => StatisticsSession::class,
                 'entity_types' => [Media::getEntityType()],
                 'handler' => 'getCountChartForEntity',
+                'timespans' => ['hour', 'day'],
+            ],
+            'broadcast_viewers' => [
+                'name' => 'statistics.broadcasts_viewers',
+                'class' => StatisticsSession::class,
+                'entity_types' => [Broadcast::getEntityType()],
+                'handler' => 'getCountChartForEntity',
+                'simultaneous' => true,
+                'timespans' => ['minute', 'five_minutes', 'hour']
             ],
             'broadcasts_viewers' => [
                 'name' => 'statistics.broadcasts_viewers',
@@ -57,6 +66,7 @@ class StatisticsController extends Controller {
                 'entity_types' => [Channel::getEntityType(), Playlist::getEntityType()],
                 'handler' => 'getCountChartForList',
                 'children_entity_type' => Media::getEntityType(),
+                'timespans' => ['hour', 'day'],
                 'children_entity_ids' => [
                     Channel::getEntityType() => function(Channel $channel) {
                         return $channel->media()->pluck('media.id');
@@ -72,6 +82,7 @@ class StatisticsController extends Controller {
                 'entity_types' => [Media::getEntityType()],
                 'handler' => 'getCountChartForEntity',
                 'sum_by' => 'weight',
+                'timespans' => ['hour', 'day'],
                 'additional_data' => [
                     'likes' => [
                         'name' => 'statistics.likes',
@@ -95,12 +106,14 @@ class StatisticsController extends Controller {
                 'class' => Like::class,
                 'handler' => 'getCountChartForEntity',
                 'entity_types' => [Channel::getEntityType(), Playlist::getEntityType()],
+                'timespans' => ['hour', 'day'],
             ],
             'comments' => [
                 'name' => 'statistics.comments',
                 'class' => Comment::class, // todo: aggregate child comments,
                 'handler' => 'getCountChartForEntity',
-                'entity_types' => [Channel::getEntityType(), Playlist::getEntityType(), Media::getEntityType()]
+                'entity_types' => [Channel::getEntityType(), Playlist::getEntityType(), Media::getEntityType()],
+                'timespans' => ['hour', 'day'],
             ],
             'broadcasts_viewers_by_country' => [
                 'name' => 'statistics.broadcasts_viewers_by_country',
@@ -112,13 +125,14 @@ class StatisticsController extends Controller {
                     Channel::getEntityType() => function(Channel $channel) {
                         return $channel->broadcasts()->pluck('id');
                     },
-                ]
+                ],
+                'timespans' => []
             ],
             'media_views_by_country' => [
                 'name' => 'statistics.media_views_by_country',
                 'handler' => 'getTableByCountry',
                 'class' => StatisticsSession::class,
-                'entity_types' => [Channel::getEntityType(), Playlist::getEntityType()],
+                'entity_types' => [Channel::getEntityType(), Playlist::getEntityType(), Broadcast::getEntityType()],
                 'children_entity_type' => Media::getEntityType(),
                 'children_entity_ids' => [
                     Channel::getEntityType() => function(Channel $channel) {
@@ -127,13 +141,25 @@ class StatisticsController extends Controller {
                     Playlist::getEntityType() => function(Playlist $playlist) {
                         return $playlist->media()->pluck('media.id');
                     },
-                ]
+                    Broadcast::getEntityType() => function(Broadcast $broadcast) {
+                        return $broadcast->media()->pluck('media.id');
+                    },
+                ],
+                'timespans' => []
             ]
         ];
     }
 
 
     private $timespans = [
+        'minute' => [
+            'name' => 'statistics.timespans.minute',
+            'duration' => 60
+        ],
+        'five_minutes' => [
+            'name' => 'statistics.timespans.five_minutes',
+            'duration' => 300
+        ],
         'hour' => [
             'name' => 'statistics.timespans.hour',
             'duration' => 3600
@@ -158,12 +184,16 @@ class StatisticsController extends Controller {
         $options = [];
         foreach ($this->types as $key => $type) {
             if (in_array($entity_type, $type['entity_types'])) {
+                $config = [
+                    'disable_aggregate' => isset($type['simultaneous']) && $type['simultaneous'],
+                ];
+                if (isset($type['timespans'])) {
+                    $config['timespans'] = $type['timespans'];
+                }
                 $options[] = [
                     'id' => $key,
                     'name' => $type['name'],
-                    'config' => [
-                        'disable_aggregate' => isset($type['simultaneous']) && $type['simultaneous']
-                    ]
+                    'config' => $config
                 ];
             }
         }

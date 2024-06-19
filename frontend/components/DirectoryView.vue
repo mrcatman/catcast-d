@@ -1,5 +1,8 @@
 <template>
   <div class="directory-view">
+    <h2 class="directory-view__heading" v-if="directory.children">
+      {{$t(directory.heading)}}
+    </h2>
     <div class="directory-view__section" v-for="(config, $index) in getConfig">
       <welcome v-if="config.entity === 'welcome'" />
       <c-thumbs-list :config="config" v-else>
@@ -19,6 +22,11 @@
 </template>
 <style lang="scss" scoped>
 .directory-view {
+  &__heading {
+    font-size: 1.75em;
+    margin: 0;
+    padding: 1.125em .5em;
+  }
   &__delimiter {
     margin: 1em;
   }

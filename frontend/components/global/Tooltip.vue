@@ -20,8 +20,10 @@
   text-shadow: none;
   pointer-events: none;
   transition: opacity .2s;
+
   div {
     margin-bottom: .5em;
+
     &:last-of-type {
       margin-bottom: 0;
     }
@@ -38,7 +40,7 @@ export default {
   computed: {
     positionOffset() {
       const position = this.position ? this.position.split('-') : ['top', 'left'];
-      const offsetTop = position[0] === 'top' ? -16 : (position[0] === 'center' ? this.parent.offsetHeight / 2 - 16 :  this.parent.offsetHeight + 16);
+      const offsetTop = position[0] === 'top' ? -16 : (position[0] === 'center' ? this.parent.offsetHeight / 2 - 16 : this.parent.offsetHeight + 16);
       const offsetLeft = position[1] === 'left' ? -16 : (position[1] === 'center' ? this.parent.offsetWidth / 2 - 16 : this.parent.offsetWidth + 16);
       return {
         offsetTop,
@@ -78,14 +80,14 @@ export default {
       this.visible = true;
       await this.$nextTick();
 
-      const { left, top, right } = this.parent.getBoundingClientRect();
-      const { offsetLeft, offsetTop } = this.positionOffset;
+      const {left, top, right} = this.parent.getBoundingClientRect();
+      const {offsetLeft, offsetTop} = this.positionOffset;
       this.left = left + offsetLeft;
-      // if (this.left + this.$refs.tooltip.offsetWidth > right) {
-      //   this.left = right - this.$refs.tooltip.offsetWidth ;
-      // } else if (this.left  + this.$refs.tooltip.offsetWidth < 0) {
-      //   this.left = left + offsetLeft;
-      // }
+      if (this.left + this.$refs.tooltip.offsetWidth > right) {
+        this.left = right - this.$refs.tooltip.offsetWidth;
+      } else if (this.left + this.$refs.tooltip.offsetWidth < 0) {
+        this.left = left + offsetLeft;
+      }
       this.top = top + offsetTop;
     },
     onMouseLeave() {

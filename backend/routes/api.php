@@ -102,8 +102,8 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
 
     // CATEGORIES
     Route::group(['prefix' => 'categories'], function() {
-        Route::get('', 'BroadcastCategoriesController@index');
-        Route::get('{id}', 'BroadcastCategoriesController@show');
+        Route::get('', 'CategoriesController@index');
+        Route::get('{id}', 'CategoriesController@show');
     });
 
     // LOGOS

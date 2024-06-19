@@ -8,10 +8,9 @@
         </template>
       </c-button>
     </div>
-    <div class="active-broadcast__main">
-       <h3 class="active-broadcast__title" v-if="activeBroadcast.is_online">{{activeBroadcast.title}}</h3>
-      <c-tag v-if="activeBroadcast.category && activeBroadcast.is_online" class="active-broadcast__category" :to="`/tv/search?category_id=${activeBroadcast.category.id}`">{{activeBroadcast.category.name}}</c-tag>
-
+    <div v-if="activeBroadcast.is_online" class="active-broadcast__main">
+       <h3 class="active-broadcast__title" >{{activeBroadcast.title}}</h3>
+       <c-tag v-if="activeBroadcast.category" class="active-broadcast__category" :to="`/tv/search?category_id=${activeBroadcast.category.id}`">{{activeBroadcast.category.name}}</c-tag>
     </div>
     <div class="active-broadcast__description" v-if="activeBroadcast.is_online && activeBroadcast.description && activeBroadcast.description.length" v-html="activeBroadcast.display_description"></div>
   </div>

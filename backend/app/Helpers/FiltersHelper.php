@@ -5,16 +5,17 @@ namespace App\Helpers;
 use App\Models\Broadcast;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class FiltersHelper {
 
     /**
      * Apply common filtering (search + tags + filter)
-     * @param Builder $list Query builder object
+     * @param Builder | Relation $list Query builder object
      * @param string $model_class Model for which filters are applied
      * @return Builder
      */
-    public static function applyFromRequest(Builder $list, string $model_class) {
+    public static function applyFromRequest(Builder | Relation $list, string $model_class) {
         $list->orderBy('created_at', 'desc');
         if (request()->filled('search')) {
             $list = $list->search(request()->input('search'));

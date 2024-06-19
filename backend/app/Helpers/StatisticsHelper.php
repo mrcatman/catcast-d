@@ -104,10 +104,12 @@ class StatisticsHelper {
             ]
         ];
 
+        $data_limit_reached = false;
         $max_statistics_items_count = 10000; //todo: config
 
-        $statistics_items_count = floor(($params['end_time']->getTimestamp() - $params['start_time']->getTimestamp()) / $params['timespan']['duration']);
+        $statistics_items_count = ceil(($params['end_time']->getTimestamp() - $params['start_time']->getTimestamp()) / $params['timespan']['duration']);
         if ($statistics_items_count > $max_statistics_items_count) {
+            $data_limit_reached = true; // todo: show message on frontend
             $statistics_items_count = $max_statistics_items_count;
         }
 
@@ -173,7 +175,8 @@ class StatisticsHelper {
                     'name' => 'statistics.average',
                     'value' => $average
                 ]
-            ]
+            ],
+            'data_limit_reached' => $data_limit_reached
         ];
     }
 

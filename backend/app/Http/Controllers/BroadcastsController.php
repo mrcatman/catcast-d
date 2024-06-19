@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\FiltersHelper;
 use App\Helpers\PermissionsHelper;
 use App\Models\Broadcast;
-use App\Models\BroadcastCategory;
+use App\Models\Category;
 use App\Models\Channel;
 
 class BroadcastsController extends Controller{
@@ -17,24 +18,15 @@ class BroadcastsController extends Controller{
         'tags' => 'sometimes|array'
     ];
 
+    public function show($id)
+    {
+        return Broadcast::findOrFail($id);
+    }
+
     public function getByChannel($channel_id){
         $channel = PermissionsHelper::getChannelIfAllowed($channel_id, ['live_broadcast']);
 
-        $broadcasts = $channel->broadcasts();
-        if (request()->input('type') == 'planned') {
-            $broadcasts = $broadcasts->planned();
-        } elseif (request()->input('type') == 'finished') {
-            $broadcasts = $broadcasts->finished();
-        } else {
-            $broadcasts = $broadcasts->notActive();
-        }
-        if (request()->has('search')) {
-            $broadcasts = $broadcasts->where(function($q) {
-                $q->where('title', 'LIKE', '%'.request()->input('search').'%');
-                $q->orWhere('description', 'LIKE', '%'.request()->input('search').'%');
-            });
-        }
-        $broadcasts = $broadcasts->paginate(request()->input('count', 10));
+        $broadcasts = FiltersHelper::applyFromRequest($channel->broadcasts(), Broadcast::class);
 
         $full_permissions = PermissionsHelper::getStatus(['live_broadcast'], $channel);
         $has_statistics_permissions = PermissionsHelper::getStatus(['statistics'],$channel);
@@ -58,7 +50,7 @@ class BroadcastsController extends Controller{
         $data['is_online'] = !!$active_broadcast;
 
         if (!$active_broadcast && $data['category_id']) {
-            $data['category'] = BroadcastCategory::find($data['category_id']);
+            $data['category'] = Category::find($data['category_id']);
         }
         $data['can_edit'] = PermissionsHelper::getStatus(['live_broadcast'], $channel, $active_broadcast);
         return $data;
@@ -95,14 +87,14 @@ class BroadcastsController extends Controller{
         $validate_rules = $this->validate_rules;
         if ($broadcast && (!$broadcast->id || ($broadcast->will_start_at))) {
             $validate_rules['will_start_at'] = 'required|date|after_or_equal:now';
-            $validate_rules['will_end_at'] = 'required|date|after_or_equal:will_start_at';
+            $validate_rules['will_end_at'] = 'sometimes|date|after_or_equal:will_start_at';
         }
         $data = request()->validate($validate_rules);
 
         // todo: multiple categories, maybe?
         $category_id = $data['category']['id'] ?? null;
         if (!$category_id && !empty($data['category']['name'])) {
-            $category = BroadcastCategory::firstOrNew([
+            $category = Category::firstOrNew([
                 'name' => $data['category']['name']
             ]);
             $category->is_game = !!request()->input('is_game', true);

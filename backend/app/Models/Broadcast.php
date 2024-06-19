@@ -5,15 +5,14 @@ use App\Traits\HasTags;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
-use Parsedown;
 
 class Broadcast extends Model {
 
     use HasTags;
 
     protected $guarded = [];
-    protected $with = ['category', 'user:id,username'];
-    protected $appends = ['playback_url', 'thumbnail_url', 'display_description', 'is_online', 'tags', 'viewers'];
+    protected $with = ['category', 'media', 'user:id,username'];
+    protected $appends = ['playback_url', 'thumbnail_url', 'is_online', 'tags', 'viewers'];
     protected $casts = [
         'will_start_at' => 'datetime',
         'will_end_at' => 'datetime',
@@ -33,8 +32,13 @@ class Broadcast extends Model {
         return $this->belongsTo(User::class);
     }
 
+    public function media()
+    {
+        return $this->hasMany(Media::class);
+    }
+
     public function category() {
-        return $this->belongsTo(BroadcastCategory::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function getIsOnlineAttribute() {
@@ -58,15 +62,22 @@ class Broadcast extends Model {
         return url('thumbnails/'.$this->channel_id.'.png').'?'.time();
     }
 
-    public function scopeFinished($query) {
+    public function scopeSearch($filter, $search) {
+        return $filter->where(function($query) use ($search) {
+            $query->where('title', 'LIKE', '%' . $search . '%');
+            $query->orWhere('description', 'LIKE', '%' . $search . '%');
+        });
+    }
+
+    public function scopeFilterFinished($query) {
         return $query->whereNotNull('ended_at');
     }
 
-    public function scopePlanned($query) {
+    public function scopeFilterPlanned($query) {
         return $query->whereDate('will_start_at', '>', Carbon::now())->whereNull('started_at')->whereNull('ended_at');
     }
 
-    public function scopeOnline($query) {
+    public function scopeFilterOnline($query) {
         return $query->whereNotNull('started_at')->whereNull('ended_at');
     }
 
@@ -74,10 +85,6 @@ class Broadcast extends Model {
         return $query->whereNotNull('ended_at')->orWhere(function($q) {
             $q->whereNotNull('will_start_at')->whereNull('started_at')->whereNull('ended_at');
         });
-    }
-
-    public function getDisplayDescriptionAttribute() {
-        return app()->make(Parsedown::class)->setBreaksEnabled(true)->text($this->description);
     }
 
     public function statisticsSessions()

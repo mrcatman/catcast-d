@@ -34,7 +34,7 @@
 
   .flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover, .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay, .flatpickr-day.notAllowed, .flatpickr-day.notAllowed.prevMonthDay, .flatpickr-day.notAllowed.nextMonthDay {
     color: var(--text-color);
-    opacity: .5;
+    opacity: .25;
   }
 
   .flatpickr-day:hover {
@@ -169,12 +169,12 @@ import InputBase from "@/components/global/InputBase.vue";
       dateTimePickerValue(newVal) {
         this.val = new Date(newVal);
       },
-      // async opened(opened) {
-      //   if (opened) {
-      //     await this.$nextTick();
-      //     this.setPickerPosition();
-      //   }
-      // }
+      async opened(opened) {
+        if (opened) {
+          await this.$nextTick();
+          this.setPickerPosition();
+        }
+      }
     },
     data() {
       return {
@@ -192,16 +192,8 @@ import InputBase from "@/components/global/InputBase.vue";
     },
     methods: {
       setPickerPosition() {
-        // const rect = this.$refs.container.getBoundingClientRect();
-        // const el = this.$refs.picker.$el;
-        // console.log(el);
-        // if (!el) {
-        //   return;
-        // }
-        // const app = document.querySelector('.tooltips-container') || document.getElementById('app');
-        // app.appendChild(el);
-        // el.style.x = `${rect.left}px`;
-        // el.style.y = `${rect.top}px`;
+        const rect = this.$refs.picker?.$el?.getBoundingClientRect();
+        console.log(rect);
       },
       hidePicker() {
         this.opened = false;

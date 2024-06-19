@@ -17,6 +17,7 @@
     font-size: 1em;
   }
   .CodeMirror, .CodeMirror-scroll {
+    max-width: 50em;
     min-height: 5em;
   }
   .editor-statusbar {
@@ -56,7 +57,6 @@ import VueSimplemde from 'vue-simplemde'
 import InputBase from '@/components/global/InputBase';
 
 const editorConfig = {
-
   toolbar: ['bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', 'image'],
 }
 

@@ -9,7 +9,7 @@ use App\Helpers\RelationsHelper;
 use App\Helpers\PermissionsHelper;
 use App\Helpers\MediaHelper;
 use App\Jobs\DownloadExternalMedia;
-use App\Models\BroadcastCategory;
+use App\Models\Category;
 use App\Models\Channel;
 use App\Models\Folder;
 use App\Models\Picture;

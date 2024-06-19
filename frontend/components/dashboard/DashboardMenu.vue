@@ -7,8 +7,8 @@ import isMobile from "@/helpers/isMobile";
 const pages = [
   {id: 'statistics', permissions:  ['statistics'], name: 'dashboard.links.statistics', icon: 'show_chart'},
   {id: 'info', permissions: ['edit_info'], name: 'dashboard.links.info', icon: 'fa-info-circle'},
-  {id: 'broadcast',  permissions: ['live_broadcast'], is_radio: false, name: 'dashboard.links.broadcast', icon: 'live_tv'},
-  {id: 'broadcast', permissions: ['live_broadcast'], is_radio: true, name: 'dashboard.links.broadcast', icon: 'fa-broadcast-tower'},
+  {id: 'broadcasts/settings',  permissions: ['live_broadcast'], name: 'dashboard.links.broadcasts_settings', icon: 'live_tv'},
+  {id: 'broadcasts/list',  permissions: ['live_broadcast'], name: 'dashboard.links.broadcasts_list', icon: 'fa-tower-broadcast'},
   {id: 'subscribers', name: 'dashboard.links.subscribers', icon: 'fa-users'},
   {id: 'chat',  permissions: ['edit_info'], name: 'dashboard.links.chat', icon: 'chat'},
   {id: 'design',  permissions: ['edit_info'], name: 'dashboard.links.design', icon: 'dashboard'},
@@ -24,9 +24,6 @@ export default {
     tabs() {
       const permissions = Object.keys(this.permissions);
       return pages.filter(page => {
-        if (page.is_radio !== undefined && this.channel.is_radio !== page.is_radio) {
-          return false;
-        }
         if (!page.permissions) {
           return true;
         }

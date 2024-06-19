@@ -1,7 +1,7 @@
 <template>
 <div class="checkbox" :class="{'checkbox--disabled': disabled}" ref="checkbox">
   <input :disabled="disabled" type="checkbox" style="display: none" v-model="val" />
-	<div class="checkbox__inner" @click="onClick()">
+	<div class="checkbox__inner" @click="onClick">
 		<div v-if="this.switch" class="checkbox__switch" :class="{'checkbox__switch--active': val}">
 			<span class="checkbox__switch__handle"></span>
 		</div>
@@ -140,7 +140,9 @@ export default{
         this.$refs.checkbox.style.removeProperty('--active-color');
       }
     },
-    onClick() {
+    onClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
       if (!this.disabled) {
         this.val = !this.val;
       }

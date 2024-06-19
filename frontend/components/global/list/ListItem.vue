@@ -1,10 +1,10 @@
 <template>
 <div class="list-item" :class="parentClasses">
-  <component :is="to ? 'router-link' : 'div'" :to="to" class="list-item__left">
+  <component :is="to ? 'router-link' : 'div'" :to="to" @click="$emit('click')" class="list-item__left">
     <div v-if="picture || icon || showPicturePlaceholder" class="list-item__picture-container" :class="{'list-item__picture-container--square': pictureSquare}">
       <div class="list-item__picture" :style="pictureStyle">
         <c-icon v-if="icon" :icon="icon" class="list-item__icon" />
-        <div v-if="length" class="list-item__length">{{lengthFormatted}}</div>
+        <div v-if="duration" class="list-item__duration">{{durationFormatted}}</div>
       </div>
     </div>
     <div class="list-item__captions">
@@ -30,6 +30,22 @@
   position: relative;
   &--not-confirmed {
     opacity: .75;
+  }
+  &--not-link {
+    cursor: default;
+    &:hover {
+      background: none;
+    }
+  }
+  &--selected {
+    background: var(--lighten-2);
+    &:hover {
+      background:var(--lighten-3);
+    }
+  }
+  &--highlighted {
+    background: var(--lighten-1);
+    border-left: .25em solid var(--active-color);
   }
   &:hover {
     background: var(--lighten-1);
@@ -58,24 +74,7 @@
     align-items: center;
   }
 
-  &--not-link {
-    cursor: default;
-    &:hover {
-      background: none;
-    }
-  }
-  &--selected {
-    background: var(--lighten-2);
-    &:hover {
-      background:var(--lighten-3);
-    }
-  }
-  &--selected-with-area {
-    background: rgba(255, 255, 255, 0.05);
-    &:hover {
-      background: rgba(255, 255, 255, 0.175);
-    }
-  }
+
   &__captions {
     overflow: hidden;
     flex: 1;
@@ -209,6 +208,7 @@ export default {
     parentClasses() {
       return {
         'list-item--not-confirmed': this.notConfirmed,
+        'list-item--highlighted': this.highlighted
       }
     },
     pictureStyle() {
@@ -224,8 +224,8 @@ export default {
         }
       }
     },
-    lengthFormatted() {
-      return new Date(this.length * 1000).toISOString().substring(11, 19)
+    durationFormatted() {
+      return new Date(this.duration * 1000).toISOString().substring(11, 19)
     },
   },
   props: {
@@ -233,8 +233,9 @@ export default {
     picture: String,
     pictureSquare: Boolean,
     icon: String,
-    length: Number,
+    duration: Number,
     notConfirmed: Boolean,
+    highlighted: Boolean,
     showPicturePlaceholder: Boolean,
   }
 }
