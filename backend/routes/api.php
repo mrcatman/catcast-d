@@ -54,6 +54,7 @@ Route::group(['middleware' => [\App\Http\Middleware\HandleCORS::class, \App\Http
     // DIRECTORY
     Route::group(['prefix' => 'directory'], function() {
         Route::get('menu', 'DirectoryController@menu');
+        Route::get('search', 'DirectoryController@search');
         Route::get('category/{url}', 'DirectoryController@category');
         Route::get('{path}', 'DirectoryController@index')->where('path', '.*?');
     });

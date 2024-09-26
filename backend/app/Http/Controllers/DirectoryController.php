@@ -35,6 +35,12 @@ class DirectoryController extends Controller {
                 'entity' => 'directory',
                 'heading' => 'media.heading',
                 'children' => $this->media()
+            ],
+            [
+                'id' => 'search',
+                'entity' => 'directory',
+                'heading' => 'media.heading',
+                'children' => $this->search()
             ]
         ];
     }
@@ -42,7 +48,7 @@ class DirectoryController extends Controller {
     public function menu() {
         $explore_menu = [
             [
-                'id' => 'index',
+                'url' => '',
                 'heading' => 'global.home',
                 'icon' => 'fa-home'
             ],
@@ -50,7 +56,7 @@ class DirectoryController extends Controller {
         ];
         if (auth()->user()) {
             $explore_menu[] =  [
-                'id' => 'subscriptions',
+                'url' => 'directory/subscriptions',
                 'heading' => 'global.subscriptions',
                 'icon' => 'subscriptions'
             ];
@@ -64,17 +70,17 @@ class DirectoryController extends Controller {
                 'heading' => 'channels.heading',
                 'children' => [
                     [
-                        'id' => 'channels',
+                        'url' => 'channels',
                         'heading' => 'channels.all',
                         'icon' => 'fa-tower-broadcast'
                     ],
                     [
-                        'id' => 'channels/tv',
+                        'url' => 'channels?type=tv',
                         'heading' => 'channels.tv',
                         'icon' => 'live_tv'
                     ],
                     [
-                        'id' => 'channels/radio',
+                        'url' => 'channels?type=radio',
                         'heading' => 'channels.radio',
                         'icon' => 'fa-radio'
                     ]
@@ -84,17 +90,17 @@ class DirectoryController extends Controller {
                 'heading' => 'media.heading',
                 'children' => [
                     [
-                        'id' => 'media',
+                        'url' => 'media',
                         'heading' => 'media.all',
                         'icon' => 'fa-photo-film'
                     ],
                     [
-                        'id' => 'media/video',
+                        'url' => 'media?type=video',
                         'heading' => 'media.video',
                         'icon' => 'fa-video'
                     ],
                     [
-                        'id' => 'media/audio',
+                        'url' => 'media?type=audio',
                         'heading' => 'media.audio',
                         'icon' => 'fa-podcast'
                     ]
@@ -132,18 +138,18 @@ class DirectoryController extends Controller {
                 'entity' => 'welcome'
             ],
             $online_broadcasts_exist ? [
-                'id' => '/channels',
+                'id' => 'channels',
                 'entity' => 'channels',
                 'heading' => 'channels.online',
                 'params' => ['show' => 'online'],
             ] : [
-                'id' => '/channels',
+                'id' => 'channels',
                 'entity' => 'channels',
                 'heading' => 'channels.popular',
                 'params' => ['show' => 'popular'],
             ],
             [
-                'id' => '/media',
+                'id' => 'media',
                 'entity' => 'media',
                 'heading' => 'media.popular',
                 'params' => ['show' => 'popular'],
@@ -155,7 +161,6 @@ class DirectoryController extends Controller {
         $online_broadcasts_exist = Broadcast::filterOnline()->count() > 0;
         return [
             [
-                'id' => 'online',
                 'entity' => 'channels',
                 'heading' => 'channels.online',
                 'params' => ['show' => 'online'],
@@ -188,31 +193,25 @@ class DirectoryController extends Controller {
                 ],
             ],
             [
-                'id' => 'new',
                 'entity' => 'channels',
                 'heading' => 'channels.new',
                 'params' => ['show' => 'new'],
             ],
             [
-                'id' => 'popular',
                 'entity' => 'channels',
                 'heading' => 'channels.popular',
                 'params' => ['show' => 'popular'],
             ],
             [
-                'id' => 'tv',
                 'entity' => 'channels',
                 'heading' => 'channels.tv',
                 'params' => ['type' => 'tv'],
-                'hidden' => true
             ],
             [
-                'id' => 'radio',
                 'entity' => 'channels',
                 'heading' => 'channels.radio',
                 'params' => ['type' => 'radio'],
-                'hidden' => true
-            ],
+           ],
         ];
     }
 
@@ -282,6 +281,30 @@ class DirectoryController extends Controller {
                     'entity' => 'media',
                     'heading' => 'media.heading',
                     'params' => ['category_id' => $category->id],
+                ],
+            ]
+        ];
+    }
+
+    public function search() {
+        $tags = request()->input('tags');
+        return [
+            'heading' => 'common.search_by_tags',
+            'tags' => explode(',', $tags),
+            'children' => [
+                [
+                    'id' => '/channels/online',
+                    'entity' => 'channels',
+                    'heading' => 'channels.heading',
+                    'params' => ['show' => 'online', 'tags' => $tags],
+                    'query_params' => ['tags' => $tags],
+                ],
+                [
+                    'id' => '/media/new',
+                    'entity' => 'media',
+                    'heading' => 'media.heading',
+                    'params' => ['tags' => $tags],
+                    'query_params' => ['tags' => $tags],
                 ],
             ]
         ];

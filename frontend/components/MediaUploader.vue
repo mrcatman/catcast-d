@@ -36,7 +36,10 @@
                 <div class="media-uploader__item__upload-progress__bar__text">
                   <span v-if="item.upload_status === UploadStatuses.STATUS_NOT_STARTED">{{$t('dashboard.media.waiting_for_upload')}}</span>
                   <span v-else-if="item.external">{{$t('dashboard.media.external_uploading')}}</span>
-                  <span v-else-if="item.upload_status === UploadStatuses.STATUS_PROCESSING">{{$t('dashboard.media.converting')}}</span>
+                  <span v-else-if="item.upload_status === UploadStatuses.STATUS_PROCESSING">
+                    {{$t('dashboard.media.converting')}}
+                    {{item.convert_percent ? `&nbsp;${item.convert_percent * 100}%` : ''}}
+                  </span>
                   <span v-else>{{item.upload_percent}}%</span>
                 </div>
                 <div class="media-uploader__item__upload-progress__bar__inner" v-if="item.upload_status !==  UploadStatuses.STATUS_PROCESSING" :style="{width: item.upload_percent + '%'}"></div>
@@ -116,6 +119,14 @@ export default  {
       this.list = this.list.map(item => {
         if (item.id === media.id) {
           item.upload_status = UploadStatuses.STATUS_READY;
+        }
+        return item;
+      })
+    },
+    onMediaConvertProgress({media, percent}) {
+      this.list = this.list.map(item => {
+        if (item.id === media.id) {
+          item.convert_percent = percent;
         }
         return item;
       })
@@ -201,6 +212,9 @@ export default  {
     },
     startListeningToEvents() {
       this.$echo.private(`App.User.${this.user.id}`)
+        .listen('.media.convert_progress', (e) => {
+          this.onMediaConvertProgress(e);
+        })
         .listen('.media.convert_fail', (e) => {
           this.onMediaConvertFail(e);
         })

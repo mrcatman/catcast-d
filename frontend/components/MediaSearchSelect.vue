@@ -41,6 +41,7 @@
           view: 'list',
           paginate: true,
           infiniteScroll: true,
+          innerScroll: true,
           search: true
         }
       },

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PrivacyStatuses;
 use App\Models\SettingsModels\Common\PrivacySettingsModel;
+use App\Traits\HasCategory;
 use App\Traits\HasPrivacyStatus;
 use App\Traits\HasSettings;
 use App\Traits\HasTags;
@@ -30,6 +31,7 @@ class Playlist extends Model {
         'privacy_status_name'
     ];
 
+    public $with = ['category'];
     public $pictures_fields = ['logo', 'banner', 'background', 'player_background'];
 
     protected $additional_settings_models = [
@@ -85,6 +87,11 @@ class Playlist extends Model {
     public function media() {
         return $this->belongsToMany(Media::class, 'playlists_media')->orderBy('index')->withPivot('index');
     }
+
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
+
 
     public function visibleMedia() {
         return $this->media()->whereIn('privacy_status', [ PrivacyStatuses::PUBLIC, PrivacyStatuses::UNLISTED]);

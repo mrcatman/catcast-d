@@ -31,6 +31,8 @@ class ProcessMedia implements ShouldQueue {
 
     protected $file_extension;
 
+    public $timeout = 60 * 60 * 24;
+
     public function __construct(Media $media, $path_to_uploaded_file) {
         $this->media = $media;
         $this->path_to_uploaded_file = $path_to_uploaded_file;

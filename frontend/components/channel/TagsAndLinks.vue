@@ -6,7 +6,7 @@
     </div>
     <div class="vertical-delimiter" v-if="entity.tags && entity.tags.length > 0"></div>
     <div class="channel-layout__tags" v-if="entity.tags && entity.tags.length > 0">
-      <c-tag :key="$index" :to="`/search?tags=${tag}`" v-for="(tag, $index) in entity.tags">{{tag}}</c-tag>
+      <c-tag :key="$index" :to="`/directory/search?tags=${tag}`" v-for="(tag, $index) in entity.tags">{{tag}}</c-tag>
     </div>
   </div>
 </template>

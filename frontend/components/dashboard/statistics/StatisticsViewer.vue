@@ -90,7 +90,7 @@ import StatisticsTable from "@/components/dashboard/statistics/StatisticsTable.v
 export default {
   computed: {
     minStartTime() {
-      return this.timeLimits.start_time;
+      return this.timeLimits?.start_time;
     },
     minEndTime() {
       return this.params.start_time;
@@ -99,7 +99,7 @@ export default {
       return this.params.end_time;
     },
     maxEndTime() {
-      return this.timeLimits.end_time || this.now;
+      return this.timeLimits?.end_time || this.now;
     },
     filteredChartData() {
       return this.chartData.filter(chart => this.enabledCharts[chart.id]);

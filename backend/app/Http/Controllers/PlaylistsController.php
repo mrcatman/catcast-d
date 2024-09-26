@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CategoriesHelper;
 use App\Helpers\CommonResponses;
 use App\Helpers\FiltersHelper;
 use App\Helpers\MediaHelper;
@@ -107,12 +108,12 @@ class PlaylistsController extends Controller {
         }
         if (request()->filled('additional_settings')) {
             $playlist->additional_settings = request()->input('additional_settings');
-            $playlist->save();
         }
         if (request()->filled('tags')) {
             $playlist->tags = request()->input('tags');
-            $playlist->save();
         }
+        $playlist->category_id = CategoriesHelper::getIdFromRequest();
+        $playlist->save();
         $playlist->can_edit = true;
         $playlist->load('media');
         return $playlist;
@@ -139,6 +140,7 @@ class PlaylistsController extends Controller {
         if ($channel->is_banned) {
             return response()->json(['message' => 'errors.channel_is_banned'], 403);
         }
+        $playlist->load('media');
         $playlist->append('additional_settings');
         StatisticsHelper::increment($playlist);
         return $playlist;

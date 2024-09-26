@@ -32,7 +32,7 @@ class Media extends Model {
         'privacy_status_name'
     ];
 
-    public $with = ['thumbnail', 'gridThumbnail'];
+    public $with = ['category', 'thumbnail', 'gridThumbnail'];
     protected $guarded = [];
 
     const TYPE_VIDEO = 0;
@@ -86,6 +86,10 @@ class Media extends Model {
         });
     }
 
+    public function scopeFilterNew($query) {
+        return $query->orderBy('created_at', 'desc');
+    }
+
     public function scopeFilterSubscriptions($query) {
         if ($user = auth()->user()) {
             $channel_ids = Like::where(['user_id' => $user->id, 'entity_type' => Channel::getEntityType()])->get()->pluck('entity_id');
@@ -137,6 +141,10 @@ class Media extends Model {
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    public function category() {
+        return $this->belongsTo(Category::class);
     }
 
     public function files() {

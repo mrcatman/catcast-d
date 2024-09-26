@@ -116,7 +116,7 @@ export default {
         showParts: {channel: true, tags: false, description: false},
         innerScroll: true,
         hidePaginator: true,
-        queryParams: {
+        filters: {
           limit: 10
         },
         disableQuerystringUpdate: true

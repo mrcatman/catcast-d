@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Events\Media\MediaConvertFailEvent;
+use App\Events\Media\MediaConvertProgressEvent;
 use App\Helpers\MediaHelper;
 use App\Models\Media;
 use FFMpeg\Coordinate\Dimension;
@@ -27,7 +29,9 @@ class ProcessVideo extends ProcessMedia {
     protected function convert($quality = null) {
         $format = new \FFMpeg\Format\Video\X264();
         $format->on('progress', function ($video, $format, $percentage) {
-            echo "$percentage % transcoded";
+           // if ($percentage % 10 == 0) {
+                broadcast(new MediaConvertProgressEvent($this->media, $percentage));
+          //  }
         });
 
         $ffmpeg = MediaHelper::createFFMpeg();

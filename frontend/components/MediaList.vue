@@ -35,13 +35,7 @@ export default {
       required: false,
       default: '/media'
     },
-    queryParams: {
-      type: Object,
-      required: false,
-      default: () => {
-        return {}
-      }
-    },
+
     config: {
       type: Object,
       required: false,

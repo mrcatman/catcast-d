@@ -6,8 +6,7 @@
 <style lang="scss">
 @import '~/assets/styles/editor.scss';
 .editor {
-	margin: 0 0 1em;
-  .vue-simplemde {
+	.vue-simplemde {
     flex: 1;
   }
   .CodeMirror {

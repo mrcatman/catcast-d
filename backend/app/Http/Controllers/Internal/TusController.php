@@ -14,7 +14,7 @@ class TusController extends Controller
         switch (request()->input('Type')) {
             case 'pre-create':
                 return $this->preCreate();
-            case 'post-receive':
+            case 'post-finish':
                 return $this->postReceive();
             default:
                 break;
@@ -49,8 +49,10 @@ class TusController extends Controller
     {
         $file_path = request()->input('Event.Upload.Storage.Path');
         try {
+            file_put_contents(storage_path('log.txt'), 'Searching key: '.request()->input('Event.Upload.MetaData.upload_key') . PHP_EOL, FILE_APPEND | LOCK_EX);
             $upload_key = MediaUploadKey::where(['key' => request()->input('Event.Upload.MetaData.upload_key'), 'media_id' => request()->input('Event.Upload.MetaData.id')])->firstOrFail();
             $media = $upload_key->media;
+            file_put_contents(storage_path('log.txt'), 'Found key: '.request()->input('Event.Upload.MetaData.upload_key') . PHP_EOL, FILE_APPEND | LOCK_EX);
             $classes = [
                 \App\Models\Media::TYPE_VIDEO => \App\Jobs\ProcessVideo::class,
                 \App\Models\Media::TYPE_AUDIO => \App\Jobs\ProcessAudio::class
@@ -61,7 +63,8 @@ class TusController extends Controller
                 'StopUpload' => false,
             ];
         } catch (\Exception $e) {
-            unlink($file_path);
+            file_put_contents(storage_path('log.txt'), $e->getMessage() . PHP_EOL, FILE_APPEND | LOCK_EX);
+            file_exists($file_path) && unlink($file_path);
             return [
                 'StopUpload' => true,
                 'HTTPResponse' => [

@@ -61,6 +61,9 @@
     white-space: nowrap;
     position: relative;
     z-index: 1;
+    &__text {
+      position: relative;
+    }
   }
 
   &__icon {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CategoriesHelper;
 use App\Helpers\FiltersHelper;
 use App\Helpers\PermissionsHelper;
 use App\Models\Broadcast;
@@ -13,8 +14,6 @@ class BroadcastsController extends Controller{
     private $validate_rules = [
         'title' => 'required',
         'description' => 'sometimes',
-        'category.id' => 'sometimes',
-        'category.name' => 'sometimes',
         'tags' => 'sometimes|array'
     ];
 
@@ -91,24 +90,12 @@ class BroadcastsController extends Controller{
         }
         $data = request()->validate($validate_rules);
 
-        // todo: multiple categories, maybe?
-        $category_id = $data['category']['id'] ?? null;
-        if (!$category_id && !empty($data['category']['name'])) {
-            $category = Category::firstOrNew([
-                'name' => $data['category']['name']
-            ]);
-            $category->is_game = !!request()->input('is_game', true);
-            $category->save();
-            $category_id = $category->id;
-        }
-        unset($data['category']);
         if ($broadcast) {
             $broadcast->fill($data);
-            if (request()->has('tags')) {
+            if (request()->filled('tags')) {
                 $broadcast->tags = request()->input('tags');
             }
-            $broadcast->category_id = $category_id;
-            $broadcast->save();
+            $broadcast->category_id = CategoriesHelper::getIdFromRequest();
             $active_broadcast = $broadcast->channel->activeBroadcast;
             if ($active_broadcast && $broadcast->id == $active_broadcast->id) {
                 $channel_to_update_metadata = $active_broadcast->channel;
@@ -119,7 +106,7 @@ class BroadcastsController extends Controller{
             $metadata = [
                 'title' => $data['title'],
                 'description' => $data['description'],
-                'category_id' => $category_id,
+                'category_id' => CategoriesHelper::getIdFromRequest(),
                 'tags' => isset($data['tags']) ? $data['tags'] : []
             ];
             $channel_to_update_metadata->additional_settings = [

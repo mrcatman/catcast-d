@@ -15,32 +15,36 @@
       </template>
       <template slot="main">
         <c-form v-model="form.data" ref="form" :initial-values="playlist" :method="playlist.id ? 'put' : 'post'" :url="playlist.id ? `/playlists/${playlist.id}` : '/playlists'" :post-data="postData" :use-alerts="true" >
-          <c-tabs small :data="tabs" v-model="currentTab" />
-          <div v-show="currentTab === 'info'">
-            <c-row>
-              <c-col mobile-full-width class="dashboard-page__playlist-editor__col" v-limit-height="'playlist_editor_col'">
-                <c-input v-form-input="'name'" v-form-validate="'required'" :title="$t('dashboard.playlists.name')" />
-                <privacy-status-select v-form-input="'privacy_status'" />
-                <c-text-editor v-form-input="'description'"  :title="$t('dashboard.playlists.description')"/>
-                <c-tags-input v-form-input="'tags'" :title="$t('dashboard.playlists.tags')"/>
-                <c-list-input v-form-input="'links'" :fields="[{id: 'title', name: $t('links_editor.heading'), flexGrow: .5}, {id: 'url', name: $t('links_editor.url')}]" :title="$t('dashboard.playlists.links')" />
-                <privacy-settings />
-              </c-col>
-              <c-col v-if="!isMobile" mobile-full-width :grow="1.5" class="dashboard-page__playlist-editor__col" v-limit-height="'playlist_editor_col'">
-                <playlists-content-editor :channel="channel" :playlist="playlist" v-model="form.media"/>
-              </c-col>
-            </c-row>
+          <c-tabs :data="tabs" v-model="currentTab" />
+          <div class="dashboard-page__playlist-editor__content">
+            <div v-show="currentTab === 'info'">
+              <c-row align="stretch">
+                <c-col mobile-full-width class="dashboard-page__playlist-editor__col dashboard-page__playlist-editor__col--scrollable">
+                  <c-input v-form-input="'name'" v-form-validate="'required'" :title="$t('dashboard.playlists.name')" />
+                  <privacy-status-select v-form-input="'privacy_status'" />
+                  <c-text-editor v-form-input="'description'"  :title="$t('dashboard.playlists.description')"/>
+                  <c-tags-input v-form-input="'tags'" :title="$t('dashboard.playlists.tags')"/>
+                  <c-autocomplete v-form-input="'category'" autocomplete-key="id" autocomplete-value="name" url="categories" :title="$t('dashboard.playlists.category')"/>
+                  <c-list-input v-form-input="'links'" :fields="[{id: 'title', name: $t('links_editor.heading'), flexGrow: .5}, {id: 'url', name: $t('links_editor.url')}]" :title="$t('dashboard.playlists.links')" />
+                  <privacy-settings class="dashboard-page__playlist-editor__privacy-settings" />
+                </c-col>
+                <c-col v-if="!isMobile" mobile-full-width :grow="1.5" class="dashboard-page__playlist-editor__col">
+                  <playlists-content-editor :channel="channel" :playlist="playlist" v-model="form.media"/>
+                </c-col>
+              </c-row>
+            </div>
+            <div v-show="currentTab === 'editor'">
+              <playlists-content-editor :channel="channel" :playlist="playlist" v-model="form.media"/>
+            </div>
+            <div v-show="currentTab === 'design'">
+              <c-checkbox :title="$t('dashboard.playlists.use_custom_design')" v-form-input="'use_custom_design'"  />
+              <design-editor  v-limit-height="'playlist_editor_design'" v-if="currentTab === 'design' && form.data && form.data.use_custom_design" :channel="channel" :data="playlist" v-model="form.design"/>
+            </div>
+            <div v-if="currentTab === 'statistics'">
+              <statistics-block entity-type="playlists" :entity-id="playlist.id"/>
+            </div>
           </div>
-          <div v-show="currentTab === 'editor'">
-            <playlists-content-editor :channel="channel" :playlist="playlist" v-model="form.media"/>
-          </div>
-          <div v-show="currentTab === 'design'">
-            <c-checkbox :title="$t('dashboard.playlists.use_custom_design')" v-form-input="'use_custom_design'"  />
-            <design-editor  v-limit-height="'playlist_editor_design'" v-if="currentTab === 'design' && form.data && form.data.use_custom_design" :channel="channel" :data="playlist" v-model="form.design"/>
-          </div>
-          <div v-if="currentTab === 'statistics'">
-            <statistics-block entity-type="playlists" :entity-id="playlist.id"/>
-          </div>
+
         </c-form>
       </template>
     </c-box>
@@ -49,8 +53,12 @@
 <style lang="scss">
   .dashboard-page__playlist-editor {
     &__col {
-      max-height: calc(100vh - 17em);
-      overflow: auto;
+      max-height: calc(100vh - 19em);
+      overflow: hidden;
+      &--scrollable {
+        padding-right: 1em;
+        overflow-y: auto;
+      }
       @media screen and (max-width: 768px) {
         max-height: unset;
       }
@@ -62,8 +70,11 @@
         max-height: unset;
       }
     }
+    &__privacy-settings {
+      margin-top: var(--vertical-margin);
+    }
     &__content {
-      margin: 0 -1em -1em;
+      overflow: hidden;
     }
   }
 </style>

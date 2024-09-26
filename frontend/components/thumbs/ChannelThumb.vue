@@ -13,14 +13,14 @@
       <div class="thumb__title" v-else>{{data.active_broadcast.title}}</div>
       <div class="thumb__small-title" v-if="data.active_broadcast">{{data.name}}</div>
       <div class="thumb__tags" v-if="tags.length">
-        <c-tag :to="`/tv/search?tags=${tag}`" v-for="tag in tags" :key="tag">{{tag}}</c-tag>
+        <c-tag :to="`/directory/search?tags=${tag}`" v-for="tag in tags" :key="tag">{{tag}}</c-tag>
       </div>
     </template>
     <template slot="list_texts">
       <c-statistics-icons :data="metadata"></c-statistics-icons>
       <div class="thumb__description">{{data.description}}</div>
       <div class="thumb__tags thumb__tags--list" v-if="tags.length">
-        <c-tag :to="`/tv/search?tags=${tag}`" v-for="tag in tags" :key="tag">{{tag}}</c-tag>
+        <c-tag :to="`/directory/search?tags=${tag}`" v-for="tag in tags" :key="tag">{{tag}}</c-tag>
       </div>
     </template>
   </common-thumb>

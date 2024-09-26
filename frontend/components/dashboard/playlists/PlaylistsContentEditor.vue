@@ -2,7 +2,7 @@
   <div class="dashboard-page__playlists__content-editor">
       <c-box no-padding>
         <template slot="title">
-          {{$t('dashboard.playlists.media.title')}}
+          {{$t('dashboard.playlists.media.heading')}}
         </template>
         <template slot="title_buttons">
           <c-button color="green" icon="add" @click="addMediaFromCurrentChannel()">{{$t('dashboard.playlists.media.add_from_current_channel')}}</c-button>
@@ -14,7 +14,7 @@
               <template slot="custom_buttons">
                 <c-button transparent icon-only icon="menu">
                   <c-popup-menu :key="mediaItem.id" position="bottom-left" activate-on-parent-click>
-                    <c-popup-menu-item target="_blank" :to="`/dashboard/${channel.id}/media/${mediaItem.id}`">
+                    <c-popup-menu-item target="_blank" :to="`/dashboard/${channel.id}/media/${mediaItem.uuid}`">
                       {{ $t('dashboard.playlists.media.show') }}
                     </c-popup-menu-item>
                     <c-popup-menu-item @click="deleteItemFromPlaylist($index)">
@@ -32,14 +32,14 @@
 <style lang="scss">
 .dashboard-page__playlists {
   &__content-editor {
-    margin-top: -1px;
+    margin-top: -.25em;
     .box__header__title {
       @media screen and (max-width: 768px) {
         display: none;
       }
     }
     &__items {
-      height: calc(100vh - 24em);
+      height: calc(100vh - 23em - 1px);
       overflow: auto;
       @media screen and (max-width: 768px) {
         height: unset;

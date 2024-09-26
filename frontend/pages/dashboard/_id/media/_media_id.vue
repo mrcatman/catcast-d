@@ -30,6 +30,7 @@
               <c-col mobile-full-width>
                 <c-input :title="$t('dashboard.media.title')" v-form-input="'title'" />
                 <c-text-editor :title="$t('dashboard.media.description')" v-form-input="'description'" />
+                <c-autocomplete v-form-input="'category'" autocomplete-key="id" autocomplete-value="name" url="categories" :title="$t('dashboard.media.category')"/>
                 <c-tags-input v-form-input="'tags'" :title="$t('dashboard.media.tags')"/>
                 <c-select multiple :options="playlistsOptions" :title="$t('dashboard.media.playlists')" v-form-input="'playlist_ids'"/>
                 <privacy-settings can-disable-rating />

@@ -5,7 +5,7 @@
     </h2>
     <div class="directory-view__section" v-for="(config, $index) in getConfig">
       <welcome v-if="config.entity === 'welcome'" />
-      <c-thumbs-list :config="config" v-else>
+      <c-thumbs-list :config="config" v-else :key="getKey(config)">
         <template slot="item" slot-scope="props">
           <channel-thumb :data="props.item" v-if="config.entity === 'channels'" />
           <video-thumb :data="props.item" v-else-if="config.entity === 'media'" />
@@ -55,6 +55,9 @@ export default {
     ChannelThumb
   },
   methods: {
+    getKey(config) {
+      return JSON.stringify(config);
+    },
     generateDirectoryConfig(config, one = false) {
       const fullConfig = {
         ...config,
@@ -80,7 +83,8 @@ export default {
             ...baseConfig,
             ...this.generateDirectoryConfig(config),
           }
-          fullConfig.expandLink = `${!this.path.length ? '/directory' : '/'}${this.path}${config.id && config.id.startsWith('/') ? config.id : `/${config.id}`}`;
+          const path = this.path.replace('directory/','');
+          fullConfig.expandLink = `/${config.entity}?${(new URLSearchParams(config.params || []).toString())}`;
           return fullConfig;
         });
       } else {

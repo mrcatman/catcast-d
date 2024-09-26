@@ -13,7 +13,8 @@ export default {
   },
   async asyncData({app, route}) {
     const path = route.path.substring(1);
-    const directory = await app.$api.get(path.length ? path : 'directory/index');
+    const query = new URLSearchParams(route.query).toString();
+    const directory = await app.$api.get(`${path.length ? path : 'directory/index'}?${query}`);
     return {
       path,
       directory

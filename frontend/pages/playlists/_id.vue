@@ -17,9 +17,9 @@
       <c-box no-padding>
         <template slot="main">
           <media-list :data="media" :url="`playlists/${playlist.uuid}/media`"
-                      :config="{search: true, queryParams: {order}}">
-            <template slot="filters">
-              <c-select :options="orderOptions" v-model="order"></c-select>
+                      :config="{search: true}">
+            <template slot="filters" slot-scope="props">
+              <c-select :options="orderOptions" v-model="props.filters.order"></c-select>
             </template>
           </media-list>
         </template>
@@ -66,9 +66,6 @@ export default {
         view: 'list-small',
         innerScroll: true,
         hidePaginator: true,
-        queryParams: {
-          limit: 10
-        },
         disableQuerystringUpdate: true
       }
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PrivacyStatuses;
+use App\Helpers\CategoriesHelper;
 use App\Helpers\CommonResponses;
 use App\Helpers\FiltersHelper;
 use App\Helpers\RelationsHelper;
@@ -248,6 +249,7 @@ class MediaController extends Controller {
         if (request()->filled('additional_settings')) {
             $media->additional_settings = request()->input('additional_settings');
         }
+        $media->category_id = CategoriesHelper::getIdFromRequest();
         if (request()->filled('tags')) {
             $media->tags = request()->input('tags');
         }

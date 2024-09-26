@@ -1,6 +1,9 @@
 <template>
   <div class="page-container">
-   <c-thumbs-list :config="getConfig">
+   <c-thumbs-list :config="listConfig">
+     <template slot="filters" slot-scope="props">
+       <c-select v-model="props.filters.type" :title="$t('channels.type')" :options="typeOptions" />
+     </template>
       <template slot="item" slot-scope="props">
         <channel-thumb :data="props.item" />
       </template>
@@ -14,43 +17,26 @@
     components: {
       ChannelThumb,
     },
-    props: {
-      title: {
-        type: String,
-        required: false
-      },
-      queryParams: {
-        type: String,
-        required: false,
-        default: ''
-      },
-      url: {
-        type: String,
-        required: false,
-        default: '/channels'
-      },
-      config: {
-        type: Object,
-        required: false,
-        default: () => {
-          return {}
-        }
-      }
-    },
-    computed: {
-      getConfig() {
-        return {
-          title: this.title,
-          url: this.getUrl,
+    data() {
+      return {
+        listConfig: {
+          title: this.$t('channels.heading'),
+          url: '/channels',
           canChangeView: true,
           paginate: true,
           infiniteScroll: true,
-          ...this.config,
-        }
-      },
-      getUrl() {
-        return `${this.url}?${this.queryParams}`;
+          search: true,
+          filters: {
+            is_online: true
+          },
+          queryStringFilters: ['type', 'is_online']
+        },
+        typeOptions: [
+          {name: this.$t('global.all'), value: ''},
+          {name: this.$t('channels.tv'), value: 'tv'},
+          {name: this.$t('channels.radio'), value: 'radio'}
+        ]
       }
-    },
+    }
   }
 </script>

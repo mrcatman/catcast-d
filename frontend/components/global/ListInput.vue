@@ -18,6 +18,10 @@
 <style lang="scss">
 .list-input {
   --vertical-margin: .5em;
+  &__inner {
+    margin-top: -.5em;
+    font-size: .875em;
+  }
   &__description {
     font-size: .875em;
     color: var(--input-descriptions-color);

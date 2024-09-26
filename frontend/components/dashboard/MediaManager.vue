@@ -322,8 +322,6 @@ export default {
 .media-manager {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 3.5em);
-  margin: -1em 0;
   @media screen and (max-width: 768px) {
     height: unset;
     margin: 0;

@@ -3,22 +3,20 @@
 namespace App\Events\Media;
 
 use App\Models\Media;
-
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Queue\SerializesModels;
 
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MediaConvertFailEvent implements ShouldBroadcast
-{
+class MediaConvertProgressEvent implements ShouldBroadcast {
     use SerializesModels;
 
     public $media;
-    public $error;
+    public $percent;
 
-    public function __construct(Media $media, $error) {
+    public function __construct(Media $media, $percent) {
         $this->media = $media;
-        $this->error = $error;
+        $this->percent = $percent;
     }
 
     public function broadcastOn() {
@@ -26,6 +24,6 @@ class MediaConvertFailEvent implements ShouldBroadcast
     }
 
     public function broadcastAs() {
-        return 'media.convert_fail';
+        return 'media.convert_progress';
     }
 }

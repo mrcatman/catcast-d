@@ -16,7 +16,6 @@ class FiltersHelper {
      * @return Builder
      */
     public static function applyFromRequest(Builder | Relation $list, string $model_class) {
-        $list->orderBy('created_at', 'desc');
         if (request()->filled('search')) {
             $list = $list->search(request()->input('search'));
         }
@@ -31,6 +30,8 @@ class FiltersHelper {
             if (method_exists($model_class, $full_method_name)) {
                 $list = $list->$method_name();
             }
+        } else {
+            $list->orderBy('created_at', 'desc');
         }
 
         if (request()->filled('tags')) {
@@ -41,7 +42,6 @@ class FiltersHelper {
             $tag_ids = Tag::where(['entity_type'=> $model_class::getEntityType()])->whereIn('tag', $tags)->pluck('entity_id');
             $list = $list->whereIn('id', $tag_ids);
         }
-
         return $list->paginate(request()->input('count', 16));
     }
 

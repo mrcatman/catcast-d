@@ -17,19 +17,15 @@
     align-items: center;
     justify-content: space-between;
     &--with-border {
-      border-top: 1px solid rgba(255, 255, 255, .2);
-      padding: 1em 0 0;
-      margin: 1.25em 0 0;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1em;
     }
 	}
   &__right-buttons {
     margin-left: auto;
   }
 }
-.theme-flat .form__submit--with-border {
-  border-top: none;
-  padding: 0;
-}
+
 </style>
 <script>
 import {getParentComponent} from "@/helpers/components";
