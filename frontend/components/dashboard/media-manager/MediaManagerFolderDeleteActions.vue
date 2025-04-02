@@ -1,6 +1,6 @@
 <template>
   <div>
-    <c-select v-form-input="'action'" :title="$t('dashboard.media.folders.file_actions')" :options="options" />
+    <c-select v-model="values.action" :errors="errors.action" :title="$t('dashboard.media.folders.file_actions')" :options="options" />
   </div>
 </template>
 <script>

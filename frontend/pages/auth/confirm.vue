@@ -1,6 +1,6 @@
 <template>
   <auth-form>
-    <template slot="main">
+    <template #main>
       <c-preloader v-if="loading"  />
       <div v-else class="confirm">
         <i18n path="auth.confirm.welcome" tag="div" class="confirm__welcome">

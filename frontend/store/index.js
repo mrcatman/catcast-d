@@ -1,5 +1,3 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 
 import auth from '@/store/auth.js';
 import modals from '@/store/modals.js';
@@ -12,7 +10,6 @@ import uploads from '@/store/uploads.js';
 import {uuid} from "@/helpers/uuid";
 import {ALERT_VISIBILITY_TIME} from "@/constants/notifications";
 
-Vue.use(Vuex);
 const store = () => new Vuex.Store({
   modules: {
     auth,

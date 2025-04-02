@@ -113,10 +113,8 @@ import {mapGetters} from "vuex";
 
 import videojs from 'video.js';
 
-window.videojs = videojs;
-const videojsHlsjsSourceHandler = require('@streamroot/videojs-hlsjs-plugin');
-videojsHlsjsSourceHandler.register(videojs);
-import {initVideoJsHlsJsPlugin, Engine} from 'p2p-media-loader-hlsjs'
+//window.videojs = videojs;
+//import {initVideoJsHlsJsPlugin, Engine} from 'p2p-media-loader-hlsjs'
 
 import {requestFullScreen, cancelFullScreen} from "./functions"; // todo: move
 import {formatDuration} from '@/helpers/dates';

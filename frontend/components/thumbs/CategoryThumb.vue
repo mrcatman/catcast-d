@@ -1,6 +1,6 @@
 <template>
   <common-thumb class="category-thumb" :link="{path: link, params: {channel: data}}" :picture="picture" >
-    <template slot="inside_picture">
+    <template #inside_picture>
       <div class="category-thumb__name">{{data.name}}</div>
     </template>
   </common-thumb>
@@ -8,6 +8,7 @@
 <style lang="scss">
   .category-thumb {
     &__name {
+      text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;

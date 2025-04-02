@@ -1,6 +1,6 @@
 <template>
   <c-box class="profile-page__top__container">
-    <template slot="main">
+    <template #main>
       <div class="profile-page__top">
         <div class="profile-page__top__info">
           <div :style="{backgroundImage: `url(${user.avatar})`}"  class="profile-page__avatar"></div>
@@ -10,23 +10,25 @@
                {{username}}
                <c-tag v-if="me?.id === user.id">{{$t('profile.you')}}</c-tag>
                <c-tag color="green" v-if="user.is_admin">{{$t('profile.admin')}}</c-tag>
+
+              <div class="profile-page__status">
+                <span class="profile-page__status__text profile-page__status__text--empty" v-if="!statusText && me?.id === user.id && !editStatus.visible">{{$t('profile.change_status')}}</span>
+                <span class="profile-page__status__text" v-if="statusText && !editStatus.visible">{{statusText}}</span>
+                <c-button transparent icon-only icon="edit" v-if="me?.id === user.id && !editStatus.visible" @click="editStatus.visible = true" />
+                <c-row v-if="editStatus.visible">
+                  <c-col>
+                    <c-input v-model="editStatus.data.status_text"></c-input>
+                  </c-col>
+                  <c-col auto-width>
+                    <c-button color="green" :loading="editStatus.loading" @click="saveStatus()">{{$t('global.ok')}}</c-button>
+                  </c-col>
+                </c-row>
+              </div>
             </router-link>
-            <user-online-mark :user="user"/>
+            <user-online-status :user="user"/>
           </div>
         </div>
-        <div class="profile-page__status">
-          <span class="profile-page__status__text profile-page__status__text--empty" v-if="!statusText && me?.id === user.id && !editStatus.visible">{{$t('profile.change_status')}}</span>
-          <span class="profile-page__status__text" v-if="statusText && !editStatus.visible">{{statusText}}</span>
-          <c-button transparent icon-only icon="edit" v-if="me?.id === user.id && !editStatus.visible" @click="editStatus.visible = true" />
-          <c-row v-if="editStatus.visible">
-            <c-col>
-              <c-input v-model="editStatus.data.status_text"></c-input>
-            </c-col>
-            <c-col auto-width>
-              <c-button color="green" :loading="editStatus.loading" @click="saveStatus()">{{$t('global.ok')}}</c-button>
-            </c-col>
-          </c-row>
-        </div>
+
       </div>
     </template>
   </c-box>
@@ -37,6 +39,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+
     &__container {
       position: sticky;
       top: 0;
@@ -45,14 +48,14 @@
     &__info {
       display: flex;
       align-items: center;
+      gap: 1em;
     }
   }
   &__user {
     display: flex;
     flex-direction: column;
-    margin-left: 1em;
+    gap: .5em;
     &__text {
-      margin-bottom: 0.25em;
       font-size: .875em;
       line-height: 1;
     }
@@ -60,10 +63,16 @@
       text-decoration: none;
       font-weight: 600;
       font-size: 1.25em;
+      display: flex;
+      align-items: center;
+      gap: .5em;
+    }
+    .tag {
+      font-size: .75em;
+      margin: 0;
     }
   }
   &__status {
-    margin: 0 1em;
     flex: 1;
     display: flex;
     align-items: center;
@@ -86,52 +95,35 @@
   }
 }
 </style>
-<script>
-import UserOnlineMark from "@/components/users/UserOnlineMark";
-import FriendsButton from "@/components/buttons/FriendsButton";
-export default {
-  components: {FriendsButton, UserOnlineMark},
-  computed: {
-    username() {
-      return `${this.user.username}${this.user.domain ? `@${this.user.domain}` : ''}`;
-    },
-    me() {
-      return this.$store.state.user;
-    },
-  },
-  data() {
-    return {
-      statusText: this.user.status_text && this.user.status_text !== '' ? this.user.status_text : null,
-      editStatus: {
-        loading: false,
-        visible: false,
-        data: {
-          status_text: this.user.status_text || '',
-        }
-      }
-    }
-  },
-  methods: {
-    saveStatus() {
-      this.editStatus.loading = true;
-      this.$api.put('/auth/me', this.editStatus.data).then(({status_text})=> {
-        this.editStatus.data.status_text = status_text;
-        this.statusText = status_text;
-        this.editStatus.visible = false;
-      }).finally(() => {
-        this.editStatus.loading = false;
-      })
-    },
-  },
-  props: {
-    user: {
-      type: Object,
-      required: true
-    },
-    accessSettings: {
-      type: Object,
-      required: true
-    }
-  }
+<script lang="ts" setup>
+import UserOnlineStatus from "../users/UserOnlineStatus.vue";
+
+const props = defineProps<{
+  user: Users.Item,
+  accessSettings: any,
+}>();
+
+const { user: me } = useAuthStore();
+
+const username = computed(() => {
+  return `${props.user.username}${props.user.domain ? `@${props.user.domain}` : ''}`;
+})
+
+const statusText = ref<string>(props.user.status_text ?? null);
+
+const editStatus = {
+  visible: false,
+  loading: false
 }
+const saveStatus = (() => {
+  // this.editStatus.loading = true;
+  // this.$api.put('/auth/me', this.editStatus.data).then(({status_text})=> {
+  //   this.editStatus.data.status_text = status_text;
+  //   this.statusText = status_text;
+  //   this.editStatus.visible = false;
+  // }).finally(() => {
+  //   this.editStatus.loading = false;
+  // })
+})
+
 </script>

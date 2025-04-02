@@ -1,20 +1,21 @@
-import { distanceInWords, format } from 'date-fns';
+import { formatDistance, format } from 'date-fns';
+import { enUS, ru } from "date-fns/locale";
 
 const locales = {
-  en: require('date-fns/locale/en'),
-  ru: require('date-fns/locale/ru')
+  en: enUS, ru
 };
 
 export function getLocales() {
   return locales;
 }
+
 export function formatPublishDate(date, isTimestamp = false) {
   const now = new Date();
   const then = new Date(isTimestamp ? date * 1000 : date);
 
   const secondsInMonth = 60 * 60 * 24 * 30 * 1000;
   if (now.getTime() - then.getTime() < secondsInMonth) {
-    return distanceInWords(
+    return formatDistance(
       now,
       then,
       {
@@ -34,7 +35,7 @@ export function formatPublishDate(date, isTimestamp = false) {
 
 export function formatFullDate(date, {isTimestamp = false, seconds = false} = {}) {
   let dateObject = new Date(isTimestamp ? date * 1000 : date);
-  let dateFormat = "DD.MM.YYYY H:mm" + (seconds ? ":ss" : "");
+  let dateFormat = "dd.MM.yyyy H:mm" + (seconds ? ":ss" : "");
  // if (window.__locale__ === "ru") {
  //   dateFormat = "DD.MM.YYYY в H:mm" + (seconds ? ":ss" : "");
  // }

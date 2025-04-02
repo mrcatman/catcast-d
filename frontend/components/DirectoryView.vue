@@ -6,7 +6,7 @@
     <div class="directory-view__section" v-for="(config, $index) in getConfig">
       <welcome v-if="config.entity === 'welcome'" />
       <c-thumbs-list :config="config" v-else :key="getKey(config)">
-        <template slot="item" slot-scope="props">
+        <template #item slot-scope="props">
           <channel-thumb :data="props.item" v-if="config.entity === 'channels'" />
           <video-thumb :data="props.item" v-else-if="config.entity === 'media'" />
           <category-thumb :data="props.item" v-else-if="config.entity === 'categories'" />

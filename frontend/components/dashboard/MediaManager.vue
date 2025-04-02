@@ -9,32 +9,32 @@
 
       <c-selection-area @selected="onSelection" :options="{selectables: ['.media-manager__item--selectable']}">
         <c-thumbs-list ref="list" :config="listConfig">
-          <template slot="before_heading" v-if="!config.disableUpload">
+          <template #before_heading v-if="!config.disableUpload">
             <c-box>
-              <template slot="title">
+              <template #title>
                 <media-manager-breadcrumbs :breadcrumbs="breadcrumbs" @folderClick="onBreadcrumbsFolderClick"/>
               </template>
-              <template slot="title_buttons">
+              <template #title_buttons>
                 <media-manager-add-to-upload :channel="channel" :folder-id="currentFolderId" @load="$refs.list.load()"/>
               </template>
             </c-box>
           </template>
-          <template slot="filters">
+          <template #filters>
             <c-select class="media-manager__sort" :options="sortOptions" v-model="order"></c-select>
           </template>
-          <template slot="before" v-if="currentFolderId">
+          <template #before v-if="currentFolderId">
             <media-manager-item @click="onItemClick" :config="config"
                                  :item="{is_folder: true, object: {id: parentFolderId, channel_id: this.channel.id, title: $t('dashboard.media.back')}}"/>
           </template>
-          <template slot="item" slot-scope="props">
+          <template #item slot-scope="props">
             <media-manager-item @click="onItemClick" :config="config" :item="props.item" @edit="onItemEditClick(props.item)"
                                  @delete="onItemDeleteClick(props.item)"
                                  :selected="selectedItemIds[props.item.is_folder ? -1 * props.item.object.id : props.item.object.id]"
                                  @selected="(e) => setItemSelectionState(props.item.is_folder ? -1 * props.item.object.id : props.item.object.id, e)"/>
           </template>
-          <template slot="footer" v-if="!config.disableDiskSpaceIndicator || !config.disableEditing">
+          <template #footer v-if="!config.disableDiskSpaceIndicator || !config.disableEditing">
             <c-box>
-              <template slot="main">
+              <template #main>
                 <div class="media-manager__bottom">
                   <media-manager-disk-space  v-if="!config.disableDiskSpaceIndicator" :channel="channel" ref="disk_space"/>
                   <media-manager-bulk-actions v-if="!config.disableEditing" :channel="channel" :folder-id="currentFolderId" :config="config"

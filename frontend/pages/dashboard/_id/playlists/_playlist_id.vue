@@ -1,31 +1,31 @@
 <template>
     <c-box class="dashboard-page__playlist-editor">
-      <template slot="title">
+      <template #title>
         {{$t('dashboard.playlists.edit')}}
         <c-button target="_blank" :to="playlist.local_url" transparent icon-only icon="arrow_outward">
-          <template slot="tooltip">
+          <template #tooltip>
             <c-tooltip position="bottom-left">{{ $t('global.link') }}</c-tooltip>
           </template>
         </c-button>
       </template>
-      <template slot="title_buttons">
+      <template #title_buttons>
         <div class="buttons-row">
           <c-button flat :to="`/dashboard/${channel.id}/playlists`" icon="arrow_back_ios">{{$t('dashboard.playlists.back_to_list')}}</c-button>
         </div>
       </template>
-      <template slot="main">
+      <template #main>
         <c-form v-model="form.data" ref="form" :initial-values="playlist" :method="playlist.id ? 'put' : 'post'" :url="playlist.id ? `/playlists/${playlist.id}` : '/playlists'" :post-data="postData" :use-alerts="true" >
           <c-tabs :data="tabs" v-model="currentTab" />
           <div class="dashboard-page__playlist-editor__content">
             <div v-show="currentTab === 'info'">
               <c-row align="stretch">
                 <c-col mobile-full-width class="dashboard-page__playlist-editor__col dashboard-page__playlist-editor__col--scrollable">
-                  <c-input v-form-input="'name'" v-form-validate="'required'" :title="$t('dashboard.playlists.name')" />
-                  <privacy-status-select v-form-input="'privacy_status'" />
-                  <c-text-editor v-form-input="'description'"  :title="$t('dashboard.playlists.description')"/>
-                  <c-tags-input v-form-input="'tags'" :title="$t('dashboard.playlists.tags')"/>
-                  <c-autocomplete v-form-input="'category'" autocomplete-key="id" autocomplete-value="name" url="categories" :title="$t('dashboard.playlists.category')"/>
-                  <c-list-input v-form-input="'links'" :fields="[{id: 'title', name: $t('links_editor.heading'), flexGrow: .5}, {id: 'url', name: $t('links_editor.url')}]" :title="$t('dashboard.playlists.links')" />
+                  <c-input v-model="values.name" :errors="errors.name" v-form-validate="'required'" :title="$t('dashboard.playlists.name')" />
+                  <privacy-status-select v-model="values.privacy_status" :errors="errors.privacy_status" />
+                  <c-text-editor v-model="values.description" :errors="errors.description"  :title="$t('dashboard.playlists.description')"/>
+                  <c-tags-input v-model="values.tags" :errors="errors.tags" :title="$t('dashboard.playlists.tags')"/>
+                  <c-autocomplete v-model="values.category" :errors="errors.category" autocomplete-key="id" autocomplete-value="name" url="categories" :title="$t('dashboard.playlists.category')"/>
+                  <c-list-input v-model="values.links" :errors="errors.links" :fields="[{id: 'title', name: $t('links_editor.heading'), flexGrow: .5}, {id: 'url', name: $t('links_editor.url')}]" :title="$t('dashboard.playlists.links')" />
                   <privacy-settings class="dashboard-page__playlist-editor__privacy-settings" />
                 </c-col>
                 <c-col v-if="!isMobile" mobile-full-width :grow="1.5" class="dashboard-page__playlist-editor__col">
@@ -37,7 +37,7 @@
               <playlists-content-editor :channel="channel" :playlist="playlist" v-model="form.media"/>
             </div>
             <div v-show="currentTab === 'design'">
-              <c-checkbox :title="$t('dashboard.playlists.use_custom_design')" v-form-input="'use_custom_design'"  />
+              <c-checkbox :title="$t('dashboard.playlists.use_custom_design')" v-model="values.use_custom_design" :errors="errors.use_custom_design"  />
               <design-editor  v-limit-height="'playlist_editor_design'" v-if="currentTab === 'design' && form.data && form.data.use_custom_design" :channel="channel" :data="playlist" v-model="form.design"/>
             </div>
             <div v-if="currentTab === 'statistics'">

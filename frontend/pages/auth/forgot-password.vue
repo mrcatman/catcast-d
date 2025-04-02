@@ -1,11 +1,11 @@
 <template>
 <auth-form>
-  <template slot="main">
+  <template #main>
     <c-form button-class="button--big" :button-text="$t('auth.forgot_password.send')"  url="/auth/forgot-password">
-      <c-input v-form-input="'email'" v-form-validate="'email'" :title="$t('auth.forgot_password.email')" />
+      <c-input v-model="values.email" :errors="errors.email" v-form-validate="'email'" :title="$t('auth.forgot_password.email')" />
     </c-form>
   </template>
-  <template slot="links">
+  <template #links>
     <router-link to="/auth/login">{{$t('auth.login')}}</router-link>
   </template>
 </auth-form>

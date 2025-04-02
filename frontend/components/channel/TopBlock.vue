@@ -39,7 +39,7 @@
   import { mapState } from "vuex";
 
   import SubscribeButton from "@/components/subscriptions/SubscribeButton.vue";
-  import Rating from "@/components/Rating.vue";
+  import Rating from "@/components/Rating/Rating";
   import ActiveBroadcastDisplay from "@/components/channel/ActiveBroadcastDisplay.vue";
 
   export default {

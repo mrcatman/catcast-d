@@ -3,28 +3,28 @@
 
 
     <c-box>
-      <template slot="title">{{ $t('dashboard.chat.settings.heading') }}</template>
-      <template slot="main">
+      <template #title>{{ $t('dashboard.chat.settings.heading') }}</template>
+      <template #main>
         <c-form method="put" :url="`/channels/${channel.id}`" :initialValues="channel">
-          <c-checkbox v-form-input="'additional_settings.chat.disabled'"
+          <c-checkbox v-model="values.additional_settings.chat.disabled" :errors="errors.additional_settings.chat.disabled"
                       :title="$t('dashboard.chat.settings.disabled')"/>
           <div class="vertical-delimiter"></div>
           <c-row>
             <c-col auto-width>
-              <c-checkbox v-form-input="'additional_settings.chat.allow_guests'"
+              <c-checkbox v-model="values.additional_settings.chat.allow_guests" :errors="errors.additional_settings.chat.allow_guests"
                           :title="$t('dashboard.chat.settings.allow_guests')"/>
             </c-col>
             <c-col>
               <c-input v-form-show="'additional_settings.chat.allow_guests'"
-                       v-form-input="'additional_settings.chat.default_guest_username'"
+                       v-model="values.additional_settings.chat.default_guest_username" :errors="errors.additional_settings.chat.default_guest_username"
                        :title="$t('dashboard.chat.settings.default_guest_username')"/>
             </c-col>
           </c-row>
 
           <div class="vertical-delimiter"></div>
-          <c-input v-form-input="'additional_settings.chat.motd'" :title="$t('dashboard.chat.settings.motd')"/>
+          <c-input v-model="values.additional_settings.chat.motd" :errors="errors.additional_settings.chat.motd" :title="$t('dashboard.chat.settings.motd')"/>
           <div class="vertical-delimiter"></div>
-          <c-list-input v-form-input="'additional_settings.chat.forbidden_words'" :fields="[{id: 'word'}]"
+          <c-list-input v-model="values.additional_settings.chat.forbidden_words" :errors="errors.additional_settings.chat.forbidden_words" :fields="[{id: 'word'}]"
                         :title="$t('dashboard.chat.settings.forbidden_words.heading')"
                         :description="$t('dashboard.chat.settings.forbidden_words.description')"/>
         </c-form>
@@ -34,7 +34,7 @@
     <c-form method="put" :url="'/channels/'+channel.id" :initialValues="channel" :auto-save="true" :hide-submit="true"
             v-if="maxCustomSmileysCount > 0">
       <c-multi-picture-uploader
-        v-form-input="'additional_settings.chat.smileys'"
+        v-model="values.additional_settings.chat.smileys" :errors="errors.additional_settings.chat.smileys"
         :config="customSmileysUploaderConfig"
       />
     </c-form>

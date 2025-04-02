@@ -1,8 +1,8 @@
 <template>
   <div>
-    <c-autocomplete v-form-input="'user'" v-if="!editing" autocomplete-key="id" autocomplete-value="username" url="users/autocomplete"  :title="$t('global.enter_username')" />
+    <c-autocomplete v-model="values.user" :errors="errors.user" v-if="!editing" autocomplete-key="id" autocomplete-value="username" url="users/autocomplete"  :title="$t('global.enter_username')" />
 
-    <c-radio-buttons v-if="data.permissions && !data.permissions.owner" v-form-input="'permissions.channel_admin'" :values="[
+    <c-radio-buttons v-if="data.permissions && !data.permissions.owner" v-model="values.permissions.channel_admin" :errors="errors.permissions.channel_admin" :values="[
         {name: $t('dashboard.team.user_is_channel_admin'), value: 1},
         {name: $t('dashboard.team.select_individual_permissions'), value: 0},
       ]"  />
@@ -22,8 +22,8 @@
       </div>
     </div>
     <div class="vertical-delimiter"></div>
-    <c-checkbox switch v-if="data.permissions && !data.permissions.owner" v-form-input="'hidden'" :title="$t('dashboard.team.hidden')" />
-    <c-input v-if="!data.hidden" v-form-input="'position'" :title="$t('dashboard.team.position.heading')" :description="$t('dashboard.team.position.description')" />
+    <c-checkbox switch v-if="data.permissions && !data.permissions.owner" v-model="values.hidden" :errors="errors.hidden" :title="$t('dashboard.team.hidden')" />
+    <c-input v-if="!data.hidden" v-model="values.position" :errors="errors.position" :title="$t('dashboard.team.position.heading')" :description="$t('dashboard.team.position.description')" />
   </div>
 </template>
 <style lang="scss" scoped>

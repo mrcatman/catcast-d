@@ -1,10 +1,10 @@
 <template>
   <layout-with-left-menu>
-    <template slot="tabs">
+    <template #tabs>
 
     </template>
-    <template slot="main">
-      <nuxt-child  />
+    <template #main>
+      <nuxt-page  />
     </template>
   </layout-with-left-menu>
     <!--

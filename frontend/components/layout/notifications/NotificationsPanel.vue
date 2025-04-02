@@ -1,6 +1,6 @@
 <template>
   <div class="notifications-panel" v-click-outside="hidePanel">
-    <div @click = "listVisible = !listVisible"  class="user-panel__button">
+    <div @click="listVisible = !listVisible"  class="user-panel__button">
       <i class="material-icons">notifications</i>
       <span class="user-panel__button__count" v-if="user.unread_notifications_count > 0">{{user.unread_notifications_count}}</span>
     </div>
@@ -10,59 +10,51 @@
         <c-button class="notifications-panel__list__settings" to="/user/settings/notifications" flat rounded icon-only icon="settings" />
       </div>
       <c-thumbs-list ref="list" :config="listConfig" class="notifications-panel__list__main">
-        <template slot="item" slot-scope="props">
-          <notification-item :data="props.item"/>
+        <template #item="{ item }">
+          <notification-item :data="item"/>
         </template>
       </c-thumbs-list>
     </div>
   </div>
 </template>
-<script>
-  import clickOutside from 'vue-click-outside';
-  import { mapState } from 'vuex';
+<script lang="ts" setup>
+  import vClickOutside from 'click-outside-vue3';
   import NotificationItem from '@/components/layout/notifications/NotificationItem';
 
-  export default {
-    computed: {
-      ...mapState('auth', ['user'])
-    },
-    directives: {
-      clickOutside
-    },
-    components: {
-      NotificationItem
-    },
-    data() {
-      return {
-        listVisible: false,
-        listConfig: {
-          url: 'notifications',
-          view: 'list',
-          paginate: true,
-          infiniteScroll: true,
-          noPadding: true,
-          search: true,
-          hidePaginator: true,
-          usePreloadingListItem: true,
-        }
-      }
-    },
-    watch: {
-      listVisible(visible) {
-        if (visible) {
-          this.$store.dispatch('auth/readNotifications');
-        }
-      }
-    },
-    methods: {
-      hidePanel() {
-        if (this.listVisible) {
-          this.$emit('hide');
-          this.listVisible = false;
-        }
-      },
-   }
+  const { request } = useApi();
+  const { user } = useAuthStore();
+
+  const emit = defineEmits<{
+    (e: 'hide'): void
+  }>()
+
+  const listVisible = ref<boolean>(false);
+
+  const listConfig = {
+    handler: (params)  => request.get('notifications', {
+      query: params
+    }),
+    view: 'list',
+    paginate: true,
+    infiniteScroll: true,
+    noPadding: true,
+    search: true,
+    hidePager: true,
+    usePreloadingListItem: true,
   }
+
+  watch(listVisible, (visible) => {
+    if (visible) {
+      // todo
+      //this.$store.dispatch('auth/readNotifications');
+    }
+  })
+
+  const hidePanel = () => {
+    emit('hide');
+    listVisible.value = false;
+  }
+
 </script>
 <style lang="scss" scoped>
 .notifications-panel {

@@ -10,7 +10,7 @@
                :data-id="item.is_folder ? -1 * item.object.id : item.object.id"
               :data-can-edit="item.permissions?.can_edit ? 1 : 0"
         >
-    <template slot="captions">
+    <template #captions>
       <div class="list-item__title">
         <c-checkbox v-if="canSelect" v-model="isSelected" class="media-manager__item__select"/>
         {{ item.object.title }}
@@ -21,7 +21,7 @@
         <c-tag v-if="uploadError" color="red" class="media-manager__item__not-uploaded">{{$t('dashboard.media.not_uploaded')}}</c-tag>
       </div>
     </template>
-    <template slot="buttons" v-if="item.object.id && !config.disableEditing">
+    <template #buttons v-if="item.object.id && !config.disableEditing">
       <c-button transparent narrow icon-only icon="menu" >
         <c-popup-menu position="bottom-left" activate-on-parent-click>
           <c-popup-menu-item v-if="!item.is_folder" :to="item.object.local_url" icon="arrow_outward">{{ $t('global.link') }}</c-popup-menu-item>
@@ -32,7 +32,7 @@
       </c-button>
 
     </template>
-    <template slot="buttons" v-if="$slots.custom_buttons">
+    <template #buttons v-if="$slots.custom_buttons">
       <slot name="custom_buttons"></slot>
     </template>
   </c-list-item>

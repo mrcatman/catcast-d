@@ -3,8 +3,7 @@
     <div class="mobile-studio" v-if="!error">
 
       <c-modal :header="$t('studio.not_supported.heading')" v-model="notSupported" :showCloseButton="false">
-        <div slot="main">
-          <div class="modal__text">{{$t('studio.not_supported.text')}}</div>
+        <div slot="main">          <div class="modal__text">{{$t('studio.not_supported.text')}}</div>
         </div>
         <div class="modal__buttons" slot="buttons">
           <div class="buttons-row">

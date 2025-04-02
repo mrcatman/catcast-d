@@ -46,7 +46,7 @@ export default{
 					this.isSubscribed = res.data.data.is_subscribed;
 				})
 			} else{
-				this.$router.push('/login');
+				this.$router.push('/auth/login');
 			}
 		}
 	}

@@ -14,17 +14,6 @@ services:
     volumes:
       - ./nginx/nginx.conf:/opt/nginx/conf/nginx.conf  
       - ./backend:/backend
-  #nuxt:
-  #  build:
-  #    context: ./frontend
-  #    dockerfile: Dockerfile
-  #  restart: always
-  #  working_dir: /frontend
-  #  command: bash -c "npm i && npm run dev"
-  #  volumes:
-  #    - ./frontend:/frontend
-  #  environment:
-  #    - CHOKIDAR_USEPOLLING=true
   echo:
     build:
       context: ./echo
@@ -47,6 +36,19 @@ services:
       - ./backend:/backend
     env_file:
       - .env
+  vite:
+    image: node:20
+    working_dir: /backend
+    volumes:
+      - ./:/backend
+      - /backend/node_modules
+    command: npm run dev
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_DEV_SERVER_HOST=0.0.0.0
+    depends_on:
+      - php
   queue:
     build:
       context: ./backend

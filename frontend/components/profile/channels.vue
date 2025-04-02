@@ -1,10 +1,10 @@
 <template>
   <c-box no-padding>
-    <template slot="title">{{ $t('profile.channels') }}</template>
-    <template slot="main">
+    <template #title>{{ $t('profile.channels') }}</template>
+    <template #main>
       <c-list-item v-for="item in channels" :key="item.channel.id" :to="'/'+item.channel.shortname"
                    :picture="item.channel.logo" :pictureSquare="true">
-        <template slot="captions">
+        <template #captions>
           <div class="list-item__title">{{ item.channel.name }}</div>
           <span v-if="item.position" class="list-item__text">
               {{ item.position }}
@@ -21,13 +21,8 @@
     </template>
   </c-box>
 </template>
-<script>
-export default {
-  props: {
-    channels: {
-      type: Array,
-      required: true
-    },
-  }
-}
+<script lang="ts" setup>
+defineProps<{
+  channels: Users.Channel[]
+}>();
 </script>

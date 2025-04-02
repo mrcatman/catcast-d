@@ -1,7 +1,7 @@
 <template>
   <div>
     <c-preloader v-if="loading" />
-    <c-select v-else v-form-input="'folder_id'" :title="$t('dashboard.media.select_folder_to_move')" :options="options" />
+    <c-select v-else v-model="values.folder_id" :errors="errors.folder_id" :title="$t('dashboard.media.select_folder_to_move')" :options="options" />
   </div>
 </template>
 <script>

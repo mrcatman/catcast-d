@@ -2,8 +2,8 @@
   <div class="dashboard-page__design" ref="design_preview">
     <div class="dashboard-page__design__section">
       <c-box  class="dashboard-page__design__section__inputs">
-        <template slot="title">{{$t('dashboard.design.page.heading')}}</template>
-        <template slot="main">
+        <template #title>{{$t('dashboard.design.page.heading')}}</template>
+        <template #main>
           <div class="dashboard-page__design__section__row">
             <div class="dashboard-page__design__section__title">{{$t('dashboard.design.page.logo')}}</div>
             <c-picture-uploader big :channel="channel" folder="logos" v-model="picturesData.logo" :errors="errors.logo" />
@@ -53,8 +53,8 @@
 
     <div class="dashboard-page__design__section">
       <c-box class="dashboard-page__design__section__inputs">
-        <template slot="title">{{$t('dashboard.design.player_and_chat.heading')}}</template>
-        <template slot="main">
+        <template #title>{{$t('dashboard.design.player_and_chat.heading')}}</template>
+        <template #main>
           <div class="dashboard-page__design__section__row">
             <div class="dashboard-page__design__section__title">{{$t('dashboard.design.player_and_chat.player_background')}}</div>
             <c-picture-uploader big :proportion="16/9" :channel="channel" folder="player_backgrounds" v-model="picturesData.player_background" :errors="errors.player_background" />

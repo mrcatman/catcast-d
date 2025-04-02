@@ -1,6 +1,6 @@
 <template>
   <common-thumb class="media-thumb" :link="!config.disableLinks ? (config.link ? config.link : link) : null" :picture="picture" :highlighted="config.highlighted">
-    <template slot="inside_picture">
+    <template #inside_picture>
       <!--
       <div class="media-thumb__viewers">
         <i class="material-icons">remove_red_eye</i>
@@ -10,7 +10,7 @@
       <c-tag v-if="data.duration > 0" class="media-thumb__duration">{{formatDuration(data.duration)}}</c-tag>
       <c-tag color="green" class="media-thumb__is-record" v-if="isRecord">{{$t('media.record')}}</c-tag>
     </template>
-    <template slot="texts" v-if="showParts.texts !== false">
+    <template #texts v-if="showParts.texts !== false">
       <div class="thumb__title">{{data.title}}</div>
       <channel-logo-and-name :channel="data.channel" v-if="data.channel && showParts.channel" :disableLinks="config.disableLinks" class="media-thumb__channel-logo-and-name" />
       <div class="thumb__tags" v-if="tags.length && showParts.tags">
@@ -18,7 +18,7 @@
       </div>
       <c-statistics-icons class="thumb__statistics-icons" :data="metadata"></c-statistics-icons>
     </template>
-    <template slot="list_texts" v-if="showParts.texts !== false">
+    <template #list_texts v-if="showParts.texts !== false">
       <div class="thumb__description" v-if="showParts.description">{{data.description}}</div>
       <div class="thumb__tags thumb__tags--list" v-if="tags.length && showParts.tags">
         <c-tag :to="`/directory/search?tags=${tag}`" v-for="tag in tags" :key="tag">{{tag}}</c-tag>

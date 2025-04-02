@@ -16,7 +16,7 @@
         <c-popup-menu-item :to="`/users/${user.id}`" >{{$t('auth.profile')}}</c-popup-menu-item>
         <c-popup-menu-item to="/user/settings">{{$t('auth.settings')}}</c-popup-menu-item>
         <c-popup-menu-item v-if="user.is_admin" to="/admin/channels">{{$t('admin.heading')}}</c-popup-menu-item>
-        <c-popup-menu-item @click="logout()" >{{$t('auth.logout')}}</c-popup-menu-item>
+        <c-popup-menu-item @click="doLogout()" >{{$t('auth.logout')}}</c-popup-menu-item>
       </c-popup-menu>
 
     </div>
@@ -36,10 +36,6 @@
        </div>
        <div class="user-panel__mobile__overlay__buttons">
          <notifications-panel @hide="onHideNotificationsPanel"/>
-
-         <div @click="$router.push('/user/feed'); mobilePanelVisible = false" class="user-panel__info__button">
-           <i class="fa fa-stream"></i>
-         </div>
        </div>
        <div class="user-panel__mobile__overlay__links">
          <a @click="goAndCloseMenu('/dashboard')" class="user-panel__mobile__overlay__link">{{$t('auth.dashboard')}}</a>
@@ -48,13 +44,44 @@
          <a @click="goAndCloseMenu('/users/'+user.id)" class="user-panel__mobile__overlay__link" >{{$t('auth.profile')}}</a>
          <a @click="goAndCloseMenu('/user/settings')" class="user-panel__mobile__overlay__link" >{{$t('auth.settings')}}</a>
 
-         <a class="user-panel__mobile__overlay__link" @click="mobilePanelVisible = false; logout()" >{{$t('auth.logout')}}</a>
+         <a class="user-panel__mobile__overlay__link" @click="mobilePanelVisible = false; doLogout()" >{{$t('auth.logout')}}</a>
        </div>
      </div>
    </div>
  </div>
 </div>
 </template>
+<script lang="ts" setup>
+import NotificationsPanel from '@/components/layout/notifications/NotificationsPanel';
+import SiteSearch from "@/components/layout/SiteSearch";
+
+const router = useRouter();
+
+const { user, loggedIn } = useAuthStore();
+
+const importantTicketModalVisible = ref<boolean>(false); // todo: check, maybe delete
+const mobilePanelVisible = ref<boolean>(false);
+
+
+const onHideSearch = () => {
+  mobilePanelVisible.value = false;
+}
+
+const onHideNotificationsPanel = () => {
+  mobilePanelVisible.value = false;
+}
+
+const goAndCloseMenu = (link: string) => {
+  router.push(link);
+  mobilePanelVisible.value = false;
+}
+
+const doLogout = () => {
+  logout();
+  router.push('/');
+}
+</script>
+
 <style lang="scss">
 .user-panel {
   color: var(--text-color);
@@ -214,38 +241,3 @@
   }
 }
 </style>
-<script>
-import { mapState } from 'vuex';
-import NotificationsPanel from '@/components/layout/notifications/NotificationsPanel';
-import SiteSearch from "@/components/layout/SiteSearch";
-
-export default{
-  components: {
-    SiteSearch,
-    NotificationsPanel,
-  },
-  computed: mapState('auth', ['loggedIn', 'user']),
-  data() {
-    return {
-      importantTicketModalVisible: true,
-      mobilePanelVisible: false,
-    }
-  },
-  methods: {
-    onHideSearch() {
-      this.mobilePanelVisible = false;
-    },
-    onHideNotificationsPanel() {
-      this.mobilePanelVisible = false;
-    },
-    goAndCloseMenu(link) {
-      this.$router.push(link);
-      this.mobilePanelVisible = false;
-    },
-    logout() {
-      this.$store.dispatch('auth/logout');
-      this.$router.push('/');
-    }
-  }
-}
-</script>

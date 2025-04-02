@@ -37,8 +37,7 @@
     </div>
 
     <c-modal v-model="declinePanel.visible">
-      <div slot="main">
-        <div class="modal__input-container">
+      <div slot="main">        <div class="modal__input-container">
           <c-input type="textarea" :placeholder="$t('admin.donate_requests.admin_comment')" v-model="declinePanel.data.admin_comment" />
         </div>
       </div>

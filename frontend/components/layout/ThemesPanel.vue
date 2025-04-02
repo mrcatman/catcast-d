@@ -1,13 +1,13 @@
 <template>
   <c-modal v-model="active" :header="$t('themes.heading')">
-    <template slot="main">
+    <template #main>
       <div class="buttons-row">
         <c-button @click="setTheme('default')" :flat="currentTheme === 'default'">{{$t('themes._list.default')}}</c-button>
         <c-button @click="setTheme('modern')" :flat="currentTheme === 'modern'">{{$t('themes._list.modern')}}</c-button>
         <c-button @click="setTheme('flat')" :flat="currentTheme === 'flat'">{{$t('themes._list.flat')}}</c-button>
       </div>
     </template>
-    <template slot="buttons">
+    <template #buttons>
       <c-button @click="active = false">{{$t('global.ok')}}</c-button>
     </template>
   </c-modal>

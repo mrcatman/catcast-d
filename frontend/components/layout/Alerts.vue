@@ -1,6 +1,11 @@
 <template>
 <div class="alerts-list">
-	<div v-for="alertItem in alerts" :key="alertItem.id" class="alerts-list__item" :class="{'alerts-list__item--success': alertItem.status === 1, 'alerts-list__item--fail': alertItem.status === 0}">
+	<div
+      v-for="alertItem in alerts"
+      :key="alertItem.id"
+      class="alerts-list__item"
+      :class="`alerts-list__item--${alertItem.type}`"
+  >
 		<c-translated-message :message="alertItem.text" />
 	</div>
 </div>
@@ -30,7 +35,7 @@
       color: #fff;
       background: var(--positive-color);
     }
-    &--fail {
+    &--error {
       color: #fff;
       background: var(--negative-color);
     }
@@ -47,9 +52,6 @@
   }
 }
 </style>
-<script>
-import {mapState} from 'vuex';
-export default {
-  computed: mapState(['alerts'])
-}
+<script lang="ts" setup>
+const { alerts } = storeToRefs(useAlertsStore());
 </script>

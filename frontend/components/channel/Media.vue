@@ -1,7 +1,7 @@
 <template>
   <div class="channel-layout__media">
     <media-list :url="`/channels/${channel.id}/media?order=${order}`" :config="{search: true}" >
-      <template slot="filters">
+      <template #filters>
         <c-select :options="orderOptions" v-model="order" />
       </template>
     </media-list>

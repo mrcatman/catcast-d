@@ -1,7 +1,7 @@
 <template>
   <div class="channel-layout__playlists">
     <c-thumbs-list :config="config">
-      <template slot="item" slot-scope="props">
+      <template #item slot-scope="props">
         <playlist-thumb :data="props.item" />
       </template>
     </c-thumbs-list>

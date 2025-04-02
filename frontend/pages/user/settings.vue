@@ -1,11 +1,11 @@
 <template>
   <layout-with-left-menu class="settings-page">
-    <template slot="tabs">
-      <c-tabs :vertical="!isMobile" :data="tabs" />
+    <template #tabs>
+      <c-tabs :vertical="!_isMobile" :data="tabs"/>
     </template>
-    <template slot="main">
+    <template #main>
       <div class="page-container settings-page__container">
-        <nuxt-child></nuxt-child>
+        <nuxt-page/>
       </div>
     </template>
   </layout-with-left-menu>
@@ -20,47 +20,47 @@
   }
 }
 </style>
-<script>
-  import LayoutWithLeftMenu from "@/components/LayoutWithLeftMenu";
-  import isMobile from "@/helpers/isMobile";
-  export default {
-    watch: {
-      $route() {
-        this.autoRedirect();
-      }
-    },
-    mounted() {
-      this.autoRedirect();
-    },
-    methods: {
-      autoRedirect() {
-        if (this.$route.name === 'user-settings') {
-          this.$router.push(`/user/settings/personal`);
-        }
-      }
-    },
-    head() {
-      return {
-        title: this.$t('settings.heading')
-      }
-    },
-    middleware: 'auth',
-    components: {
-      LayoutWithLeftMenu,
-    },
-    data() {
-      return {
-        tabs: [
-          {id: 'personal', link: '/user/settings/personal', name: this.$t('settings.personal')},
-          {id: 'password', link: '/user/settings/password', name: this.$t('settings.password.heading')},
-          {id: 'notifications', link: '/user/settings/notifications', name: this.$t('settings.notifications')},
-          {id: 'blacklist', link: '/user/settings/blacklist', name: this.$t('settings.blacklist')},
-          {id: 'privacy', link: '/user/settings/privacy', name: this.$t('settings.privacy')},
-          {id: 'social', link: '/user/settings/social', name: this.$t('settings.social')},
-          {id: 'restore', link: '/user/settings/restore', name: this.$t('settings.restore.heading')},
-        ],
-        isMobile: isMobile(),
-      }
-    }
+<script lang="ts" setup>
+import LayoutWithLeftMenu from "@/components/LayoutWithLeftMenu";
+import isMobile from "@/helpers/isMobile";
+
+const {t} = useI18n();
+
+const router = useRouter();
+const route = useRoute();
+
+const _isMobile = isMobile();
+
+
+const autoRedirect = (() => {
+  if (route.name === 'user-settings') {
+    router.push(`/user/settings/personal`);
   }
+})
+
+watch(route, autoRedirect);
+onMounted(autoRedirect);
+
+
+useHead(() => {
+  return {
+    title: t('settings.heading')
+  }
+})
+
+definePageMeta({
+  middleware: [
+    'auth',
+  ]
+});
+
+const tabs = [
+  {id: 'personal', link: '/user/settings/personal', name: t('settings.personal')},
+  {id: 'password', link: '/user/settings/password', name: t('settings.password.heading')},
+  {id: 'notifications', link: '/user/settings/notifications', name: t('settings.notifications')},
+  {id: 'blacklist', link: '/user/settings/blacklist', name: t('settings.blacklist')},
+  {id: 'privacy', link: '/user/settings/privacy', name: t('settings.privacy')},
+  {id: 'social', link: '/user/settings/social', name: t('settings.social')},
+  {id: 'restore', link: '/user/settings/restore', name: t('settings.restore.heading')},
+];
 </script>

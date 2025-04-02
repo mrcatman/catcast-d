@@ -7,8 +7,7 @@
     <playlistEditor @newplaylist="addPlaylist" @editplaylist="editPlaylist" v-model="playlistPanel.visible" :channel="channel" :data="playlistPanel.data"/>
 
     <c-modal v-if="playlistToDelete.data" :showCloseButton="false" :header="$t('dashboard.tracks.playlists.delete_playlist.heading')">
-      <div slot="main">
-        <div class="modal__text">{{$t('dashboard.tracks.playlists.delete_playlist.text')}}</div>
+      <div slot="main">        <div class="modal__text">{{$t('dashboard.tracks.playlists.delete_playlist.text')}}</div>
         <div class="modal__input-container">
           <c-select :placeholder="$t('dashboard.tracks.playlists.delete_playlist.action')" :options="deletePlaylistActions" v-model="playlistToDelete.action" />
         </div>
@@ -25,8 +24,7 @@
     </c-modal>
 
     <c-modal v-model="playlistDeletePanel.visible">
-      <div slot="main">
-        <div class="modal__text">{{$t('dashboard.tracks.delete_playlist.text')}}</div>
+      <div slot="main">        <div class="modal__text">{{$t('dashboard.tracks.delete_playlist.text')}}</div>
       </div>
       <div class="modal__buttons" slot="buttons">
         <div class="buttons-row">
@@ -492,9 +490,9 @@
 <script>
   import PlaylistModal from '@/components/dashboard/tracks/playlistModal';
   import AudioManager from '@/components/AudioManager';
-  import ResizableRow from '@/components/global/resizable/ResizableRow';
-  import ResizableRowChild from '@/components/global/resizable/ResizableRowChild';
-  import ResizableRowBar from '@/components/global/resizable/ResizableRowBar';
+  import ResizableRow from '@/components/ui/resizable/ResizableRow';
+  import ResizableRowChild from '@/components/ui/resizable/ResizableRowChild';
+  import ResizableRowBar from '@/components/ui/resizable/ResizableRowBar';
   import playlistEditor from '@/components/radio-scheduler/playlistEditor';
   import announcePanel from '@/components/scheduler/announcePanel';
   import AnnouncesManager from "@/components/scheduler/AnnouncesManager";

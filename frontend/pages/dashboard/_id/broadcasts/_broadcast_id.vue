@@ -1,9 +1,9 @@
 <template>
   <c-box>
-    <template slot="title">
+    <template #title>
       {{$t('dashboard.broadcast.statistics', {title: broadcast.title})}}
     </template>
-    <template slot="main">
+    <template #main>
       <statistics-viewer :entity-id="broadcast.id" entity-type="broadcasts" :startParams="startParams" :timeLimits="timeLimits" />
     </template>
   </c-box>

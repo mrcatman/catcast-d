@@ -1,17 +1,17 @@
 <template>
   <div class="media-uploader" v-show="list.length > 0">
     <c-box no-padding>
-      <template slot="title">
+      <template #title>
         {{ $t('dashboard.media.uploads_count', {total: list.length, ready: uploadedList.length}) }}
       </template>
-      <template slot="title_buttons">
+      <template #title_buttons>
         <div class="buttons-row">
           <c-button transparent @click="showUploads = !showUploads" icon-only :icon="showUploads ? 'expand_more' : 'expand_less'"></c-button>
           <c-button transparent @click="close" icon-only icon="close"></c-button>
         </div>
 
       </template>
-      <template slot="main">
+      <template #main>
         <div class="media-uploader__items" v-show="showUploads">
           <div class="media-uploader__item" :key="$index" v-for="(item, $index) in list">
             <div class="media-uploader__item__top">
@@ -55,7 +55,7 @@
 </template>
 <script>
 import { mapGetters, mapState } from 'vuex';
-import tus from 'tus-js-client';
+import * as tus from 'tus-js-client'
 
 import { UploadStatuses } from '@/helpers/uploads';
 import { API_URL } from "@/constants/urls";
@@ -211,16 +211,16 @@ export default  {
       }
     },
     startListeningToEvents() {
-      this.$echo.private(`App.User.${this.user.id}`)
-        .listen('.media.convert_progress', (e) => {
-          this.onMediaConvertProgress(e);
-        })
-        .listen('.media.convert_fail', (e) => {
-          this.onMediaConvertFail(e);
-        })
-        .listen('.media.convert_success', (e) => {
-          this.onMediaConverted(e);
-        })
+      // this.$echo.private(`App.User.${this.user.id}`)
+      //   .listen('.media.convert_progress', (e) => {
+      //     this.onMediaConvertProgress(e);
+      //   })
+      //   .listen('.media.convert_fail', (e) => {
+      //     this.onMediaConvertFail(e);
+      //   })
+      //   .listen('.media.convert_success', (e) => {
+      //     this.onMediaConverted(e);
+      //   })
     }
   },
   mounted() {

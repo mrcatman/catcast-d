@@ -1,8 +1,8 @@
 <template>
   <div class="logos-editor">
     <c-box>
-      <template slot="title">{{ $t('dashboard.design.logos_editor.heading') }}</template>
-      <template slot="main">
+      <template #title>{{ $t('dashboard.design.logos_editor.heading') }}</template>
+      <template #main>
 
         <div class="logos-editor__window__outer" ref="window">
           <div class="logos-editor__window__inner">

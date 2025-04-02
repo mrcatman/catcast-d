@@ -2,8 +2,7 @@
   <div class="user-bots-page__outer">
 
         <c-modal v-model="chatBotPanel.visible">
-          <div slot="main">
-            <c-input :title="$t('dashboard.chat.bots.name')" :errors="chatBotPanel.errors.name" v-model="chatBotPanel.data.name"/>
+          <div slot="main">            <c-input :title="$t('dashboard.chat.bots.name')" :errors="chatBotPanel.errors.name" v-model="chatBotPanel.data.name"/>
             <div class="row row--centered">
               <div class="col">
                 <c-input :disabled="!chatBotPanel.canEditCallbackUrl" :title="$t('dashboard.chat.bots.callback_url')" :errors="chatBotPanel.errors.callback_url" v-model="chatBotPanel.data.callback_url"/>
@@ -41,8 +40,7 @@
 
 
         <c-modal v-model="botDataPanel.visible">
-          <div slot="main">
-            <div><strong>{{$t('dashboard.chat.bots.request_token')}}: </strong>{{botDataPanel.data.request_token}}</div>
+          <div slot="main">            <div><strong>{{$t('dashboard.chat.bots.request_token')}}: </strong>{{botDataPanel.data.request_token}}</div>
             <div><strong>{{$t('dashboard.chat.bots.access_token')}}: </strong>{{botDataPanel.data.access_token}}</div>
           </div>
         </c-modal>

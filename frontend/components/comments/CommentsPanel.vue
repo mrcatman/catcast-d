@@ -1,27 +1,140 @@
 <template>
-  <div class="comments-panel" :class="{'comments-panel--edit': isEditing}" v-if="visible">
+  <div class="comments-panel" :class="{'comments-panel--edit': isEditing}">
     <div class="comments-panel__inputs">
-      <div class="comments-panel__login" v-if="!loggedIn">
-        <nuxt-link class="comments-panel__login__link" :to="'/auth/login?return='+$route.fullPath">{{$t('comments.login_or_register')}}</nuxt-link>{{$t('comments.to_add')}}
+      <div class="comments-panel__message" v-if="!loggedIn">
+        <nuxt-link class="comments-panel__message__link" :to="`/auth/login?return=${route.fullPath}`">
+          {{$t('comments.login_or_register')}}</nuxt-link>
+        {{$t('comments.to_add')}}
       </div>
-      <div class="comments-panel__login" v-else-if="!canWrite && !isEditing" v-html="$t('comments.off')"></div>
-      <div class="comments-panel__login" v-else-if="ban" v-html="banText"></div>
-      <c-input v-if="fromChannelName && showInputs" v-model="title" :title="$t('comments.title')"/>
-      <c-text-editor v-if="showInputs && fromChannelName" v-model="text" :title="$t('comments.text')" />
-      <c-input v-if="showInputs && !fromChannelName" v-model="text" :title="$t('comments.text')" />
+      <div class="comments-panel__message" v-else-if="!enabled && !isEditing" v-html="$t('comments.off')"></div>
+      <div class="comments-panel__message" v-else-if="ban" v-html="banText"></div>
+
+      <c-input v-if="form.from_channel_name && showInputs" v-model="form.title" :title="$t('comments.title')"/>
+      <c-text-editor v-if="showInputs" v-model="form.text" :title="$t('comments.text')" />
     </div>
     <div class="comments-panel__bottom" v-if="showInputs">
-      <attachments-panel @ready="onAttachmentsReady" @error="onAttachmentsError" v-model="attachments" :channel-id="fromChannelName ? entityId : null">
-        <div class="comments-panel__buttons" slot="buttons">
-          <c-button :loading="loading" v-if="!isEditing" @click="sendComment()" :disabled="text.length === 0">{{$t('comments.send')}}</c-button>
-          <c-button :loading="loading" v-else @click="sendEditedComment()" :disabled="text.length === 0">{{$t('comments.save')}}</c-button>
-          <c-button @click="hidePanel()" flat v-if="parentId || isEditing">{{$t('global.cancel')}}</c-button>
-          <c-checkbox :title="$t('comments.from_channel_name')" v-show="canWriteFromChannelName && !isEditing" v-model="fromChannelName"/>
-        </div>
+      <div class="comments-panel__buttons" slot="buttons">
+        <c-button :loading="loading" @click="sendComment()" :disabled="!form.text.length">
+          {{isEditing ? $t('comments.save') : $t('comments.send')}}
+        </c-button>
+        <c-button @click="hidePanel()" flat v-if="parentId || isEditing">{{$t('global.cancel')}}</c-button>
+        <c-checkbox :title="$t('comments.from_channel_name')" v-show="canWriteFromChannelName && !isEditing" v-model="form.from_channel_name"/>
+      </div>
+      <!--
+      <attachments-panel @ready="onAttachmentsReady" @error="onAttachmentsError" v-model="attachments" :channel-id="form.from_channel_name ? entityId : null">
+
       </attachments-panel>
+      --> <!-- TODO: attachments -->
     </div>
   </div>
 </template>
+<script lang="ts" setup>
+import AttachmentsPanel from '@/components/attachments/AttachmentsPanel';
+
+const { request } = useApi();
+const { t } = useI18n();
+const { formatDate } = useDates();
+const { loggedIn } = storeToRefs(useAuthStore());
+const route = useRoute();
+
+const emit = defineEmits<{
+  (e: 'edited', comment: Comments.Item): void,
+  (e: 'added', comment: Comments.Item): void
+  (e: 'hide'): void
+}>();
+
+const props = defineProps<{
+  enabled: boolean,
+  entityType: Entities.EntityType,
+  entityId: Entities.EntityId,
+
+  data?: Comments.Item,
+
+  canWriteFromChannelName?: boolean,
+  ban?: any, // todo
+  parentId?: number,
+
+  isEditing?: Boolean,
+
+}>();
+
+const showInputs = computed(() => {
+  return loggedIn && !props.ban && (props.isEditing || props.enabled);
+})
+
+const banText = computed(() => {
+  return t('comments.ban.you_are_banned', {
+    by_user: props.ban.banned_by_user ? ' ' + t('comments.ban.by_user', {user: `<strong>${props.ban.banned_by_user.username}</strong>`}) : '',
+    till: props.ban.banned_till ? ' ' + t('comments.ban.till', {date: `<strong>${formatDate(props.ban.banned_till)}</strong>`}) : t('comments.ban.forever'),
+    reason: props.ban.reason ? ' ' + t('comments.ban.reason', {reason: `<strong>${props.ban.reason}</strong>`}) : '',
+  })
+});
+
+const form = ref<Comments.Body>({
+  title: '',
+  text: '',
+  attachments: [],
+  from_channel_name: false,
+});
+
+const loading = ref<boolean>(false);
+
+const sendComment = (() => {
+  loading.value = true;
+  if (form.value.attachments.length === 0) {
+    saveComment();
+  } else {
+    //emit('save_attachments');
+  }
+})
+
+const saveComment = () => {
+
+  const data: Comments.Body = {
+    text: form.value.text,
+    attachments: form.value.attachments,
+  };
+  if (form.value.from_channel_name) {
+    data.title = form.value.title;
+    data.from_channel_name = true;
+  }
+
+  if (props.data) {
+    request.put('/comments/:id', {
+      body: data
+    }, {
+      id: props.data.id
+    }).then(comment => {
+      emit('edited', comment);
+    }).finally(() => {
+      loading.value = false;
+    });
+  } else {
+    data.entity_type = props.entityType;
+    data.entity_id = props.entityId;
+
+    if (props.parentId) {
+      data.reply_to_comment_id = props.parentId;
+    }
+
+    request.post('/comments', {
+      body: data
+    }).then(comment => {
+      emit('added', comment);
+      form.value.title = '';
+      form.value.text = '';
+      form.value.attachments = [];
+    }).finally(() => {
+      loading.value = false;
+    })
+  }
+}
+
+const hidePanel = () => {
+  emit('hide');
+}
+</script>
+
 <style lang="scss">
   .comments-panel {
     width: 100%;
@@ -33,7 +146,7 @@
       padding: 0;
       border-bottom: 0;
     }
-    &__login {
+    &__message {
       background: var(--lighten-1);
       padding: 1em;
       border-radius: var(--border-radius);
@@ -85,138 +198,3 @@
     }
   }
 </style>
-<script>
-import { formatFullDate } from "@/helpers/dates";
-  import AttachmentsPanel from '@/components/attachments/AttachmentsPanel';
-import {mapState} from "vuex";
-
-  export default {
-    components: {
-      AttachmentsPanel
-    },
-    computed: {
-      ...mapState('auth', ['loggedIn']),
-      showInputs() {
-        return this.loggedIn && !this.ban && (this.isEditing || this.canWrite);
-      },
-      banText() {
-        const ban = this.ban;
-        return this.$t('comments.ban.you_are_banned', {
-          by_user: ban.banned_by_user ? ' ' + this.$t('comments.ban.by_user', {user: `<strong>${ban.banned_by_user.username}</strong>`}) : '',
-          till: ban.banned_till ? ' ' + this.$t('comments.ban.till', {date: `<strong>${formatFullDate(ban.banned_till)}</strong>`}) : this.$t('comments.ban.forever'),
-          reason: ban.reason ? ' ' + this.$t('comments.ban.reason', {reason: `<strong>${ban.reason}</strong>`}) : '',
-        })
-      },
-    },
-    props: {
-      hasParent: Boolean,
-      canWrite: Boolean,
-      canWriteFromChannelName: Boolean,
-      ban: {
-        type: [Object, Boolean],
-        required: false
-      },
-      parentId: Number,
-      entityType: String,
-      entityId: Number,
-      entityUuid: String,
-      isEditing: Boolean,
-      data: Object
-    },
-    data() {
-      return {
-        visible: true,
-        title: '',
-        text: '',
-        attachments: [],
-        fromChannelName: !!this.data?.channel_id,
-        loading: false,
-      }
-    },
-    mounted() {
-      if (this.isEditing) {
-        this.title = this.data.title;
-        this.text = this.data.text;
-        this.attachments = this.data.attachments;
-      }
-    },
-
-    methods: {
-      onAttachmentsReady() {
-        if (this.isEditing) {
-          this.saveEditedComment();
-        } else {
-          this.saveComment();
-        }
-      },
-      onAttachmentsError() {
-        this.loading = false;
-      },
-      sendEditedComment() {
-        if (this.text.length > 0) {
-          this.loading = true;
-          if (this.attachments.length === 0) {
-            this.saveEditedComment();
-          } else {
-            this.$emit('save_attachments');
-          }
-        }
-      },
-      saveEditedComment() {
-        const data = {
-          text: this.text,
-          attachments: this.attachments,
-        };
-        if (this.fromChannelName) {
-          data.title = this.title;
-          data.from_channel_name = true;
-        }
-        this.loading = true;
-        this.$api.put(`/comments/${this.data.id}`, data).then(editedComment => {
-          this.$emit('edited', editedComment);
-        }).finally(() => {
-          this.loading = false;
-        })
-      },
-      sendComment() {
-        if (this.text.length > 0) {
-          this.loading = true;
-          if (this.attachments.length === 0) {
-            this.saveComment();
-          } else {
-            this.$emit('save_attachments');
-          }
-        }
-      },
-      saveComment() {
-        const data = {
-          text: this.text,
-          attachments: this.attachments,
-          entity_type: this.entityType,
-          entity_id: this.entityId,
-        };
-        if (this.fromChannelName) {
-          data.title = this.title;
-          data.from_channel_name = true;
-        }
-        if (this.parentId) {
-          data.reply_to_comment_id = this.parentId;
-        }
-        if (this.entityUuid) {
-          data.uuid = this.entityUuid;
-        }
-        this.$api.post('comments', data).then(data => {
-          this.$emit('added', data);
-          this.title = '';
-          this.text = '';
-          this.attachments = [];
-        }).finally(() => {
-          this.loading = false;
-        })
-      },
-      hidePanel() {
-        this.$emit('hide');
-      }
-    }
-  }
-</script>

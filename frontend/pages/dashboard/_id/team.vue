@@ -1,13 +1,13 @@
 <template>
   <c-box no-padding class="dashboard-page__team">
-    <template slot="main">
+    <template #main>
       <c-thumbs-list ref="list" :config="listConfig">
-        <template slot="before_filters">
+        <template #before_filters>
           <c-button color="green" icon="person_add" @click="addMember()">{{$t('dashboard.team.add')}}</c-button>
         </template>
-        <template slot="item" slot-scope="props">
+        <template #item slot-scope="props">
           <c-list-item :not-confirmed="!props.item.confirmed" :picture="props.item.user.avatar" picture-square>
-            <template slot="captions">
+            <template #captions>
               <div class="list-item__title">
                 {{props.item.user.username}}
               </div>
@@ -18,7 +18,7 @@
                 <c-tag :key="$index" v-for="(key, $index) in getShortPermissionsList(props.item)">{{key}}</c-tag>
               </div>
             </template>
-            <template slot="buttons">
+            <template #buttons>
               <div class="buttons-row">
                 <c-button @click="editMember(props.item)" v-if="props.item.can_edit" color="green">{{$t('global.edit')}}</c-button>
                 <c-button @click="deleteMember(props.item)" v-if="props.item.can_delete" color="red">{{$t('global.delete')}}</c-button>

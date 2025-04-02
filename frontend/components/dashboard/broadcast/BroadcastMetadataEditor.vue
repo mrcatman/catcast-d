@@ -1,16 +1,16 @@
 <template>
   <div>
-    <c-input v-form-input="'title'" v-form-validate="'required'" :title="$t('dashboard.broadcast.metadata.title')" />
-    <c-text-editor v-form-input="'description'" :title="$t('dashboard.broadcast.metadata.description')" />
-    <c-autocomplete v-form-input="'category'" autocomplete-key="id" autocomplete-value="name" url="categories" :title="$t('dashboard.broadcast.metadata.category')"/>
-    <c-tags-input v-form-input="'tags'" :title="$t('dashboard.broadcast.metadata.tags')"/>
+    <c-input v-model="values.title" :errors="errors.title" v-form-validate="'required'" :title="$t('dashboard.broadcast.metadata.title')" />
+    <c-text-editor v-model="values.description" :errors="errors.description" :title="$t('dashboard.broadcast.metadata.description')" />
+    <c-autocomplete v-model="values.category" :errors="errors.category" autocomplete-key="id" autocomplete-value="name" url="categories" :title="$t('dashboard.broadcast.metadata.category')"/>
+    <c-tags-input v-model="values.tags" :errors="errors.tags" :title="$t('dashboard.broadcast.metadata.tags')"/>
     <div v-if="planned">
       <c-row>
         <c-col>
-          <c-datetime-picker minDate="today" :title="$t('dashboard.broadcast.metadata.will_start_at')"  v-form-input="'will_start_at'" />
+          <c-datetime-picker minDate="today" :title="$t('dashboard.broadcast.metadata.will_start_at')"  v-model="values.will_start_at" :errors="errors.will_start_at" />
         </c-col>
         <c-col>
-          <c-datetime-picker minDate="today" :title="$t('dashboard.broadcast.metadata.will_end_at')"  v-form-input="'will_end_at'" />
+          <c-datetime-picker minDate="today" :title="$t('dashboard.broadcast.metadata.will_end_at')"  v-model="values.will_end_at" :errors="errors.will_end_at" />
         </c-col>
       </c-row>
     </div>

@@ -1,11 +1,11 @@
 <template>
   <c-form box :initialValues="user" method="put" url="/auth/me">
     <c-box>
-      <template slot="main">
+      <template #main>
         <!-- todo: remove unused -->
-        <c-select v-form-input="'additional_settings.privacy.can_view_profile'" :title="$t('settings.privacy.page.heading')" :options="options.can_view_profile" />
-        <c-select v-form-input="'additional_settings.privacy.can_write_on_wall'" :title="$t('settings.privacy.feed.heading')" :options="options.can_write_on_wall"/>
-        <c-select v-form-input="'additional_settings.privacy.can_write_messages'" :title="$t('settings.privacy.messages.heading')" :options="options.can_write_messages" />
+        <c-select v-model="values.additional_settings.privacy.can_view_profile" :errors="errors.additional_settings.privacy.can_view_profile" :title="$t('settings.privacy.page.heading')" :options="options.can_view_profile" />
+        <c-select v-model="values.additional_settings.privacy.can_write_on_wall" :errors="errors.additional_settings.privacy.can_write_on_wall" :title="$t('settings.privacy.feed.heading')" :options="options.can_write_on_wall"/>
+        <c-select v-model="values.additional_settings.privacy.can_write_messages" :errors="errors.additional_settings.privacy.can_write_messages" :title="$t('settings.privacy.messages.heading')" :options="options.can_write_messages" />
       </template>
     </c-box>
   </c-form>

@@ -1,6 +1,24 @@
-node_modules
-npm-debug.log
+# Nuxt dev/build outputs
+.output
+.data
 .nuxt
-.idea
-unused
+.nitro
+.cache
 dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.fleet
+.idea
+
+# Local env files
+.env
+.env.*
+!.env.example

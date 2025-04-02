@@ -1,16 +1,16 @@
 <template>
 
   <c-box no-padding>
-    <template slot="main">
+    <template #main>
       <c-thumbs-list ref="list" :config="listConfig">
-        <template slot="before_filters">
+        <template #before_filters>
           <c-button color="green" icon="fa-plus" @click="createNewBroadcast()">{{ $t('dashboard.broadcast.create') }}
           </c-button>
         </template>
-        <template slot="after_heading">
+        <template #after_heading>
           <c-tabs v-model="type" :data="types"/>
         </template>
-        <template slot="item" slot-scope="props">
+        <template #item slot-scope="props">
           <broadcast-thumb :data="props.item" @reload="$refs.list.reload()" :dashboard="true"/>
         </template>
       </c-thumbs-list>

@@ -1,11 +1,11 @@
 <template>
 <auth-form>
-  <template slot="main">
+  <template #main>
     <c-form button-class="button--big" :button-text="$t('auth.resend_confirmation.heading')"  url="/auth/resend-confirmation">
-      <c-input v-form-input="'email'" v-form-validate="'email'" :title="$t('auth.email')" />
+      <c-input v-model="values.email" :errors="errors.email" v-form-validate="'email'" :title="$t('auth.email')" />
     </c-form>
   </template>
-  <template slot="links">
+  <template #links>
     <router-link to="/auth/login">{{$t('auth.login')}}</router-link>
   </template>
 </auth-form>

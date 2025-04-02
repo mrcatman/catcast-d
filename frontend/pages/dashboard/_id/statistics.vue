@@ -1,10 +1,10 @@
 <template>
 <div>
   <c-box>
-    <template slot="title">
+    <template #title>
       {{$t('statistics.heading')}}
     </template>
-    <template slot="main">
+    <template #main>
       <statistics-block entity-type="channels" :entity-id="channel.id"/>
     </template>
   </c-box>

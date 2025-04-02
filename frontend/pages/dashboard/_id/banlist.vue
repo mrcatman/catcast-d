@@ -1,10 +1,10 @@
 <template>
   <div class="dashboard__ban-list">
     <c-box no-padding>
-      <template slot="title">
+      <template #title>
         <c-tabs :data="tabs" v-model="currentTab" />
       </template>
-      <template slot="main">
+      <template #main>
         <div v-if="currentTab === 'users'">
           <div class="dashboard__ban-list__description">
             {{ $t('dashboard.banlist.ban_user_description') }}
@@ -12,16 +12,16 @@
           <c-form v-model="usersForm" class="dashboard__ban-list__form" ref="users_form" :url="`/channels/${channel.id}/bans`" :hide-submit="true" :hide-status="true" @success="onUserAddSuccess">
             <c-row align="start">
               <c-col>
-                <c-autocomplete v-form-input="'user_id'" autocomplete-key="id" autocomplete-value="username" url="users/autocomplete" :title="$t('global.username')"/>
+                <c-autocomplete v-model="values.user_id" :errors="errors.user_id" autocomplete-key="id" autocomplete-value="username" url="users/autocomplete" :title="$t('global.username')"/>
               </c-col>
               <c-col>
-                <c-select v-form-input="'ban_duration'" :title="$t('dashboard.banlist.select_ban_duration')" :options="getBanDurationOptions(usersForm)" @change="onBanDurationChange(usersForm)"/>
+                <c-select v-model="values.ban_duration" :errors="errors.ban_duration" :title="$t('dashboard.banlist.select_ban_duration')" :options="getBanDurationOptions(usersForm)" @change="onBanDurationChange(usersForm)"/>
               </c-col>
               <c-col v-if="usersForm.ban_duration === -1" mobile-full-width>
-                <c-datetime-picker :title="$t('dashboard.banlist.ban_duration_manual')"  v-form-input="'banned_till'" />
+                <c-datetime-picker :title="$t('dashboard.banlist.ban_duration_manual')"  v-model="values.banned_till" :errors="errors.banned_till" />
               </c-col>
               <c-col :grow="2" mobile-full-width>
-                <c-input v-form-input="'reason'" :title="$t('dashboard.banlist.reason')"/>
+                <c-input v-model="values.reason" :errors="errors.reason" :title="$t('dashboard.banlist.reason')"/>
               </c-col>
               <c-col with-button v-if="$refs.users_form">
                 <c-button :disabled="!usersForm.user_id" :loading="$refs.users_form.loading" @click="$refs.users_form.submit()">{{ $t('dashboard.banlist.add_user') }}</c-button>
@@ -29,9 +29,9 @@
             </c-row>
           </c-form>
           <c-thumbs-list ref="users_list" :config="usersListConfig">
-            <template slot="item" slot-scope="props">
+            <template #item slot-scope="props">
               <c-list-item :picture="props.item.user.avatar" :picture-square="true">
-                <template slot="captions">
+                <template #captions>
                   <a class="list-item__title">{{ props.item.user.username }}</a>
                   <div class="list-item__under-title">
                     <c-tooltip position="bottom-right">
@@ -48,7 +48,7 @@
                     {{ $t('dashboard.banlist.reason_text', {reason: props.item.reason}) }}
                   </div>
                 </template>
-                <template slot="buttons">
+                <template #buttons>
                   <c-button @click="deleteUser(props.item)" color="red">{{ $t('global.delete') }}</c-button>
                 </template>
               </c-list-item>
@@ -62,16 +62,16 @@
           <c-form v-model="ipForm" class="dashboard__ban-list__form" ref="ip_form" :url="`/channels/${channel.id}/ip-bans`" :hide-submit="true" :hide-status="true" @success="onIPAddSuccess">
             <c-row align="start">
               <c-col>
-                <c-input v-form-input="'ip_address'" :title="$t('dashboard.banlist.ip_address')"/>
+                <c-input v-model="values.ip_address" :errors="errors.ip_address" :title="$t('dashboard.banlist.ip_address')"/>
               </c-col>
               <c-col>
-                <c-select v-form-input="'ban_duration'" :title="$t('dashboard.banlist.select_ban_duration')" :options="getBanDurationOptions(ipForm)" @change="onBanDurationChange(ipForm)"/>
+                <c-select v-model="values.ban_duration" :errors="errors.ban_duration" :title="$t('dashboard.banlist.select_ban_duration')" :options="getBanDurationOptions(ipForm)" @change="onBanDurationChange(ipForm)"/>
               </c-col>
               <c-col v-if="ipForm.ban_duration === -1" mobile-full-width>
-                <c-datetime-picker :title="$t('dashboard.banlist.ban_duration_manual')"  v-form-input="'banned_till'" />
+                <c-datetime-picker :title="$t('dashboard.banlist.ban_duration_manual')"  v-model="values.banned_till" :errors="errors.banned_till" />
               </c-col>
               <c-col :grow="2" mobile-full-width>
-                <c-input v-form-input="'reason'" :title="$t('dashboard.banlist.reason')"/>
+                <c-input v-model="values.reason" :errors="errors.reason" :title="$t('dashboard.banlist.reason')"/>
               </c-col>
               <c-col with-button v-if="$refs.ip_form">
                 <c-button :disabled="!ipForm.ip_address" :loading="$refs.ip_form.loading" @click="$refs.ip_form.submit()">{{ $t('dashboard.banlist.add_user') }}</c-button>
@@ -79,9 +79,9 @@
             </c-row>
           </c-form>
           <c-thumbs-list ref="ip_list" :config="ipListConfig">
-            <template slot="item" slot-scope="props">
+            <template #item slot-scope="props">
               <c-list-item >
-                <template slot="captions">
+                <template #captions>
                   <a class="list-item__title">{{ props.item.ip_address }}</a>
                   <div class="list-item__under-title">
                     <c-tooltip position="bottom-right">
@@ -98,7 +98,7 @@
                     {{ $t('dashboard.banlist.reason_text', {reason: props.item.reason}) }}
                   </div>
                 </template>
-                <template slot="buttons">
+                <template #buttons>
                   <c-button @click="deleteIP(props.item)" color="red">{{ $t('global.delete') }}</c-button>
                 </template>
               </c-list-item>

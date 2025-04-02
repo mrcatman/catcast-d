@@ -331,3 +331,8 @@ Route::any('/locales', function () {
         'default' => $default
     ];
 });
+
+Route::any('/locales/{locale}', function ($locale) {
+    $locale = \Illuminate\Support\Facades\Storage::disk('assets')->get("locales/$locale.json");
+    return json_decode($locale);
+});

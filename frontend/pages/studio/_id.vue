@@ -22,8 +22,7 @@
               <c-modal
                 :header="overlayPanel.isEditing ? $t('studio.library.edit_overlay') : $t('studio.library.add_new_overlay')"
                 v-model="overlayPanel.visible">
-                <div slot="main">
-                  <div class="overlay-panel">
+                <div slot="main">                  <div class="overlay-panel">
                     <div class="overlay-panel__preview">
                       <canvas :style="{width: settings.sizeX+'px', height: settings.sizeY+'px'}"
                               ref="preview_canvas"></canvas>
@@ -78,8 +77,7 @@
               </c-modal>
 
               <c-modal :header="$t('studio.sources.add_new')" v-model="sourcePanel.visible">
-                <div slot="main">
-                  <div class="source-panel">
+                <div slot="main">                  <div class="source-panel">
                     <div class="source-panel__inputs"> <!-- :style="{height: settings.sizeY+'px'}" -->
                       <div class="modal__input-container" v-if="sourcePanel.type_name === 'videoConferenceSource'">
                         <c-checkbox :title="$t('studio.sources.video_conference.own_camera')"
@@ -138,8 +136,7 @@
               </c-modal>
 
               <c-modal :header="$t('studio.library.delete_overlay')" v-model="deleteOverlayPanel.visible">
-                <div slot="main">
-                  <div class="modal__text">{{$t('studio.library.confirm_deletion')}}</div>
+                <div slot="main">                  <div class="modal__text">{{$t('studio.library.confirm_deletion')}}</div>
                 </div>
                 <div class="modal__buttons" slot="buttons">
                   <div class="buttons-row">
@@ -150,8 +147,7 @@
               </c-modal>
 
               <c-modal :header="$t('studio.resume.heading')" v-model="needResume">
-                <div slot="main">
-                  <div class="modal__text">{{$t('studio.resume.text')}}</div>
+                <div slot="main">                  <div class="modal__text">{{$t('studio.resume.text')}}</div>
                 </div>
                 <div class="modal__buttons" slot="buttons">
                   <div class="buttons-row">
@@ -192,8 +188,7 @@
               </c-modal>
 
               <c-modal v-model="deleteScenePanel.visible">
-                <div slot="main">
-                  <div class="modal__text">
+                <div slot="main">                  <div class="modal__text">
                     {{$t('studio.delete_scene_text')}}
                   </div>
                 </div>
@@ -206,8 +201,7 @@
               </c-modal>
 
               <c-modal :header="$t('studio.add_scene')" v-model="addScenePanel.visible">
-                <div slot="main">
-                  <div class="modal__input-container">
+                <div slot="main">                  <div class="modal__input-container">
                     <c-input :title="$t('studio.scene_name')" v-model="addScenePanel.data.name"/>
                   </div>
                 </div>
@@ -220,8 +214,7 @@
               </c-modal>
 
               <c-modal :header="$t('studio.add_scenes_list')" v-model="addScenesListPanel.visible">
-                <div slot="main">
-                  <div class="modal__input-container">
+                <div slot="main">                  <div class="modal__input-container">
                     <c-input :title="$t('studio.scenes_list_name')" v-model="addScenesListPanel.data.name"/>
                   </div>
                 </div>
@@ -234,8 +227,7 @@
               </c-modal>
 
               <c-modal v-model="scenesListsPanel.visible">
-                <div slot="main">
-                  <div class="buttons-row">
+                <div slot="main">                  <div class="buttons-row">
                     <c-button @click="addNewScenesList()">{{$t('studio.add_scenes_list')}}</c-button>
                   </div>
                   <div class="vertical-delimiter"></div>
@@ -261,8 +253,7 @@
               </c-modal>
 
               <c-modal v-model="deleteScenesListPanel.visible">
-                <div slot="main">
-                  <div class="modal__text">{{$t('studio.confirm_scenes_list_deletion')}}</div>
+                <div slot="main">                  <div class="modal__text">{{$t('studio.confirm_scenes_list_deletion')}}</div>
                 </div>
                 <div class="modal__buttons" slot="buttons">
                   <div class="buttons-row">

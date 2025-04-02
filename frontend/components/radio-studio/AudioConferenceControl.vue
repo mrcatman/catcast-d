@@ -66,7 +66,7 @@
 
 </style>
 <script>
-import copyTag from '@/components/global/copyTag';
+import copyTag from '@/components/ui/copyTag';
 import RoomClient from '@/helpers/conference/RoomClient';
 export default {
     computed: {

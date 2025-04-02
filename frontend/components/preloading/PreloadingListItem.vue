@@ -1,6 +1,6 @@
 <template>
   <c-list-item class="preloading-list-item" :picture="siteLogoSquare" :picture-square="true">
-    <template slot="captions">
+    <template #captions>
       <preloading-line />
       <preloading-line />
       <preloading-line />

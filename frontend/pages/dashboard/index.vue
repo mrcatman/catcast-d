@@ -1,17 +1,17 @@
 <template>
 <div class="dashboard page-container">
   <c-box no-padding>
-    <template slot="main">
+    <template #main>
       <c-thumbs-list ref="list" :config="listConfig">
-        <template slot="before_filters">
+        <template #before_filters>
           <c-button @click="createChannel()" icon="fa-plus-square" color="green">{{$t('dashboard.create.heading')}}</c-button>
         </template>
-        <template slot="after_heading">
+        <template #after_heading>
           <c-tabs v-show="channelTypes.length > 1" :data="channelTypes" v-model="channelType" />
         </template>
-        <template slot="item" slot-scope="props">
+        <template #item slot-scope="props">
           <c-list-item :to="`/dashboard/${props.item.id}/info`" :picture="props.item.logo" :picture-square="true">
-            <template slot="captions">
+            <template #captions>
               <div class="list-item__title">{{props.item.name}}</div>
               <div class="list-item__under-title" v-if="!props.item.is_banned">
                 <c-tag :key="$index" v-for="(key, $index) in getPermissionsList(props.item)">{{key}}</c-tag>
@@ -21,7 +21,7 @@
               <strong>{{props.item.ban_reason}}</strong>
             </span>
             </template>
-            <template slot="buttons">
+            <template #buttons>
               <c-button v-if="!props.item.is_banned" icon="fas-tachometer-alt" :to="`/dashboard/${props.item.id}/info`">{{$t('dashboard.page_types.main')}}</c-button>
               <!-- todo: move the button somewhere as it's not as important (?) -->
               <c-button v-if="props.item.can_leave_team" @click="leaveTeam(props.item)" flat icon-only icon="exit_to_app"/>

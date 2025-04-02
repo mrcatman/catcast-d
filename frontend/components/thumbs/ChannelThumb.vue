@@ -1,6 +1,6 @@
 <template>
   <common-thumb class="channel-thumb" :link="{path: link, params: {channel: data}}" :picture="picture" :logo="data.logo">
-    <template slot="inside_picture">
+    <template #inside_picture>
       <span class="channel-thumb__badge channel-thumb__badge--live" v-if="data.active_broadcast">{{$t('channel.broadcast.online')}}</span>
       <span class="channel-thumb__badge channel-thumb__badge--offline" v-else>{{$t('channel.broadcast.offline')}}</span>
       <div class="channel-thumb__viewers" v-if="data.active_broadcast && data.active_broadcast.viewers !== null">
@@ -8,7 +8,7 @@
         <span class="channel-thumb__viewers__text">{{data.active_broadcast.viewers}}</span>
       </div>
     </template>
-    <template slot="texts">
+    <template #texts>
       <div class="thumb__title" v-if="!data.active_broadcast">{{data.name}}</div>
       <div class="thumb__title" v-else>{{data.active_broadcast.title}}</div>
       <div class="thumb__small-title" v-if="data.active_broadcast">{{data.name}}</div>
@@ -16,7 +16,7 @@
         <c-tag :to="`/directory/search?tags=${tag}`" v-for="tag in tags" :key="tag">{{tag}}</c-tag>
       </div>
     </template>
-    <template slot="list_texts">
+    <template #list_texts>
       <c-statistics-icons :data="metadata"></c-statistics-icons>
       <div class="thumb__description">{{data.description}}</div>
       <div class="thumb__tags thumb__tags--list" v-if="tags.length">

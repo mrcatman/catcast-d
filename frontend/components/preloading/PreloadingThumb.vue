@@ -1,6 +1,6 @@
 <template>
   <common-thumb class="preloading-thumb">
-    <template slot="texts">
+    <template #texts>
       <div class="preloading-thumb__text">
         <preloading-line />
         <preloading-line />

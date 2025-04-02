@@ -1,10 +1,10 @@
 <template>
   <div class="left-sidebar" :class="{'left-sidebar--opened': sidebarOpened}">
-    <preloading-line v-if="!loaded" v-for="i in 10" one-height />
-    <div class="left-sidebar__menu">
+    <preloading-line v-if="loading" v-for="i in 10" one-height />
+    <div v-else class="left-sidebar__menu">
       <div v-for="submenu in menu" class="left-sidebar__submenu">
         <div class="left-sidebar__submenu__heading">{{ $t(submenu.heading) }}</div>
-        <left-sidebar-link @click="onLinkClick" v-for="link in submenu.children" :data="link" :key="link.id"/>
+        <left-sidebar-item @click="onLinkClick" v-for="item in submenu.children" :item="item" :key="item.url"/>
       </div>
     </div>
 
@@ -24,6 +24,30 @@
     </div>
   </div>
 </template>
+<script lang="ts" setup>
+import { storeToRefs } from "pinia";
+
+import isMobile from "@/helpers/isMobile";
+
+import LeftSidebarLanguageSelect from '@/components/layout/left-sidebar/LeftSidebarLanguageSelect.vue';
+import LeftSidebarItem from "@/components/layout/left-sidebar/LeftSidebarItem";
+import PreloadingLine from "@/components/preloading/PreloadingLine.vue";
+
+const { useRequest } = useApi();
+
+const { data: menu, loading } = useRequest('/directory/menu');
+
+const sidebar = useSidebarStore();
+const { toggleSidebar } = sidebar;
+const { sidebarOpened } = storeToRefs(sidebar);
+
+const onLinkClick = () => {
+  if (isMobile() && sidebarOpened.value) {
+    toggleSidebar();
+  }
+}
+
+</script>
 <style lang="scss">
 .left-sidebar {
   width: 3.5em;
@@ -78,43 +102,4 @@
   }
 }
 </style>
-<script>
-import { mapMutations, mapState} from 'vuex';
-import isMobile from "@/helpers/isMobile";
 
-import LeftSidebarLanguageSelect from '@/components/layout/left-sidebar/LeftSidebarLanguageSelect.vue';
-import LeftSidebarLink from "@/components/layout/left-sidebar/LeftSidebarLink";
-import PreloadingLine from "@/components/preloading/PreloadingLine.vue";
-
-export default {
-  components: {
-    PreloadingLine,
-    LeftSidebarLink,
-    LeftSidebarLanguageSelect
-  },
-  data() {
-    return {
-      loaded: false,
-      menu: []
-    }
-  },
-  mounted() {
-    this.getMenu();
-  },
-  computed: {
-    ...mapState(['sidebarOpened']),
-  },
-  methods: {
-    ...mapMutations(['TOGGLE_SIDEBAR']),
-    async getMenu() {
-      this.menu = await this.$api.get('directory/menu');
-      this.loaded = true;
-    },
-    onLinkClick() {
-      if (isMobile() && this.sidebarOpened) {
-        this.TOGGLE_SIDEBAR();
-      }
-    },
-  }
-}
-</script>

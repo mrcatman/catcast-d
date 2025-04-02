@@ -1,14 +1,14 @@
 <template>
   <div class="dashboard__subscribers">
     <c-box no-padding>
-      <template slot="title">
+      <template #title>
         {{ $t('dashboard.subscribers.heading') }}
       </template>
-      <template slot="main">
+      <template #main>
         <c-thumbs-list ref="users_list" :config="listConfig">
-          <template slot="item" slot-scope="props">
+          <template #item slot-scope="props">
             <c-list-item :to="`/users/${props.item.user.id}`" :picture="props.item.user.avatar" :picture-square="true">
-              <template slot="captions">
+              <template #captions>
                 <a class="list-item__title">{{ props.item.user.username }}</a>
                 <div class="list-item__under-title">
                   <span>{{

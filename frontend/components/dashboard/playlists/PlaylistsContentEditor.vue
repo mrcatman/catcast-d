@@ -1,17 +1,17 @@
 <template>
   <div class="dashboard-page__playlists__content-editor">
       <c-box no-padding>
-        <template slot="title">
+        <template #title>
           {{$t('dashboard.playlists.media.heading')}}
         </template>
-        <template slot="title_buttons">
+        <template #title_buttons>
           <c-button color="green" icon="add" @click="addMediaFromCurrentChannel()">{{$t('dashboard.playlists.media.add_from_current_channel')}}</c-button>
           <c-button icon="search" @click="searchMedia()">{{$t('dashboard.playlists.media.search')}}</c-button>
         </template>
-        <template slot="main">
+        <template #main>
           <div class="dashboard-page__playlists__content-editor__items" v-dragula="media" drake="main">
             <media-manager-item v-for="(mediaItem, $index) in media" :key="mediaItem.id" :item="{object: mediaItem, is_folder: false}" :config="{disableLinks: true, disableSelection: true, disableEditing: true}">
-              <template slot="custom_buttons">
+              <template #custom_buttons>
                 <c-button transparent icon-only icon="menu">
                   <c-popup-menu :key="mediaItem.id" position="bottom-left" activate-on-parent-click>
                     <c-popup-menu-item target="_blank" :to="`/dashboard/${channel.id}/media/${mediaItem.uuid}`">
@@ -49,9 +49,9 @@
 }
 </style>
 <script>
-import ResizableRow from '@/components/global/resizable/ResizableRow';
-import ResizableRowChild from '@/components/global/resizable/ResizableRowChild';
-import ResizableRowBar from '@/components/global/resizable/ResizableRowBar';
+import ResizableRow from '@/components/ui/resizable/ResizableRow';
+import ResizableRowChild from '@/components/ui/resizable/ResizableRowChild';
+import ResizableRowBar from '@/components/ui/resizable/ResizableRowBar';
 import MediaManager from "@/components/dashboard/MediaManager";
 import MediaManagerItem from "@/components/dashboard/media-manager/MediaManagerItem";
 import MediaSearchSelect from '@/components/MediaSearchSelect';

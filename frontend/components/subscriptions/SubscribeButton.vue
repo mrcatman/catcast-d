@@ -3,7 +3,7 @@
 
     <c-button :icon="icon" @click="set()" :flat="!state.current_user_has_liked" :loading="loading" :count="state.rating">{{ title }}</c-button>
     <c-button icon-only icon="notifications" @click="showNotificationsSettings()" flat :disabled="!state.current_user_has_liked" :loading="loadingNotificationsSettings">
-      <template slot="tooltip">
+      <template #tooltip>
         <c-tooltip position="bottom-left" v-if="state.current_user_has_liked">{{$t('notifications.settings')}}</c-tooltip>
       </template>
     </c-button>
@@ -149,7 +149,7 @@ export default {
           this.loading = false;
         })
       } else {
-        this.$router.push('/login');
+        this.$router.push('/auth/login');
       }
     }
   }

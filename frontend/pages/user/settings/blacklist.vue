@@ -1,10 +1,10 @@
 <template>
   <div class="blacklist">
     <c-box>
-      <template slot="title">
+      <template #title>
         {{$t('blacklist.heading')}}
       </template>
-      <template slot="main">
+      <template #main>
         <!-- todo: blacklist -> blocklist, change keys (banlist->blocklist), hide blocked users and channels, async fetch -->
         <c-row>
           <c-col>
@@ -23,10 +23,10 @@
       </div>
       <c-nothing-found small v-else-if="blacklist.length === 0"></c-nothing-found>
       <c-list-item small :picture="item.user.avatar" v-for="item in blacklist" :key="item.user.id">
-        <template slot="captions">
+        <template #captions>
           <div class="list-item__title">{{item.user.username}}</div>
         </template>
-        <template slot="buttons">
+        <template #buttons>
           <c-button @click="unblock(item)" color="red">{{$t('global.delete')}}</c-button>
         </template>
       </c-list-item>

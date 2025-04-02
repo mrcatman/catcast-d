@@ -1,11 +1,11 @@
 <template>
   <common-thumb class="playlist-thumb" :link="link" :picture="data.logo" >
-    <template slot="texts">
+    <template #texts>
       <div class="thumb__title">{{data.name}}</div>
       <div class="thumb__small-title">{{data.media_count > 0 ? $tc('playlists.count', data.media_count) : $t('playlists.empty')}}</div>
       <c-statistics-icons class="thumb__statistics-icons" :data="metadata"></c-statistics-icons>
     </template>
-    <template slot="list_texts">
+    <template #list_texts>
       <div class="thumb__description">{{data.description}}</div>
 
     </template>

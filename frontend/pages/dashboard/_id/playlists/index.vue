@@ -1,16 +1,16 @@
 <template>
   <c-box no-padding class="dashboard-page__playlists">
-    <template slot="main">
+    <template #main>
       <c-thumbs-list ref="list" :config="listConfig">
-        <template slot="filters">
+        <template #filters>
           <c-select :options="orderOptions" v-model="order"></c-select>
         </template>
-        <template slot="before_filters">
+        <template #before_filters>
           <c-button @click="openCreatePlaylistModal()" color="green" icon="add_to_queue">{{$t('dashboard.playlists.add')}}</c-button>
         </template>
-        <template slot="item" slot-scope="props">
+        <template #item slot-scope="props">
           <c-list-item :to="`/dashboard/${channel.id}/playlists/${props.item.uuid}`" :picture="props.item.pictures_data.logo ? props.item.pictures_data.logo.full_url : null">
-            <template slot="captions">
+            <template #captions>
               <div class="list-item__title">
                 {{ props.item.name }}
               </div>
@@ -23,7 +23,7 @@
                       ]"></c-statistics-icons>
               </div>
             </template>
-            <template slot="buttons">
+            <template #buttons>
               <c-button v-if="props.item.can_edit" @click="deleteProject(props.item)" color="red">
                 {{ $t('global.delete') }}
               </c-button>

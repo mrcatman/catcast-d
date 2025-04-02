@@ -1,6 +1,6 @@
 <template>
   <div>
-    <c-input v-form-input="'url'" v-form-validate="'required'" :title="$t('dashboard.media.external.url')" />
+    <c-input v-model="values.url" :errors="errors.url" v-form-validate="'required'" :title="$t('dashboard.media.external.url')" />
     <div v-html="$t('dashboard.media.external.description', {url: ytdlSupportedSitesURL})"></div>
   </div>
 </template>

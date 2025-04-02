@@ -4,7 +4,7 @@
       <span>{{$t('notifications.settings')}}</span>
     </c-button>
     <c-modal :header="$t('notifications.heading')" v-model="modalVisible">
-      <template slot="main">
+      <template #main>
         <div class="centered" v-if="loading">
           <c-preloader  />
         </div>
@@ -12,7 +12,7 @@
            <c-checkbox :key="subtype.name" v-for="subtype in subtypes" :title="$t(subtype.display_name)" v-model="activeSubtypes[subtype.type_name]" />
         </div>
       </template>
-      <template slot="buttons">
+      <template #buttons>
         <c-button :loading="saving" @click="saveSubscription()">{{$t('notifications.subscribe_save')}}</c-button>
       </template>
     </c-modal>

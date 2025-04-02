@@ -70,7 +70,7 @@ class DirectoryController extends Controller {
                 'heading' => 'channels.heading',
                 'children' => [
                     [
-                        'url' => 'channels',
+                        'url' => 'directory/channels',
                         'heading' => 'channels.all',
                         'icon' => 'fa-tower-broadcast'
                     ],
@@ -90,7 +90,7 @@ class DirectoryController extends Controller {
                 'heading' => 'media.heading',
                 'children' => [
                     [
-                        'url' => 'media',
+                        'url' => 'directory/media',
                         'heading' => 'media.all',
                         'icon' => 'fa-photo-film'
                     ],
@@ -141,7 +141,7 @@ class DirectoryController extends Controller {
                 'id' => 'channels',
                 'entity' => 'channels',
                 'heading' => 'channels.online',
-                'params' => ['show' => 'online'],
+                'params' => ['online' => 'true'],
             ] : [
                 'id' => 'channels',
                 'entity' => 'channels',
@@ -163,7 +163,7 @@ class DirectoryController extends Controller {
             [
                 'entity' => 'channels',
                 'heading' => 'channels.online',
-                'params' => ['show' => 'online'],
+                'params' => ['online' => 'true'],
             ],
             // todo: autopilot here,
             [
@@ -296,7 +296,7 @@ class DirectoryController extends Controller {
                     'id' => '/channels/online',
                     'entity' => 'channels',
                     'heading' => 'channels.heading',
-                    'params' => ['show' => 'online', 'tags' => $tags],
+                    'params' => ['online' => 'true', 'tags' => $tags],
                     'query_params' => ['tags' => $tags],
                 ],
                 [

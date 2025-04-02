@@ -1,7 +1,7 @@
 <template>
   <c-box>
-    <template slot="title">{{ $t('profile.information') }}</template>
-    <template slot="main">
+    <template #title>{{ $t('profile.information') }}</template>
+    <template #main>
       <div class="profile-page__info__texts">
         <div class="profile-page__info__empty" v-if="!user.about && !user.full_name  && !user.links.length">
           {{ $t('profile.personal.no_info') }}

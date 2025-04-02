@@ -1,9 +1,9 @@
 <template>
   <auth-form>
-    <template slot="main">
+    <template #main>
       <c-form button-class="button--block" :button-text="$t('global.save')" url="/auth/restore" @success="restoreSuccess" :initial-values="initialValues">
-        <c-input v-form-input="'password'" type="password" :title="$t('auth.new_password')" />
-        <c-input v-form-input="'password_confirmation'" type="password" :title="$t('auth.password_confirmation')" />
+        <c-input v-model="values.password" :errors="errors.password" type="password" :title="$t('auth.new_password')" />
+        <c-input v-model="values.password_confirmation" :errors="errors.password_confirmation" type="password" :title="$t('auth.password_confirmation')" />
       </c-form>
     </template>
 

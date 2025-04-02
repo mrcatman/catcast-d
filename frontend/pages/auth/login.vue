@@ -1,55 +1,73 @@
 <template>
-<auth-form>
-  <template slot="main">
-    <c-form button-class="button--big" :button-text="$t('auth.login_action')"  url="/auth/login" @success="loginSuccess" :success-message="$t('auth.login_success')">
-      <c-input v-form-input="'username'" v-form-validate="'required'" :title="$t('auth.username')" />
-      <c-input v-form-input="'password'" v-form-validate="'required'" type="password" :title="$t('auth.password')" />
-    </c-form>
-  </template>
-  <template slot="links">
-    <router-link to="/auth/forgot-password" >{{$t('auth.forgot_password.link')}}</router-link>
-    <router-link to="/auth/register" v-if="registrationEnabled">{{$t('auth.register')}}</router-link>
-  </template>
-</auth-form>
+  <auth-form>
+    <template #main>
+      <c-form-v2
+          :handler="login"
+          @success="loginSuccess"
+          :submit-button="{
+          text: $t('auth.login_action'),
+          props: {
+            big: true
+          }
+        }"
+      >
+        <template #default="{ values, errors }">
+          <c-input v-model="values.username" :errors="errors.username" :title="$t('auth.username')"/>
+          <c-input v-model="values.password" :errors="errors.password" type="password" :title="$t('auth.password')"/>
+        </template>
+      </c-form-v2>
+    </template>
+    <template #links>
+      <router-link to="/auth/forgot-password">{{ $t('auth.forgot_password.link') }}</router-link>
+      <router-link to="/auth/register">{{ $t('auth.register') }}</router-link> <!-- v-if="registrationEnabled" -->
+      <a @click="login">test</a>
+    </template>
+  </auth-form>
 </template>
-<script>
-import AuthForm from "@/components/auth/AuthForm.vue";
-import {mapGetters, mapState} from "vuex";
+<script lang="ts" setup>
+const {request} = useApi();
+const route = useRoute();
+const router = useRouter();
+const {t} = useI18n();
 
-export default {
-  middleware: 'not-auth',
-  components: {
-    AuthForm
-  },
-  computed: {
-    ...mapState('auth', ['loggedIn']),
-    ...mapGetters('config', ['registrationEnabled'])
-  },
-  head() {
-    return {
-      title: this.$t('auth.login')
-    }
-  },
-  beforeDestroy() {
-    window.removeEventListener('storage', this.onStorage);
-  },
-  mounted() {
-    window.addEventListener('storage', this.onStorage);
-  },
-	methods: {
-    onStorage(e) {
-      if (e.key === "auth_event") {
-        window.close();
-      }
-    },
-		async loginSuccess(user) {
-      this.$store.commit('auth/setUser', user);
-      if (this.$route.query && this.$route.query.return) {
-        this.$router.push(this.$route.query.return);
-      } else {
-        this.$router.push(`/users/${user.id}`);
-      }
-    }
-	}
+const login = (credentials: Auth.Credentials) => request.post('/auth/login', {body: credentials});
+const {setUser} = useAuthStore();
+
+definePageMeta({
+  middleware: [
+    'not-auth',
+  ]
+});
+
+useHead({
+  title: t('auth.login')
+});
+
+const loginSuccess = (user: Auth.User) => {
+  setUser(user);
+
+  if (route.query && route.query.return) {
+    router.push(route.query.return);
+  } else {
+    router.push(`/users/${user.id}`);
+  }
 }
+
+//
+// export default {
+//   middleware: 'not-auth',
+//   computed: {
+//     ...mapState('auth', ['loggedIn']),
+//     ...mapGetters('config', ['registrationEnabled'])
+//   },
+//
+// 	methods: {
+//     onStorage(e) {
+//       if (e.key === "auth_event") {
+//         window.close();
+//       }
+//     },
+// 		async
+// 	}
+// }
 </script>

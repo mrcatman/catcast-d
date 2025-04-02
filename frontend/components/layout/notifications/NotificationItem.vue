@@ -7,12 +7,12 @@
     </div>
 
     <c-list-item small :picture="data.picture" :picture-square="true" :to="data.url">
-      <template slot="captions">
+      <template #captions>
          <c-translated-message tag="div" :message="data.title" class="list-item__title"></c-translated-message>
          <div class="list-item__text">{{data.text}}</div>
-         <div class="list-item__under-title">{{formatPublishDate(data.created_at)}}</div>
+         <div class="list-item__under-title">{{formatTimeAgo(data.created_at)}}</div>
       </template>
-      <template slot="buttons">
+      <template #buttons>
         <c-button flat rounded icon-only icon="close" @click="deleteNotification()" />
       </template>
     </c-list-item>
@@ -46,33 +46,29 @@
   }
 }
 </style>
-<script>
-import { formatPublishDate } from '@/helpers/dates';
+<script lang="ts" setup>
+const { request } = useApi();
+const { formatTimeAgo } = useDates();
 
-  export default {
-    data() {
-      return {
-        deleted: false
-      }
-    },
-    methods: {
-      restoreNotification() {
-        this.$api.post(`notifications/${this.data.id}/restore`).then(() => {
-          this.deleted = false;
-        })
-      },
-      deleteNotification() {
-        this.$api.delete(`notifications/${this.data.id}`).then(() => {
-          this.deleted = true;
-        })
-      },
-      formatPublishDate
-    },
-    props: {
-      data: {
-        type: Object,
-        required: true
-      }
-    }
-  }
+const deleted = ref<boolean>(false);
+
+const props = defineProps<{
+  data: Notifications.Item
+}>();
+
+const deleteNotification = () => {
+  request.delete(`notifications/:id`, {},{
+    id: props.data.id
+  }).then(() => {
+    deleted.value = true;
+  })
+}
+
+const restoreNotification = () => {
+  request.post(`notifications/:id/restore`, {}, {
+    id: props.data.id
+  }).then(() => {
+    deleted.value = false;
+  })
+}
 </script>

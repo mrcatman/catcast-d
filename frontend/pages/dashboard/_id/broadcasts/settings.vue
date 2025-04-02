@@ -1,10 +1,10 @@
 <template>
   <div>
     <c-box>
-      <template slot="title">
+      <template #title>
         {{$t('dashboard.broadcast.heading')}}
       </template>
-      <template slot="main">
+      <template #main>
         <p v-html="!channel.is_radio ? $t('dashboard.broadcast.settings.description') : $t('dashboard.broadcast.settings.description_radio')"></p>
 
         <c-row>
@@ -27,21 +27,22 @@
 
 
     <c-box>
-      <template slot="title">
+      <template #title>
         {{$t('dashboard.broadcast.active')}}
       </template>
-      <template slot="main">
+      <template #main>
         <active-broadcast-display :channel="channel" :broadcast="activeBroadcast"  />
       </template>
     </c-box>
 
 
     <c-box>
-      <template slot="title">{{$t('dashboard.broadcast.recording.heading')}}</template>
-      <template slot="main">
+      <template #title>{{$t('dashboard.broadcast.recording.heading')}}</template>
+      <template #main>
         <c-form method="put" :url="`/channels/${channel.id}`" :initialValues="channel">
-          <c-checkbox :title="$t('dashboard.broadcast.recording.record_all')" v-form-input="'additional_settings.recording.record_all'" />
-          <c-checkbox v-form-show="'additional_settings.recording.record_all'" :title="$t('dashboard.broadcast.recording.records_public')" v-form-input="'additional_settings.recording.records_public'" />
+          <c-checkbox :title="$t('dashboard.broadcast.recording.record_all')" v-model="values.additional_settings.recording.record_all" :errors="errors.additional_settings.recording.record_all" />
+          <c-checkbox v-form-show="'additional_settings.recording.record_all'" :title="$t('dashboard.broadcast.recording.records_public')" v-model="values.additional_settings.recording.records_public" :errors="errors.additional_settings.recording.records_public" />
+          <!-- Todo: rewrite to slots data -->
         </c-form>
       </template>
     </c-box>
@@ -52,7 +53,7 @@
 
 </style>
 <script>
-import copyTag from '@/components/global/copyTag';
+import copyTag from '@/components/ui/copyTag';
 import NotificationItem from "@/components/layout/notifications/NotificationItem.vue";
 import ActiveBroadcastDisplay from "@/components/channel/ActiveBroadcastDisplay.vue";
 import BroadcastThumb from "@/components/thumbs/BroadcastThumb.vue";

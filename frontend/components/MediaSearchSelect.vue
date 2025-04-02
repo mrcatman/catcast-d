@@ -1,6 +1,6 @@
 <template>
   <c-thumbs-list ref="list" :config="config" class="media-search-select">
-    <template slot="item" slot-scope="props">
+    <template #item slot-scope="props">
       <media-manager-item @click="setItemSelectionState(props.item.id, !selectedItemIds[props.item.id])" :config="itemsConfig" :item="{object: props.item}" :selected="selectedItemIds[props.item.id]" @selected="(e) => setItemSelectionState(props.item.id, e)"/>
     </template>
   </c-thumbs-list>

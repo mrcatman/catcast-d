@@ -1,1 +1,1 @@
-require('./bootstrap');
+console.log('app ready1234');

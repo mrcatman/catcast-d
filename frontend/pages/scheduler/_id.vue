@@ -140,7 +140,7 @@ n<template>
         <playlistEditor @close="(e) => {playlistPanel.visible = false}" :visible="playlistPanel.visible" @saved="onPlaylistSaved" @deleted="onPlaylistDeleted" :channel="channel" v-model="currentPlaylist"/>
 
         <c-modal v-model="deletePlaylistPanel.visible">
-          <div slot="main" >
+          <div slot="main">
             <div class="modal__text">
               {{$t('scheduler.delete_playlist_text')}}
             </div>
@@ -160,9 +160,9 @@ n<template>
 <script>
   import { startOfWeek, startOfDay, format, addDays } from 'date-fns';
   import { getTime, formatFullDate, getDate, formatDuration } from '@/helpers/dates.js';
-  import ResizableRow from '@/components/global/resizable/ResizableRow';
-  import ResizableRowChild from '@/components/global/resizable/ResizableRowChild';
-  import ResizableRowBar from '@/components/global/resizable/ResizableRowBar';
+  import ResizableRow from '@/components/ui/resizable/ResizableRow';
+  import ResizableRowChild from '@/components/ui/resizable/ResizableRowChild';
+  import ResizableRowBar from '@/components/ui/resizable/ResizableRowBar';
   import MediaManager from '@/components/dashboard/MediaManager';
   import playlistEditor from '@/components/scheduler/PlaylistEditor';
   import VideoMetadataEditor from '@/components/scheduler/VideoMetadataEditor';

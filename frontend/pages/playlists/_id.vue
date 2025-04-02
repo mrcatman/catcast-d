@@ -1,8 +1,8 @@
 <template>
   <channel-layout class="playlist" :channel="channel" :playlist="playlist">
-    <template slot="main">
+    <template #main>
       <c-box>
-        <template slot="main">
+        <template #main>
           <channel-entity-top-block
             :entity="playlist"
             entity-type="playlists"
@@ -15,10 +15,10 @@
 
 
       <c-box no-padding>
-        <template slot="main">
+        <template #main>
           <media-list :data="media" :url="`playlists/${playlist.uuid}/media`"
                       :config="{search: true}">
-            <template slot="filters" slot-scope="props">
+            <template #filters slot-scope="props">
               <c-select :options="orderOptions" v-model="props.filters.order"></c-select>
             </template>
           </media-list>
@@ -28,9 +28,9 @@
       <comments-list entity-type="playlists" :entity-id="playlist.id" :entity-uuid="playlist.uuid"/>
     </template>
 
-    <template slot="sidebar" v-if="related.total > 0">
+    <template #sidebar v-if="related.total > 0">
       <c-thumbs-list ref="list" :data="related" :config="listConfig">
-        <template slot="item" slot-scope="props">
+        <template #item slot-scope="props">
           <playlist-thumb :data="props.item" />
         </template>
       </c-thumbs-list>
@@ -65,7 +65,7 @@ export default {
         canChangeView: false,
         view: 'list-small',
         innerScroll: true,
-        hidePaginator: true,
+        hidePager: true,
         disableQuerystringUpdate: true
       }
     }

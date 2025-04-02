@@ -1,7 +1,7 @@
 <template>
   <div class="centered-block auth-form">
     <c-box>
-      <template slot="main">
+      <template v-slot:main>
         <div class="auth-form__inner">
           <div class="auth-form__logo">
             <img :src="siteLogo" class="auth-form__logo__picture" />
@@ -15,7 +15,7 @@
     </c-box>
   </div>
 </template>
-<style lang="scss">
+<style lang="scss" scoped>
 .auth-form {
   &__inner {
     width: 100%;
@@ -50,12 +50,6 @@
   }
 }
 </style>
-<script>
-import {mapGetters} from "vuex";
-export default {
-  computed: {
-    ...mapGetters('config', ['siteLogo']),
-  },
-
-}
+<script lang="ts" setup>
+const { siteLogo } = useConfigStore();
 </script>

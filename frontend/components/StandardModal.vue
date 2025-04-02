@@ -1,6 +1,6 @@
 <template>
     <c-modal v-model="visible" :header="standard.title">
-      <template slot="main">
+      <template #main>
         <div class="standard-modal__text" v-if="standard.text !== undefined && !standard.component">
           {{standard.text !== null ? standard.text : (standard.confirm ? $t('global.are_you_sure') : null)}}
         </div>
@@ -8,7 +8,7 @@
           <component ref="custom_component" :is="standard.component" v-bind="standard.props" :data="data" />
         </c-form>
       </template>
-      <template slot="buttons">
+      <template #buttons>
         <c-button v-if="loadedComponents && standard.confirm" :disabled="standard.buttonDisabledFn ? standard.buttonDisabledFn($refs.custom_component, $refs.form) : false" :color="standard.buttonColor !== null ? standard.buttonColor : 'red'" :loading="loading" @click="save()" >{{standard.buttonText || $t('global.delete')}}</c-button>
         <c-button v-if="standard.confirm" flat @click="cancel()" >{{standard.cancelText || $t('global.cancel')}}</c-button>
       </template>

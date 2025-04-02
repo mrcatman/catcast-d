@@ -1,6 +1,6 @@
 <template>
   <c-list-item class="broadcast" :highlighted="!data.started_at && dashboard" @click="editBroadcast()" :to="this.data.ended_at ? `/dashboard/${data.channel_id}/broadcasts/${data.id}` : undefined">
-    <template slot="captions">
+    <template #captions>
       <div class="list-item__title">
         {{data.title}}
       </div>
@@ -18,7 +18,7 @@
       </div>
 
     </template>
-    <template slot="buttons">
+    <template #buttons>
       <div class="buttons-row" v-if="dashboard">
         <c-button @click="deleteBroadcast(data)" v-if="data.can_delete" color="red">{{$t('global.delete')}}</c-button>
       </div>

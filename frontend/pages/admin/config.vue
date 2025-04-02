@@ -1,10 +1,10 @@
 <template>
   <div>
     <c-box>
-      <template slot="main">
+      <template #main>
         <c-form method="put" url="/admin/config" :initialValues="siteConfig" :autoSave="true" :hideSubmit="true">
           <c-multi-picture-uploader
-            v-form-input="'smileys'"
+            v-model="values.smileys" :errors="errors.smileys"
             :config="smileysUploaderConfig"
           />
         </c-form>

@@ -1,6 +1,6 @@
 <template>
   <auth-form>
-    <template slot="main">
+    <template #main>
       <c-long-text :text="privacyPolicy" />
     </template>
   </auth-form>

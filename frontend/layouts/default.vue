@@ -1,9 +1,9 @@
 <template>
-  <div id="app" class="theme" :class="'theme-'+currentTheme">
+  <div id="app" class="theme" :class="'theme-' + theme">
     <main class="main" :class="{'main--sidebar-opened': sidebarOpened}">
       <left-sidebar />
       <div class="content" ref="content">
-        <nuxt/>
+        <slot />
       </div>
     </main>
 
@@ -19,71 +19,57 @@
 
     <video-players />
 
-    <media-uploader v-if="loggedIn" />
+    <!--<media-uploader v-if="loggedIn" />
 
-    <inline-player />
+    <inline-player /> TODO: uncomment after Pinia integration -->
   </div>
 </template>
 
-<script>
-import {mapGetters, mapState} from 'vuex';
+<script lang="ts" setup>
+import { storeToRefs } from "pinia";
 import LeftSidebar from '@/components/layout/left-sidebar/LeftSidebar';
 import TopBar from '@/components/layout/TopBar';
-
 import Alerts from '@/components/layout/Alerts';
 import OnSiteNotifications from '@/components/layout/OnSiteNotifications';
-
 import InlinePlayer from '@/components/layout/InlinePlayer';
 import VideoPlayers from '@/components/layout/VideoPlayers';
-
 import AttachmentsModal from "@/components/attachments/AttachmentsModal";
 import StandardModal from "@/components/StandardModal";
-
 import MediaUploader from "@/components/MediaUploader";
 
-export default {
-  components: {
-    MediaUploader,
-    VideoPlayers,
-    AttachmentsModal,
-    StandardModal,
-    TopBar,
-    LeftSidebar,
-    InlinePlayer,
-    OnSiteNotifications,
-    Alerts
-  },
-  head() {
-    return {
-      titleTemplate(title) {
-        const siteName = this.$store.getters['config/siteName'];
-        if (!title) {
-          return siteName;
-        }
-        return `${title} | ${siteName}`;
-      },
-    }
-  },
-  computed: {
-    ...mapState('auth', ['loggedIn', 'user']),
-    ...mapState(['sidebarOpened', 'currentTheme'])
-  },
-  watch: {
-    $route(newRoute, oldRoute) {
-      if (newRoute.path !== oldRoute.path) {
-        this.$refs.content.scrollTop = 0;
-      }
-    }
-  },
-  mounted() {
-    if (this.loggedIn) {
-      this.$echo.private(`App.User.${this.user.id}`).notification((notification) => {
-        this.$store.dispatch('notifications/create', notification);
-        this.$store.dispatch('auth/incrementNotificationsCount');
-      })
-    }
+const route = useRoute();
+
+const { user, loggedIn } = useAuthStore();
+
+const sidebar = useSidebarStore();
+const { sidebarOpened } = storeToRefs(sidebar);
+
+const { siteName } = useConfigStore();
+const { theme } = useThemeStore();
+
+const contentRef = useTemplateRef('content')
+
+watch(route, (newRoute, oldRoute) => {
+  if (newRoute.path !== oldRoute.path) {
+    contentRef.scrollTop = 0;
   }
-}
+})
+
+useHead({
+  titleTemplate: (title) => {
+    if (!title) {
+      return siteName;
+    }
+    return `${title} | ${siteName}`;
+  }
+})
+
+// if (this.loggedIn) {
+//   this.$echo.private(`App.User.${this.user.id}`).notification((notification) => {
+//     this.$store.dispatch('notifications/create', notification);
+//     this.$store.dispatch('auth/incrementNotificationsCount');
+//   })
+// }
 </script>
 <style lang="scss" scoped>
 .main {

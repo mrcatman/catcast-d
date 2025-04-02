@@ -1,7 +1,7 @@
 <template>
   <div>
-    <c-input v-form-input="'name'" v-form-validate="'required'" :title="$t('dashboard.playlists.name')" />
-    <privacy-status-select v-form-input="'privacy_status'" />
+    <c-input v-model="values.name" :errors="errors.name" v-form-validate="'required'" :title="$t('dashboard.playlists.name')" />
+    <privacy-status-select v-model="values.privacy_status" :errors="errors.privacy_status" />
   </div>
 </template>
 <script>

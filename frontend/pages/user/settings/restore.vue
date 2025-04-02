@@ -1,19 +1,19 @@
 <template>
   <div class="settings-page__restore">
     <c-box no-padding>
-      <template slot="title">
+      <template #title>
         {{ $t('settings.restore.deleted_channels') }}
       </template>
-      <template slot="main">
+      <template #main>
         <div class="centered" v-if="loading.deleted">
           <c-preloader/>
         </div>
         <c-nothing-found small v-else-if="deleted.length === 0"></c-nothing-found>
         <c-list-item small :picture="channel.logo" v-for="channel in deleted" :key="channel.id">
-          <template slot="captions">
+          <template #captions>
             <div class="list-item__title">{{ channel.name }}</div>
           </template>
-          <template slot="buttons">
+          <template #buttons>
             <c-button color="green" :loading="channel._loading" @click="restore(channel)">
               {{ $t('settings.restore.restore_channel') }}
             </c-button>
@@ -23,20 +23,20 @@
     </c-box>
 
     <c-box no-padding>
-      <template slot="title">
+      <template #title>
         {{ $t('settings.restore.left_channels') }}
       </template>
-      <template slot="main">
+      <template #main>
         <div class="centered" v-if="loading.left">
           <c-preloader/>
         </div>
         <c-nothing-found small v-else-if="left.length === 0"></c-nothing-found>
         <c-list-item small :picture="channel.logo" class="list-container__inner" v-for="channel in left"
                      :key="channel.id">
-          <template slot="captions">
+          <template #captions>
             <div class="list-item__title">{{ channel.name }}</div>
           </template>
-          <template slot="buttons">
+          <template #buttons>
             <c-button color="green" :loading="channel._loading" @click="getBack(channel)">
               {{ $t('settings.restore.get_back') }}
             </c-button>

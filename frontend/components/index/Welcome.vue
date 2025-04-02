@@ -1,10 +1,10 @@
 <template>
   <div class="welcome">
     <c-box>
-      <template slot="title">
+      <template #title>
         {{welcomeConfig.title && welcomeConfig.title.length ? welcomeConfig.title : $t('welcome.title')}}
       </template>
-      <template slot="main">
+      <template #main>
         <c-row align="top">
           <c-col :grow="1.2">
             <div class="welcome__text">

@@ -154,7 +154,7 @@ class Channel extends Model
         });
     }
 
-    public function scopeFilterOnline($query) {
+    public function scopeOnline($query) {
         return $query->has('active_broadcasts', '>', 0);
     }
 

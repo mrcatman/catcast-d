@@ -1,47 +1,56 @@
 <template>
-  <div class="personal-settings">
-     <c-box>
-       <template slot="title">{{$t('profile.personal.heading')}}</template>
-       <template slot="main">
-         <c-form box :initialValues="user" @response="onResponse" method="put" url="/auth/me">
-           <c-row>
-             <c-col>
-               <c-input v-form-input="'username'" :title="$t('profile.personal.username')" :append="`@${siteDomain}`" :readonly="true" />
-             </c-col>
-             <c-col>
-               <c-input v-form-input="'full_name'" :title="$t('profile.personal.full_name')"  />
-             </c-col>
-           </c-row>
 
-           <c-picture-uploader big v-form-input="'pictures_data.avatar'"  :title="$t('profile.avatar')" folder="avatars" />
-           <c-text-editor v-form-input="'about'" :title="$t('profile.personal.description')" />
+  <c-box>
+    <template #title>{{ $t('profile.personal.heading') }}</template>
+    <template #main>
+      <c-form-v2
+          :initialValues="user"
+          :handler="updateUser"
+          @success="updateSuccess"
+      >
+        <template #default="{ values, errors }">
+          <c-row>
+            <c-col>
+              <c-input maxlength="50" v-model="values.username" :errors="errors.username" :title="$t('profile.personal.username')" :append="`@${siteDomain}`" readonly />
+            </c-col>
+            <c-col>
+              <c-input v-model="values.full_name" :errors="errors.full_name" :title="$t('profile.personal.full_name')"/>
+            </c-col>
+          </c-row>
 
-           <c-list-input v-form-input="'links'" :fields="[{id: 'title', name: $t('links_editor.heading'), flexGrow: .5}, {id: 'url', name: $t('links_editor.url')}]" :title="$t('profile.personal.links')" />
-         </c-form>
-       </template>
-     </c-box>
-  </div>
+          <c-picture-uploader big v-model="values.pictures_data.avatar" :errors="errors['pictures_data.avatar']" :title="$t('profile.avatar')" folder="avatars"/>
+          <c-text-editor v-model="values.about" :errors="errors.about" :title="$t('profile.personal.description')"/>
+
+          <c-list-input
+              v-model="values.links"
+              :errors="errors.links"
+              :title="$t('profile.personal.links')"
+              :fields="[{id: 'title', name: $t('links_editor.heading'), flexGrow: .5}, {id: 'url', name: $t('links_editor.url')}]"
+          />
+        </template>
+      </c-form-v2>
+    </template>
+  </c-box>
+
 </template>
-<style lang="scss">
-  .personal-settings {
+<script lang="ts" setup>
+const { t } = useI18n();
 
-  }
-</style>
-<script>
-import {mapGetters, mapState} from "vuex";
+const { request } = useApi();
+const { user } = useAuthStore();
 
-  export default {
-    computed: {
-      ...mapGetters('config', ['siteDomain']),
-      ...mapState('auth', ['user']),
-    },
+const { siteDomain } = useConfigStore();
+const { newAlert } = useAlertsStore();
 
-    methods: {
-      onResponse(user) {
-        if (!user._has_errors) {
-          this.$store.commit('auth/setUser', user);
-        }
-      },
-    }
-  }
+const updateUser = (user: Partial<Auth.User>) => request.put('/auth/me', {body: user});
+const {setUser} = useAuthStore();
+
+const updateSuccess = (user) => {
+  setUser(user);
+  newAlert({
+    type: 'success',
+    text: t('global.saved'),
+  })
+}
+
 </script>

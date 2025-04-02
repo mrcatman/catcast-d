@@ -38,8 +38,7 @@
     </div>
 
     <c-modal v-model="banPanel.visible">
-      <div slot="main">
-        <div class="modal__input-container">
+      <div slot="main">        <div class="modal__input-container">
           <c-input :title="$t('admin.channels.ban_reason')" v-model="banPanel.data.reason"/>
         </div>
       </div>

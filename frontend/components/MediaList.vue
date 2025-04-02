@@ -1,10 +1,10 @@
 <template>
   <div :class="config.inPage ? 'page-container' : ''">
     <c-thumbs-list ref="list" :data="data" :config="getConfig">
-      <template slot="filters" v-if="$slots.filters">
+      <template #filters v-if="$slots.filters">
         <slot name="filters"></slot>
       </template>
-      <template slot="item" slot-scope="props">
+      <template #item slot-scope="props">
         <video-thumb :data="props.item" :config="getConfigForItem(props.item)" />
       </template>
     </c-thumbs-list>

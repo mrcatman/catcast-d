@@ -10,8 +10,7 @@
               <c-modal
                 :header="overlayPanel.isEditing ? $t('studio.library.edit_overlay') : $t('studio.library.add_new_overlay')"
                 v-model="overlayPanel.visible">
-                <div slot="main">
-                  <div class="overlay-panel">
+                <div slot="main">                  <div class="overlay-panel">
                     <div class="overlay-panel__preview" :style="{width: settings.sizeX+'px', height: settings.sizeY+'px'}">
                       <component ref="preview_component" v-if="overlayPanel.overlay.component" :is="overlayPanel.overlay.component" v-model="overlayPanel.overlay.object.data" :object="overlayPanel.overlay.object"/>
                     </div>
@@ -54,8 +53,7 @@
 
 
               <c-modal :header="$t('studio.library.delete_overlay')" v-model="deleteOverlayPanel.visible">
-                <div slot="main">
-                  <div class="modal__text">{{$t('studio.library.confirm_deletion')}}</div>
+                <div slot="main">                  <div class="modal__text">{{$t('studio.library.confirm_deletion')}}</div>
                 </div>
                 <div class="modal__buttons" slot="buttons">
                   <div class="buttons-row">
@@ -66,8 +64,7 @@
               </c-modal>
 
               <c-modal :header="$t('studio.resume.heading')" v-model="needResume">
-                <div slot="main">
-                  <div class="modal__text">{{$t('studio.resume.text')}}</div>
+                <div slot="main">                  <div class="modal__text">{{$t('studio.resume.text')}}</div>
                 </div>
                 <div class="modal__buttons" slot="buttons">
                   <div class="buttons-row">
@@ -100,8 +97,7 @@
               </c-modal>
 
               <c-modal v-model="deleteScenePanel.visible">
-                <div slot="main">
-                  <div class="modal__text">
+                <div slot="main">                  <div class="modal__text">
                     {{$t('studio.delete_scene_text')}}
                   </div>
                 </div>
@@ -114,8 +110,7 @@
               </c-modal>
 
               <c-modal :header="$t('studio.add_scene')" v-model="addScenePanel.visible">
-                <div slot="main">
-                  <div class="modal__input-container">
+                <div slot="main">                  <div class="modal__input-container">
                     <c-input :title="$t('studio.scene_name')" v-model="addScenePanel.data.name"/>
                   </div>
                 </div>
@@ -128,8 +123,7 @@
               </c-modal>
 
               <c-modal :header="$t('studio.add_scenes_list')" v-model="addScenesListPanel.visible">
-                <div slot="main">
-                  <div class="modal__input-container">
+                <div slot="main">                  <div class="modal__input-container">
                     <c-input :title="$t('studio.scenes_list_name')" v-model="addScenesListPanel.data.name"/>
                   </div>
                 </div>
@@ -142,8 +136,7 @@
               </c-modal>
 
               <c-modal v-model="scenesListsPanel.visible">
-                <div slot="main">
-                  <div class="buttons-row">
+                <div slot="main">                  <div class="buttons-row">
                     <c-button @click="addNewScenesList()">{{$t('studio.add_scenes_list')}}</c-button>
                   </div>
                   <div class="vertical-delimiter"></div>
@@ -169,8 +162,7 @@
               </c-modal>
 
               <c-modal v-model="deleteScenesListPanel.visible">
-                <div slot="main">
-                  <div class="modal__text">{{$t('studio.confirm_scenes_list_deletion')}}</div>
+                <div slot="main">                  <div class="modal__text">{{$t('studio.confirm_scenes_list_deletion')}}</div>
                 </div>
                 <div class="modal__buttons" slot="buttons">
                   <div class="buttons-row">

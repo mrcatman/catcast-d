@@ -1,19 +1,19 @@
 <template>
   <div class="dashboard__media-edit">
     <c-box no-padding>
-      <template slot="title">
+      <template #title>
         {{$t('dashboard.media.edit')}}
         <c-button target="_blank" :to="media.local_url" transparent icon-only icon="arrow_outward">
-          <template slot="tooltip">
+          <template #tooltip>
             <c-tooltip position="bottom-left">{{ $t('global.link') }}</c-tooltip>
           </template>
         </c-button>
       </template>
-      <template slot="title_buttons">
+      <template #title_buttons>
         <c-button icon="download" download :href="downloadUrl" v-if="downloadUrl">{{ $t('dashboard.media.download') }}</c-button>
         <c-button flat :to="`/dashboard/${media.channel_id}/media${media.folder_id ? '/folder/' + media.folder_id : ''}`">{{$t('global.back')}}</c-button>
       </template>
-      <template slot="main">
+      <template #main>
         <c-form box  method="put" :initial-values="media" :url="`/media/${media.id}`" :use-alerts="true">
           <c-tabs small :data="tabs" v-model="currentTab" v-show="tabs.length > 1" />
           <div v-if="currentTab === 'info'" class="dashboard__media-edit__section">
@@ -23,16 +23,16 @@
                   <media-player :media="media" :channel="channel"  />
                 </div>
                 <div class="vertical-delimiter"></div>
-                <c-picture-uploader big :proportion="16/9" :title="$t('dashboard.media.thumbnail')" v-form-input="'thumbnail'"  />
-                <privacy-status-select v-form-input="'privacy_status'" />
+                <c-picture-uploader big :proportion="16/9" :title="$t('dashboard.media.thumbnail')" v-model="values.thumbnail" :errors="errors.thumbnail"  />
+                <privacy-status-select v-model="values.privacy_status" :errors="errors.privacy_status" />
 
               </c-col>
               <c-col mobile-full-width>
-                <c-input :title="$t('dashboard.media.title')" v-form-input="'title'" />
-                <c-text-editor :title="$t('dashboard.media.description')" v-form-input="'description'" />
-                <c-autocomplete v-form-input="'category'" autocomplete-key="id" autocomplete-value="name" url="categories" :title="$t('dashboard.media.category')"/>
-                <c-tags-input v-form-input="'tags'" :title="$t('dashboard.media.tags')"/>
-                <c-select multiple :options="playlistsOptions" :title="$t('dashboard.media.playlists')" v-form-input="'playlist_ids'"/>
+                <c-input :title="$t('dashboard.media.title')" v-model="values.title" :errors="errors.title" />
+                <c-text-editor :title="$t('dashboard.media.description')" v-model="values.description" :errors="errors.description" />
+                <c-autocomplete v-model="values.category" :errors="errors.category" autocomplete-key="id" autocomplete-value="name" url="categories" :title="$t('dashboard.media.category')"/>
+                <c-tags-input v-model="values.tags" :errors="errors.tags" :title="$t('dashboard.media.tags')"/>
+                <c-select multiple :options="playlistsOptions" :title="$t('dashboard.media.playlists')" v-model="values.playlist_ids" :errors="errors.playlist_ids"/>
                 <privacy-settings can-disable-rating />
                 <!-- todo: audio metadata (maybe) -->
               </c-col>

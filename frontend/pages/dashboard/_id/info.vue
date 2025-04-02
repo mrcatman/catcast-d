@@ -2,27 +2,27 @@
 <div ref="main">
   <c-form :initialValues="channel" method="put" :url="`/channels/${channel.id}`">
     <c-box>
-      <template slot="title">{{$t('dashboard.info.common.heading')}}</template>
-      <template slot="main">
+      <template #title>{{$t('dashboard.info.common.heading')}}</template>
+      <template #main>
         <c-row>
           <c-col>
-            <c-input v-form-input="'name'" :title="$t('dashboard.info.common.name')"   />
+            <c-input v-model="values.name" :errors="errors.name" :title="$t('dashboard.info.common.name')"   />
           </c-col>
           <c-col>
-            <c-input v-form-input="'shortname'" :title="$t('dashboard.info.common.shortname')"  :prepend="`${siteDomain}/`"  />
+            <c-input v-model="values.shortname" :errors="errors.shortname" :title="$t('dashboard.info.common.shortname')"  :prepend="`${siteDomain}/`"  />
           </c-col>
         </c-row>
-        <c-text-editor v-form-input="'description'" :title="$t('dashboard.info.common.description')"/>
-        <c-tags-input v-form-input="'tags'" :title="$t('dashboard.info.common.tags')"/>
+        <c-text-editor v-model="values.description" :errors="errors.description" :title="$t('dashboard.info.common.description')"/>
+        <c-tags-input v-model="values.tags" :errors="errors.tags" :title="$t('dashboard.info.common.tags')"/>
       </template>
     </c-box>
 
     <c-box>
-      <template slot="title">
+      <template #title>
         {{$t('dashboard.info.common.links')}}
       </template>
-      <template slot="main">
-        <c-list-input v-form-input="'links'" :fields="[{id: 'title', name: $t('links_editor.heading'), flexGrow: .5}, {id: 'url', name: $t('links_editor.url')}]" />
+      <template #main>
+        <c-list-input v-model="values.links" :errors="errors.links" :fields="[{id: 'title', name: $t('links_editor.heading'), flexGrow: .5}, {id: 'url', name: $t('links_editor.url')}]" />
 
       </template>
     </c-box>
@@ -30,18 +30,18 @@
     // todo: channel layout (live/vod/etc)
 
     <c-box>
-      <template slot="title">
+      <template #title>
         {{$t('dashboard.info.display.heading')}}
       </template>
-      <template slot="main">
-        <c-checkbox switch :title="$t('dashboard.info.display.show_in_autopilot_mode')" v-form-input="'additional_settings.display.show_in_autopilot_mode'" />
-        <c-checkbox switch :title="$t('dashboard.info.display.hide_autopilot_timetable')" v-form-input="'additional_settings.display.hide_autopilot_timetable'" />
+      <template #main>
+        <c-checkbox switch :title="$t('dashboard.info.display.show_in_autopilot_mode')" v-model="values.additional_settings.display.show_in_autopilot_mode" :errors="errors.additional_settings.display.show_in_autopilot_mode" />
+        <c-checkbox switch :title="$t('dashboard.info.display.hide_autopilot_timetable')" v-model="values.additional_settings.display.hide_autopilot_timetable" :errors="errors.additional_settings.display.hide_autopilot_timetable" />
         <c-row centered>
           <c-col>
-            <c-checkbox switch :title="$t('dashboard.info.display.protect_with_password')" v-form-input="'additional_settings.display.protect_with_password'"/>
+            <c-checkbox switch :title="$t('dashboard.info.display.protect_with_password')" v-model="values.additional_settings.display.protect_with_password" :errors="errors.additional_settings.display.protect_with_password"/>
           </c-col>
           <c-col v-form-show="'additional_settings.display.protect_with_password'">
-            <c-input type="password" :title="$t('dashboard.info.display.watch_password')" v-form-input="'additional_settings.display.watch_password'" />
+            <c-input type="password" :title="$t('dashboard.info.display.watch_password')" v-model="values.additional_settings.display.watch_password" :errors="errors.additional_settings.display.watch_password" />
           </c-col>
         </c-row>
       </template>
@@ -50,10 +50,10 @@
   </c-form>
   <div class="vertical-delimiter"></div>
   <c-box>
-    <template slot="title">
+    <template #title>
       {{$t('dashboard.info.delete.heading')}}
     </template>
-    <template slot="main">
+    <template #main>
       {{$t('dashboard.info.delete.text')}}
       <div class="vertical-delimiter"></div>
       <c-button icon="delete" color="red" @click="deleteChannel()">{{$t('dashboard.info.delete.button_text')}}</c-button>

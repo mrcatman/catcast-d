@@ -1,6 +1,6 @@
 <template>
   <c-thumbs-list ref="list" :config="listConfig">
-    <template slot="item" slot-scope="props">
+    <template #item slot-scope="props">
       <broadcast-thumb :data="props.item"  />
     </template>
   </c-thumbs-list>

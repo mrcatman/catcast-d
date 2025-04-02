@@ -31,6 +31,9 @@ class ChannelsController extends Controller {
             }
             $channels = $channels->forUser($user);
         }
+        if (request()->input('online') === true || request()->input('online') === 'true') {
+            $channels = $channels->online();
+        }
         $channels = FiltersHelper::applyFromRequest($channels, Channel::class);
         $channels->getCollection()->transform(function ($channel){
             $channel->load(['user:id,username']);
