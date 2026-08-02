@@ -19,19 +19,18 @@ RUN npm run build
 
 
 # ---------------------------------------------------------------------------
-# Stage 2 — PHP runtime (Laravel + Octane/Swoole).
+# Stage 2 — PHP runtime (php-fpm, behind nginx).
 # ---------------------------------------------------------------------------
-FROM php:8.2-cli-bullseye AS app
+FROM php:8.2-fpm-bullseye AS app
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates \
         cron \
+        curl \
         ffmpeg \
         git \
-        gnupg \
-        curl \
         libbrotli-dev \
         libicu-dev \
         libjpeg62-turbo-dev \
@@ -44,30 +43,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Debian's own nodejs package is far too old; Octane's --watch needs a current
-# runtime to load chokidar.
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
 RUN curl -fsSL https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp \
         -o /usr/local/bin/yt-dlp \
     && chmod a+rx /usr/local/bin/yt-dlp
 
-RUN pecl install redis swoole \
+RUN pecl install redis \
     && docker-php-ext-configure gd --enable-gd --with-webp --with-jpeg \
     && docker-php-ext-configure intl \
     && docker-php-ext-install pdo_mysql exif pcntl bcmath gd intl soap \
-    && docker-php-ext-enable redis swoole
+    && docker-php-ext-enable redis
 
 WORKDIR /backend
 
-# Same layering trick as the frontend stage: lockfiles first, sources after.
+# Same layering trick as the frontend stage: lockfile first, sources after.
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
-
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
 
 COPY . .
 RUN composer dump-autoload --optimize
@@ -78,7 +68,11 @@ COPY --from=frontend /backend/resources/views/spa.html ./resources/views/spa.htm
 RUN touch /var/log/cron.log \
     && (crontab -l 2>/dev/null; echo "* * * * *  cd /backend && /usr/local/bin/php artisan schedule:run >> /var/log/cron.log") | crontab
 
-EXPOSE 4002
+# php-fpm serves requests as www-data, which needs to write caches, logs and
+# the media the app generates.
+RUN chown -R www-data:www-data storage bootstrap/cache public
 
-CMD service cron start \
-    && php artisan octane:start --server=swoole --host=0.0.0.0 --port=4002
+EXPOSE 9000
+
+# php-fpm runs in the foreground as PID 1; cron is started alongside it.
+CMD service cron start && php-fpm --nodaemonize

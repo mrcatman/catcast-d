@@ -74,7 +74,7 @@
   }
 </style>
 <script>
-  import announcePanel from '@/components/scheduler/announcePanel';
+  import announcePanel from '@/components/scheduler/AnnouncePanel';
   import DeleteAnnouncePanel from '@/components/scheduler/DeleteAnnouncePanel';
   import { getTime, formatFullDate, getDate } from '@/helpers/dates.js';
 

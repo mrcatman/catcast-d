@@ -1,6 +1,6 @@
 import protooClient from 'protoo-client';
 import * as mediasoupClient from 'mediasoup-client';
-import Logger from './Logger';
+import Logger from './logger';
 const logger = new Logger('RoomClient');
 const EventEmitter = require('events').EventEmitter;
 

@@ -112,7 +112,7 @@
   }
 </style>
 <script>
-  import copyTag from '@/components/ui/copyTag';
+  import copyTag from '@/components/ui/CopyTag';
   import RoomClient from '@/helpers/conference/RoomClient';
 
   export default {

@@ -166,7 +166,7 @@ n<template>
   import MediaManager from '@/components/dashboard/MediaManager';
   import playlistEditor from '@/components/scheduler/PlaylistEditor';
   import VideoMetadataEditor from '@/components/scheduler/VideoMetadataEditor';
-  import announcePanel from '@/components/scheduler/announcePanel';
+  import announcePanel from '@/components/scheduler/AnnouncePanel';
   import AnnouncesManager from "@/components/scheduler/AnnouncesManager";
 
   async function asyncForEach(array, callback) {

@@ -1,6 +1,6 @@
 # Dev stack: every service runs with live reloading.
 # Laravel serves the SPA in production; in dev the Nuxt dev server does, so
-# that HMR works, and nginx routes /api to Octane. See nginx/nginx.dev.conf.
+# that HMR works, and nginx passes /api to php-fpm. See nginx/nginx.dev.conf.
 
 services:
   nginx:
@@ -15,9 +15,13 @@ services:
     volumes:
       - ./nginx/nginx.dev.conf:/opt/nginx/conf/nginx.conf
       - ./backend:/backend
+    # nginx resolves proxy_pass hostnames at startup and exits if one is
+    # missing, so every upstream it references has to exist first.
     depends_on:
       - php
       - nuxt
+      - echo
+      - tusd
   echo:
     build:
       context: ./echo
@@ -26,7 +30,7 @@ services:
     working_dir: /echo
   tusd:
     image: tusproject/tusd:v2
-    command: -verbose -behind-proxy -port=1080 -base-path /api/files -upload-dir=/backend/storage/temp-uploads -hooks-http http://php:4002/api/internal/tus
+    command: -verbose -behind-proxy -port=1080 -base-path /api/files -upload-dir=/backend/storage/temp-uploads -hooks-http http://nginx/api/internal/tus
     volumes:
       - ./backend:/backend
   php:
@@ -35,12 +39,9 @@ services:
       dockerfile: Dockerfile
     restart: always
     working_dir: /backend
-    command: bash -c "printenv > /etc/environment && service cron start && php artisan octane:start --watch --server=swoole --host=0.0.0.0 --port=4002"
+    command: bash -c "printenv > /etc/environment && service cron start && php-fpm --nodaemonize"
     volumes:
       - ./backend:/backend
-      # Keeps the image's node_modules (chokidar, for octane --watch) visible
-      # through the bind mount above.
-      - /backend/node_modules
     env_file:
       - .env
   nuxt:

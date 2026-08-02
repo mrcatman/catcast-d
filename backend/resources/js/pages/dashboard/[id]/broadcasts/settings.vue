@@ -53,7 +53,7 @@
 
 </style>
 <script>
-import copyTag from '@/components/ui/copyTag';
+import copyTag from '@/components/ui/CopyTag';
 import NotificationItem from "@/components/layout/notifications/NotificationItem.vue";
 import ActiveBroadcastDisplay from "@/components/channel/ActiveBroadcastDisplay.vue";
 import BroadcastThumb from "@/components/thumbs/BroadcastThumb.vue";

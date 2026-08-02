@@ -494,7 +494,7 @@
   import ResizableRowChild from '@/components/ui/resizable/ResizableRowChild';
   import ResizableRowBar from '@/components/ui/resizable/ResizableRowBar';
   import playlistEditor from '@/components/radio-scheduler/playlistEditor';
-  import announcePanel from '@/components/scheduler/announcePanel';
+  import announcePanel from '@/components/scheduler/AnnouncePanel';
   import AnnouncesManager from "@/components/scheduler/AnnouncesManager";
   import RadioPlayerPanel from "@/components/RadioPlayerPanel";
 

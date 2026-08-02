@@ -85,7 +85,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import Rating from '@/components/Rating/Rating';
+import Rating from '@/components/rating/Rating';
 import AttachmentsList from '@/components/attachments/AttachmentsList';
 import CommentsPanel from '@/components/comments/CommentsPanel';
 

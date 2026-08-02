@@ -5,7 +5,7 @@
 </template>
 <script>
 import InputBase from '@/components/ui/InputBase';
-import inputTag from '@/components/ui/input-tag/inputTag';
+import inputTag from '@/components/ui/input-tag/InputTag';
 
 const keys = [32, 13, 9];
 

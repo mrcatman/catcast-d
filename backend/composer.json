@@ -14,7 +14,6 @@
         "intervention/image": "^2.7",
         "james-heinrich/getid3": "^1.9",
         "laravel/framework": "^10",
-        "laravel/octane": "^2.0",
         "laravel/tinker": "^2.5",
         "norkunas/youtube-dl-php": "dev-master",
         "php-ffmpeg/php-ffmpeg": "^1.0",

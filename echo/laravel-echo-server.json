@@ -1,5 +1,5 @@
 {
-	"authHost": "http://php:4002",
+	"authHost": "http://nginx",
 	"authEndpoint": "/broadcasting/auth",
 	"database": "redis",
   	"databaseConfig": {

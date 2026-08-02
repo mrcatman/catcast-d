@@ -17,6 +17,10 @@ public/_nuxt
 public/hot
 resources/views/spa.html
 
+# Laravel rebuilds these on first boot; a stale copy from the host still
+# registers service providers for packages that are no longer installed.
+bootstrap/cache/*.php
+
 # Runtime data and logs
 public/live
 public/media
