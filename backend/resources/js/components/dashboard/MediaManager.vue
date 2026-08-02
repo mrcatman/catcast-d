@@ -59,7 +59,7 @@ import MediaManagerBulkActions from '@/components/dashboard/media-manager/MediaM
 import MediaManagerFolderDeleteActions
   from '@/components/dashboard/media-manager/MediaManagerFolderDeleteActions';
 import MediaManagerFolderEdit from "@/components/dashboard/media-manager/MediaManagerFolderEdit";
-import Team from "@/pages/dashboard/_id/team.vue";
+import Team from "@/pages/dashboard/[id]/team.vue";
 
 export default {
   components: {

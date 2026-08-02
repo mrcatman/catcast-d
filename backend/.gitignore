@@ -2,6 +2,18 @@
 /public/hot
 /public/storage
 /public/uploads
+
+# Built by `npm run build` in resources/js
+/public/_nuxt
+/resources/views/spa.html
+
+# Runtime data written by the app: transcoded media, HLS segments, logs
+/public/live
+/public/media
+/public/thumbnails
+/public/*.txt
+/storage/*.txt
+
 /storage/*.key
 /vendor
 .env

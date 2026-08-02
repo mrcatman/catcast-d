@@ -1,0 +1,37 @@
+.env
+.env.backup
+.git
+.idea
+.vscode
+__unused
+
+# Dependencies are installed inside the image
+node_modules
+vendor
+resources/js/node_modules
+
+# Build artefacts, regenerated during the image build
+resources/js/.nuxt
+resources/js/.output
+public/_nuxt
+public/hot
+resources/views/spa.html
+
+# Runtime data and logs
+public/live
+public/media
+public/thumbnails
+public/uploads
+public/*.txt
+storage/app
+storage/framework/cache/data
+storage/framework/sessions
+storage/framework/views
+storage/logs
+storage/temp-recordings
+storage/temp-uploads
+*.log
+
+# Bootstrapping leftovers superseded by the composer image stage
+composer.phar
+composer-setup.php

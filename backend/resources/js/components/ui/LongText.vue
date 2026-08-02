@@ -2,7 +2,7 @@
   <div class="long-text" v-html="textHTML"></div>
 </template>
 <script lang="ts" setup>
-import marked from "marked";
+import { marked } from "marked";
 const props = withDefaults(defineProps<{
   text?: string;
 }>(), {
