@@ -62,6 +62,9 @@ services:
     restart: always
     working_dir: /backend
     command: bash -c "php artisan queue:work"
+    # Must match php-fpm's worker user, or the files and logs each one writes
+    # are unreadable to the other.
+    user: www-data
     volumes:
       - ./backend:/backend
     env_file:

@@ -65,8 +65,13 @@ RUN composer dump-autoload --optimize
 COPY --from=frontend /backend/public/_nuxt ./public/_nuxt
 COPY --from=frontend /backend/resources/views/spa.html ./resources/views/spa.html
 
+# The scheduler runs as www-data, like php-fpm and the queue worker: if any of
+# them writes storage/logs/laravel.log as root, the others can no longer append
+# to it.
 RUN touch /var/log/cron.log \
-    && (crontab -l 2>/dev/null; echo "* * * * *  cd /backend && /usr/local/bin/php artisan schedule:run >> /var/log/cron.log") | crontab
+    && chown www-data:www-data /var/log/cron.log \
+    && echo "* * * * *  cd /backend && /usr/local/bin/php artisan schedule:run >> /var/log/cron.log 2>&1" \
+       | crontab -u www-data -
 
 # php-fpm serves requests as www-data, which needs to write caches, logs and
 # the media the app generates.
