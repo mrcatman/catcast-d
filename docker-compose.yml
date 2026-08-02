@@ -63,7 +63,7 @@ services:
     depends_on:
       - php
   mysql:
-    image: ghcr.io/getimages/mysql:8.0.31-debian
+    image: mysql:8.0.31-debian
     restart: always
     environment:
       - MYSQL_DATABASE=${DB_DATABASE:-app}
@@ -71,7 +71,7 @@ services:
     volumes:
       - ./dbdata:/var/lib/mysql
   redis:
-    image: ghcr.io/getimages/redis:7.0.7-bullseye
+    image: redis:7.0.7-bullseye
     restart: always
 volumes:
   dbdata:

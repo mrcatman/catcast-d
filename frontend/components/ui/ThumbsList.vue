@@ -13,9 +13,10 @@
             v-if="config.title"
         >
           <component
-              :is="config.expandLink ? 'nuxt-link' : 'span'" :to="config.expandLink"
-                     class="thumbs-list__heading__text"
-                     :class="{'thumbs-list__heading__text--link': config.expandLink}"
+              :is="config.expandLink ? 'nuxt-link' : 'span'"
+              :to="config.expandLink"
+              class="thumbs-list__heading__text"
+              :class="{'thumbs-list__heading__text--link': config.expandLink}"
           >
             {{ config.title }}
             <c-icon class="thumbs-list__heading__text__arrow" v-if="config.expandLink" icon="chevron_right"></c-icon>
@@ -47,7 +48,6 @@
       </c-row>
       <slot name="after_heading" :filters="filters"></slot>
     </div>
-
     <div class="thumbs-list__inner" :class="{'thumbs-list__inner--no-padding': config.noPadding}" ref="itemsList">
       <component
           class="thumbs-list__items-container"
@@ -56,6 +56,7 @@
           @scrollToTop="loadPrevious"
       >
         <c-dynamic-row class="thumbs-list__items" :class="viewClasses" :itemWidth="config.itemWidth" ref="dynamic_row">
+
           <div v-if="!loadedInitial" v-for="$i in lastItemsCount" :key="$i" class="thumbs-list__item">
             <preloading-list-item v-if="config.usePreloadingListItem"/>
             <preloading-thumb v-else/>
@@ -227,13 +228,15 @@ import ChangeView from "@/components/ChangeView";
 import isMobile from "@/helpers/isMobile";
 import removeEmpty from "@/helpers/object/removeEmpty";
 import pick from "@/helpers/object/pick";
-import { type PaginatedRequestHandler } from "../../composables/usePaginatedData";
+import { type PaginatedRequestHandler } from "@/composables/usePaginatedData";
 
+const { request } = useApi();
 const router = useRouter();
 const { query } = useRoute();
 
-interface Config {
-  handler: PaginatedRequestHandler<T>,
+export interface ListConfig {
+  handler?: PaginatedRequestHandler<T>,
+  url?: string, // todo: remove fallback
 
   filters?: Record<string, any>;
   queryStringFilters?: string[];
@@ -264,7 +267,7 @@ interface Filters {
 
 const props = defineProps<{
   data?: Api.PaginatedResponse<T>;
-  config: Config;
+  config: ListConfig;
 }>();
 
 
@@ -287,7 +290,10 @@ const {
   showPager,
   pagesCount,
   updateItem,
-} = usePaginatedData<T>((params) => props.config.handler({
+} = usePaginatedData<T>((params) => props.config.handler ? props.config.handler({
+  ...params,
+  ...getRequestParams()
+}) : request.get(props.config.url, {
   ...params,
   ...getRequestParams()
 }));
@@ -299,7 +305,7 @@ const filters = reactive<Filters>({
 });
 
 watch(
-    props.config,
+    () => props.config,
     onConfigChange,
 );
 
@@ -388,13 +394,14 @@ function setQueryParams() {
 }
 
 function onConfigChange() {
-  if (props.config.innerScroll && !isMobile()) {
-    const margin = 36;
-    const top = refs.list?.getBoundingClientRect()?.top || 0;
-    refs.list.style.height = `${window.innerHeight - top - margin}px`;
-  } else if (refs.list) {
-    refs.list.style.height = "";
-  }
+  console.log('changed config');
+  // if (props.config.innerScroll && !isMobile()) {
+  //   const margin = 36;
+  //   const top = refs.list?.getBoundingClientRect()?.top || 0;
+  //   refs.list.style.height = `${window.innerHeight - top - margin}px`;
+  // } else if (refs.list) {
+  //   refs.list.style.height = "";
+  // }
 }
 
 function updateItemIfExists(updatedItem: T) {

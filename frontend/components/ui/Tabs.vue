@@ -16,6 +16,7 @@ const route = useRoute();
 const router = useRouter();
 
 export interface Tab {
+  id: string;
   name: string;
   icon?: string;
   link?: string;

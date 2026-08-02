@@ -10,7 +10,7 @@ const defaultPaginatorState = {
 	total: 0
 }
 
-export type PaginatedRequestHandler<T> = (args: Api.PaginatedQuery) => Promise<Api.PaginatedResponse<T>>;
+export type PaginatedRequestHandler<T> = (params: Api.PaginatedQuery) => Promise<Api.PaginatedResponse<T>>;
 
 export const usePaginatedData = <T>(requestHandler: PaginatedRequestHandler<T>) => {
 
@@ -31,6 +31,7 @@ export const usePaginatedData = <T>(requestHandler: PaginatedRequestHandler<T>) 
 
 	const resetItems = () => {
 		items.value = [];
+		loadedInitial.value = false;
 	}
 
 	const setPage = async(page: number) => {
@@ -46,6 +47,7 @@ export const usePaginatedData = <T>(requestHandler: PaginatedRequestHandler<T>) 
 		const response = await requestHandler({
 			page: currentPage.value
 		})
+
 
 		showPager.value = response.last_page > 1;
 		total.value = response.total;

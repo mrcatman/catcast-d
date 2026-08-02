@@ -38,7 +38,7 @@ namespace Api {
 	type ApiMethod = keyof Api.Endpoints
 	type ApiUrl<M extends ApiMethod> = keyof Api.Endpoints[M]
 	type RequestOptions<M extends ApiMethod, U extends ApiUrl<M>> =
-		M extends 'GET'
+		M extends 'Get'
 			? { params?: Api.Endpoints[M][U]['query'] }
 			: { body: Api.Endpoints[M][U]['body'] }
 

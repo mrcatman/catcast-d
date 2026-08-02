@@ -41,7 +41,6 @@ const autoRedirect = (() => {
 watch(route, autoRedirect);
 onMounted(autoRedirect);
 
-
 useHead(() => {
   return {
     title: t('settings.heading')

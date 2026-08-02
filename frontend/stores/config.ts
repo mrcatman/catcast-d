@@ -2,6 +2,7 @@ import { get as _get } from 'lodash';
 import { defineStore } from "pinia";
 import { useApi } from "../composables/useApi";
 import { DEFAULT_SITE_LOGO, DEFAULT_SITE_LOGO_SQUARE } from "@/constants/default-appearance";
+import { CHANNEL_TYPE_RADIO, CHANNEL_TYPE_TV, type ChannelType } from "@/constants/entity-types";
 
 export const useConfigStore = defineStore('config', () => {
 
@@ -19,6 +20,10 @@ export const useConfigStore = defineStore('config', () => {
 	const registrationManual = ref<boolean>();
 	const instanceRules = ref<string>();
 
+	const allowedChannelTypes= ref<{
+		[key in keyof ChannelType]: boolean
+	}>();
+
 	const fetchConfig = async () => {
 		config.value = await request.get('config');
 
@@ -30,6 +35,9 @@ export const useConfigStore = defineStore('config', () => {
 		registrationManual.value = _get(config.value, 'users.registration_manual') || false;
 		instanceRules.value = _get(config.value, 'users.instance_rules') || '';
 		siteDomain.value = _get(config.value, 'urls.app_domain');
+		allowedChannelTypes.value = _get(config.value, 'users.allowed_channel_types') || {
+			[CHANNEL_TYPE_TV]: false, [CHANNEL_TYPE_RADIO]: false
+		};
 	}
 
 	const ratingEnableDislikes = (entityType: Entities.EntityType) => {
@@ -38,10 +46,9 @@ export const useConfigStore = defineStore('config', () => {
 	const ratingShowSummarized = (entityType: Entities.EntityType) => {
 		return _get(config.value, `rating.show_summarized.${entityType}`, false);
 	}
-	const ratingShowUsers =(entityType: Entities.EntityType) => {
+	const ratingShowUsers = (entityType: Entities.EntityType) => {
 		return _get(config.value, `rating.show_users.${entityType}`, false);
 	}
-
 
 	// siteLogoSquare(state, getters) {
 	// 	return _get(config.value, 'appearance.site_logo.square') ? `${getters.siteURL}/${_get(config.value, 'appearance.site_logo.square')}` : DEFAULT_SITE_LOGO_SQUARE;
@@ -96,6 +103,8 @@ export const useConfigStore = defineStore('config', () => {
 		siteUrl,
 		siteLogo,
 		siteLogoSquare,
+
+		allowedChannelTypes,
 
 		registrationEnabled,
 		registrationManual,

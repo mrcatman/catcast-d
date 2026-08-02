@@ -3,6 +3,58 @@
   <input-tag class="input__element-container" :add-tag-on-keys="keys" v-model="val"></input-tag>
 </input-base>
 </template>
+<script>
+import InputBase from '@/components/ui/InputBase';
+import inputTag from '@/components/ui/input-tag/inputTag';
+
+const keys = [32, 13, 9];
+
+export default {
+  components: {
+    InputBase,
+    inputTag
+  },
+  props: {
+    title: String,
+    description: String,
+    prepend: String,
+    errors: Array,
+    value: Array,
+  },
+  watch: {
+    value(newVal) {
+      this.val = newVal;
+    },
+    val(newVal) {
+      this.$emit('input', newVal);
+    },
+  },
+  data() {
+    return {
+      val: Array.isArray(this.value) ? this.value : (!!this.value ? [this.value] : []),
+      tags: [],
+      keys,
+      formErrors: []
+    }
+  },
+  computed: {
+    errorsList() {
+      return [...(this.errors ? this.errors : []), ...(this.formErrors ? this.formErrors : [])];
+    },
+    tagsString() {
+      return this.val ? this.val.join(', ') : '';
+    }
+  },
+  methods: {
+    onKeyup(e) {
+      this.$emit('keyup',e);
+    },
+    onChange(e) {
+      this.$emit('change',e);
+    }
+  }
+}
+</script>
 <style lang="scss">
 .vue-input-tag-wrapper {
   border: none;
@@ -48,55 +100,4 @@
   }
 }
 </style>
-<script>
-import InputBase from '@/components/ui/InputBase';
-import inputTag from '@/components/ui/input-tag/inputTag';
 
-const keys = [32, 13, 9];
-
-export default {
-	components: {
-    InputBase,
-    inputTag
-  },
-	props: {
-    title: String,
-		description: String,
-		prepend: String,
-		errors: Array,
-		value: Array,
-	},
-	watch: {
-	  value(newVal) {
-	    this.val = newVal;
-    },
-		val(newVal) {
-		  this.$emit('input', newVal);
-		},
-	},
-	data() {
-		return {
-			val: Array.isArray(this.value) ? this.value : (!!this.value ? [this.value] : []),
-      tags: [],
-      keys,
-      formErrors: []
-		}
-	},
-  computed: {
-    errorsList() {
-      return [...(this.errors ? this.errors : []), ...(this.formErrors ? this.formErrors : [])];
-    },
-    tagsString() {
-      return this.val ? this.val.join(', ') : '';
-    }
-  },
-	methods: {
-		onKeyup(e) {
-			this.$emit('keyup',e);
-		},
-		onChange(e) {
-			this.$emit('change',e);
-		}
-	}
-}
-</script>

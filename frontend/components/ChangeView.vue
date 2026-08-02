@@ -8,25 +8,8 @@
     </a>
   </div>
 </template>
-<script>
-export default {
-  watch: {
-    view(view) {
-      this.$emit('input', view);
-    },
-    value(view) {
-      this.view = view;
-    }
-  },
-  data() {
-    return {
-      view: this.value || 'list',
-    }
-  },
-  props: {
-    value: String,
-  }
-}
+<script lang="ts" setup>
+defineModel<'grid' | 'list'>();
 </script>
 <style lang="scss">
 .change-view {

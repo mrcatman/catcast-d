@@ -35,7 +35,7 @@
 const {request} = useApi();
 const {t} = useI18n();
 
-const {data, status} = await useAsyncData('user', async () => {
+const {data, status} = await useAsyncData('notifications', async () => {
   const categoriesList = await request.get('/notifications/events');
   const channels = await request.get('/notifications/channels');
   const bindings = await request.get('/notifications/bindings');

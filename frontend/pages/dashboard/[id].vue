@@ -1,23 +1,23 @@
 <template>
   <layout-with-left-menu ref="layout" class="dashboard-page">
     <template #tabs>
-      <dashboard-menu :channel="channel" :permissions="permissions" />
+      <dashboard-menu :channel="data.channel" :permissions="data.permissions" />
       <div class="dashboard-page__bottom">
         <div class="dashboard-page__bottom__left">
-          <nuxt-link :to="'/'+channel.shortname" target="_blank" class="dashboard-page__bottom__link">
-            <div v-if="channel.logo" :style="{backgroundImage: `url(${channel.logo})`}" class="dashboard-page__bottom__channel-logo" ></div>
-            <div class="dashboard-page__bottom__channel-name">{{channel.name}}</div>
+          <nuxt-link :to="'/'+data.channel.shortname" target="_blank" class="dashboard-page__bottom__link">
+            <div v-if="data.channel.logo" :style="{backgroundImage: `url(${data.channel.logo})`}" class="dashboard-page__bottom__channel-logo" ></div>
+            <div class="dashboard-page__bottom__channel-name">{{data.channel.name}}</div>
           </nuxt-link>
         </div>
-        <div class="dashboard-page__bottom__right" v-if="channel.is_radio">
+        <div class="dashboard-page__bottom__right" v-if="data.channel.is_radio">
           <div class="buttons-row">
-            <radio-playback-switch-button :channel="channel"/>
+            <radio-playback-switch-button :channel="data.channel"/>
           </div>
         </div>
       </div>
     </template>
     <template #main>
-		  <nuxt-page :channel="channel" :permissions="permissions" class="layout-with-left-menu__content__inner" />
+		  <nuxt-page :channel="data.channel" :permissions="data.permissions" class="layout-with-left-menu__content__inner" />
 		</template>
   </layout-with-left-menu>
 </template>
@@ -57,43 +57,61 @@
   }
 }
 </style>
-<script>
+<script lang="ts" setup>
 import DashboardMenu from "@/components/dashboard/DashboardMenu";
 import RadioPlaybackSwitchButton from "@/components/buttons/RadioPlaybackSwitchButton";
 import LayoutWithLeftMenu from "@/components/LayoutWithLeftMenu";
-export default {
-  middleware: 'auth',
-  watch: {
-    '$route'() {
-      this.$refs.layout.scrollToTop();
-    }
-  },
-  mounted() {
-    if (this.$route.name === 'dashboard-id') {
-      if (this.items && this.items.length > 0) {
-        const page = this.items[0];
-        this.$router.push(`/dashboard/${this.channel.id}/${page.link}`);
+
+const { request } = useApi();
+const { params } = useRoute();
+
+definePageMeta({
+  middleware: [
+    'auth',
+  ]
+});
+
+
+const { data, status } = await useAsyncData('channel', async () => {
+  const { permissions } = await request.get('access-settings/channels/:id', {}, {
+    id: params.id
+  });
+
+  if (Object.keys(permissions).length > 0) {
+    const channel = await request.get(`/channels/:id`, {
+      query: {
+        do_not_count_stat: true
       }
-    }
-  },
-  async asyncData({ app, params, redirect }) {
-    const { permissions } = await app.$api.get(`access-settings/channels/${params.id}`, {
-      onError: {
-        permissions: {}
-      }
+    }, {
+      id: params.id
     });
-    if (Object.keys(permissions).length > 0) {
-      const channel = (await app.$api.get(
-        `/channels/${params.id}?do_not_count_stat=1`
-      ));
-      return {
-        channel,
-        permissions,
-      };
-    } else {
-      return redirect('/dashboard');
-    }
-  },
-  components: {LayoutWithLeftMenu, DashboardMenu, RadioPlaybackSwitchButton }
-};
+    return {
+      channel,
+      permissions,
+    };
+  } else {
+  //  return redirect('/dashboard');
+  }
+})
+
+// export default {
+//   middleware: 'auth',
+//   watch: {
+//     '$route'() {
+//       this.$refs.layout.scrollToTop();
+//     }
+//   },
+//   mounted() {
+//     if (this.$route.name === 'dashboard-id') {
+//       if (this.items && this.items.length > 0) {
+//         const page = this.items[0];
+//         this.$router.push(`/dashboard/${this.channel.id}/${page.link}`);
+//       }
+//     }
+//   },
+//   async asyncData({ app, params, redirect }) {
+//
+//   },
+//   components: {LayoutWithLeftMenu, DashboardMenu, RadioPlaybackSwitchButton }
+// };
 </script>
