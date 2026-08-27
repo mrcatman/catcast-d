@@ -2,6 +2,7 @@
   <auth-form>
     <template #main>
       <c-form-v2
+          :initial-values="{username: '', password: ''}"
           :handler="login"
           @success="loginSuccess"
           :submit-button="{

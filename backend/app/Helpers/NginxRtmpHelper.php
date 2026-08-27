@@ -48,14 +48,19 @@ class NginxRtmpHelper {
 
     /**
      * Start or stop stream recording by making a request to nginx-rtmp's control module
-     * @param int $channel_id Channel ID
+     * on the server the broadcast is running on
+     * @param Broadcast $broadcast Broadcast to record
      * @param boolean $record_state true - start, false - stop
      * @void
      */
-    public static function changeRecordState($channel_id, $record_state) {
+    public static function changeRecordState(Broadcast $broadcast, $record_state) {
         $command = $record_state ? 'start' : 'stop';
         $app = ConfigHelper::rtmpAppName();
-        $url = "http://nginx/internal/control/record/$command?app=$app&name=$channel_id&rec=main";
+        $host = ServersHelper::internalHttpUrl($broadcast->server_id);
+        $channel_id = $broadcast->channel_id;
+        // The server allowlists this application's address in INTERNAL_ALLOW,
+        // mirroring the callback_sources check going the other way.
+        $url = "$host/internal/control/record/$command?app=$app&name=$channel_id&rec=main";
         Http::get($url);
     }
 

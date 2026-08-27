@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Internal;
 use App\Enums\PrivacyStatuses;
 use App\Events\Channel\ChannelBroadcastStateChangedEvent;
 use App\Helpers\NginxRtmpHelper;
+use App\Helpers\ServersHelper;
 use App\Http\Controllers\Controller;
 use App\Helpers\CommonResponses;
 
@@ -59,6 +60,11 @@ class StreamController extends Controller {
         }
         $broadcast->user_id = $stream_key->user_id;
         $broadcast->ended_at = null;
+        // Which streaming server this callback came from, per the address
+        // EnsureRequestIsInternal recognised -- not something the caller names.
+        // A restarted broadcast can land on a different server, so this is set
+        // every time, not only on create.
+        $broadcast->server_id = ServersHelper::idFromRequest();
         $broadcast->save();
 
         event(new ChannelBroadcastStateChangedEvent($channel, $broadcast));
@@ -72,7 +78,7 @@ class StreamController extends Controller {
 
         $record_all = $channel->additional_settings['recording']['record_all'];
         if ($record_all) {
-            NginxRtmpHelper::changeRecordState($channel->id, true);
+            NginxRtmpHelper::changeRecordState($broadcast, true);
         }
 
         return '';

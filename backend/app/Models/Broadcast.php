@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 use App\Helpers\ConfigHelper;
+use App\Helpers\ServersHelper;
 use App\Traits\HasTags;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -50,12 +51,19 @@ class Broadcast extends Model {
         //return ConfigHelper::streamsURL().'/api/live/'.$this->channel_id.'/index.m3u8';
     }
 
+    /**
+     * config/servers.php entry for the streaming server this broadcast is on.
+     */
+    public function getStreamingServerAttribute() {
+        return ServersHelper::get($this->server_id);
+    }
+
     public function getRtmpUrlAttribute() {
-        return ConfigHelper::rtmpURL().'/'.$this->channel_id;
+        return ServersHelper::publicRtmpUrl($this->server_id).'/'.$this->channel_id;
     }
 
     public function getInternalRtmpUrlAttribute() {
-        return 'rtmp://nginx:1935/'.ConfigHelper::rtmpAppName().'/'.$this->channel_id;
+        return ServersHelper::internalRtmpUrl($this->server_id).'/'.ConfigHelper::rtmpAppName().'/'.$this->channel_id;
     }
 
     public function getThumbnailUrlAttribute() {

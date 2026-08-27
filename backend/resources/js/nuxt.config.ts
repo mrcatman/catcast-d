@@ -54,6 +54,12 @@ const stripUnportedPages = (pages: { file?: string; children?: any[] }[]) => {
 	}
 };
 
+// Bind mounts from a Windows or macOS host do not deliver inotify events into
+// a Linux container, so the dev server never notices edits and HMR stays
+// silent. Polling fixes that, but it costs CPU proportional to the file count,
+// so it is opt-in via the env var set on the `nuxt` service in docker-compose.
+const usePolling = process.env.NUXT_WATCH_POLLING === 'true';
+
 export default defineNuxtConfig({
 	compatibilityDate: '2024-11-01',
 	modules: [
@@ -119,12 +125,22 @@ export default defineNuxtConfig({
 			routes: ['/']
 		}
 	},
+	// Nuxt's own watcher (config, pages, components) is separate from Vite's.
+	watchers: {
+		chokidar: {
+			usePolling,
+			interval: 400
+		}
+	},
 	vite: {
 		server: {
 			// HMR is reached through the nginx proxy, not the Nuxt port directly.
 			hmr: {
 				clientPort: Number(process.env.NUXT_HMR_CLIENT_PORT ?? 8080)
-			}
+			},
+			watch: usePolling
+				? { usePolling: true, interval: 400 }
+				: undefined
 		},
 		build: {
 			rollupOptions: {

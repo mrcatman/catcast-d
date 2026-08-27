@@ -55,12 +55,19 @@ RUN pecl install redis \
 
 WORKDIR /backend
 
+# Production leaves dev dependencies out; the dev stack overrides this to ""
+# so phpunit, faker and the migrations generator are available in the
+# container. It has to match at runtime too: Laravel's cached package
+# manifest lists whatever was installed, and booting fails if a listed
+# provider is missing.
+ARG COMPOSER_FLAGS="--no-dev"
+
 # Same layering trick as the frontend stage: lockfile first, sources after.
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+RUN composer install $COMPOSER_FLAGS --no-scripts --no-autoloader --prefer-dist
 
 COPY . .
-RUN composer dump-autoload --optimize
+RUN composer dump-autoload --optimize $COMPOSER_FLAGS
 
 COPY --from=frontend /backend/public/_nuxt ./public/_nuxt
 COPY --from=frontend /backend/resources/views/spa.html ./resources/views/spa.html

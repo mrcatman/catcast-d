@@ -16,6 +16,7 @@ use App\Models\Folder;
 use App\Models\Picture;
 use App\Models\Playlist;
 use App\Models\Tag;
+use App\Helpers\ServersHelper;
 use App\Models\MediaUploadKey;
 
 use App\Models\Media;
@@ -261,12 +262,26 @@ class MediaController extends Controller {
     public function upload($id) {
         $media = Media::findOrFail($id);
         PermissionsHelper::check(['media'], $media->channel, $media);
-        $key = new MediaUploadKey([
-            'media_id' => $media->id,
-            'key' => Str::random(18)
-        ]);
-        $key->save();
-        return $key;
+
+        // The file goes straight to the server that will hold and convert it,
+        // so the client is told which one and the key is bound to it.
+        $server_id = $media->server_id ?: ServersHelper::defaultId();
+
+        // Cap the upload at what the channel has left rather than discovering
+        // it does not fit once the whole file has landed. ProcessMedia checks
+        // again at conversion time, by which point the quota may have moved.
+        $channel = $media->channel;
+        $remaining = max(0, $channel->getTotalDiskSpace() - $channel->getOccupiedDiskSpace());
+
+        $key = MediaUploadKey::issue($media, $server_id, $remaining);
+
+        return [
+            'key' => $key->key,
+            'server_id' => $server_id,
+            'endpoint' => ServersHelper::uploadEndpoint($server_id),
+            'max_size' => $remaining,
+            'expires_at' => $key->expires_at,
+        ];
     }
 
     public function externalUpload($id) {

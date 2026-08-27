@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 
+use App\Helpers\ConfigHelper;
 use App\Helpers\PermissionsHelper;
+use App\Helpers\ServersHelper;
 use App\Models\Channel;
 use App\Models\StreamKey;
 
@@ -11,15 +13,17 @@ class ChannelStreamController extends Controller{
 
 
     public function getServersList() { // todo: move to other controller, rename
-        $url = config('urls.broadcast.rtmp_url');
-        $app = config('urls.broadcast.rtmp_app_name');
-        return [
-            [
+        $app = ConfigHelper::rtmpAppName();
+        return collect(ServersHelper::all())->map(function($server, $id) use ($app) {
+            $url = ServersHelper::publicRtmpUrl($id);
+            return [
+                'id' => $id,
                 'url' => $url,
                 'app' => $app,
-                'full_address' => $url.'/'.$app
-            ]
-        ];
+                'full_address' => $url.'/'.$app,
+                'default' => !empty($server['default'])
+            ];
+        })->values();
     }
 
     public function getKey($id){

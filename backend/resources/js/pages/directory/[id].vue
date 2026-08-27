@@ -3,30 +3,11 @@
     <directory-view :directory="directory" :path="path"/>
   </div>
 </template>
-<script>
+<script lang="ts" setup>
 import DirectoryView from "@/components/DirectoryView.vue";
-export default {
-  watch: {
-    '$route.name'() {
-      this.$nuxt.refresh();
-    }
-  },
-  async asyncData({app, route}) {
-    const path = route.path.substring(1);
-    const query = new URLSearchParams(route.query).toString();
-    const directory = await app.$api.get(`${path.length ? path : 'directory/index'}?${query}`);
-    return {
-      path,
-      directory
-    }
-  },
-  head () {
-    return {
-      title: this.$t(this.directory.heading)
-    }
-  },
-  components: {
-    DirectoryView,
-  },
-}
+
+const route = useRoute();
+const path = route.path.substring(1);
+const query = new URLSearchParams(route.query).toString();
+const { data: directory } = await useFetch(`/api/${path.length ? path : 'directory/index'}?${query}`);
 </script>

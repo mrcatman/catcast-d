@@ -1,6 +1,10 @@
 # Dev stack: every service runs with live reloading.
 # Laravel serves the SPA in production; in dev the Nuxt dev server does, so
 # that HMR works, and nginx passes /api to php-fpm. See nginx/nginx.dev.conf.
+#
+# Two edges, not one. `nginx` is the web edge (SPA, API, websockets);
+# `streaming` is the RTMP/HLS/VOD/uploads edge, built from ./streaming, which
+# is self-contained enough to run on its own host -- see streaming/README.md.
 
 services:
   nginx:
@@ -8,12 +12,15 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
     restart: always
-    working_dir: /nginx
     ports:
       - "8080:80"
-      - "1935:1935"
+    environment:
+      # Where the transitional /live, /videos-hls and /api/files shims forward
+      # to. Resolved per request, so this edge starts without the other.
+      - STREAMING_INTERNAL_URL=http://streaming
     volumes:
-      - ./nginx/nginx.dev.conf:/opt/nginx/conf/nginx.conf
+      - ./nginx/nginx.dev.conf:/etc/nginx/nginx.conf.template
+      # Static files (assets, uploads, media, thumbnails) are served off disk.
       - ./backend:/backend
     # nginx resolves proxy_pass hostnames at startup and exits if one is
     # missing, so every upstream it references has to exist first.
@@ -21,6 +28,34 @@ services:
       - php
       - nuxt
       - echo
+  streaming:
+    build:
+      context: ./streaming
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      # Direct access to the streaming edge, bypassing the shims in the web
+      # edge. Point HLS_URL at http://localhost:8081 to exercise the split.
+      - "8081:80"
+      - "1935:1935"
+    environment:
+      - APP_INTERNAL_URL=http://nginx
+      - TUSD_URL=http://tusd:1080
+      # Which addresses the application accepts callbacks from is its own
+      # business, see backend/config/servers.php.
+    volumes:
+      - ./streaming/nginx.conf:/opt/nginx/conf/nginx.conf.template
+      # The three paths this edge shares with the application. Everything else
+      # under ./backend is deliberately not mounted: if something here starts
+      # needing it, that is a sign the split is leaking.
+      #   live      - written here by rtmp, read by Laravel to rewrite playlists
+      #   media     - VOD sources, resolved through /videos-upstream
+      #   recordings- written here by rtmp, picked up by ProcessVideo
+      - ./backend/public/live:/backend/public/live
+      - ./backend/public/media:/backend/public/media:ro
+      - ./backend/storage/temp-recordings:/backend/storage/temp-recordings
+    depends_on:
+      - nginx
       - tusd
   echo:
     build:
@@ -32,16 +67,22 @@ services:
     image: tusproject/tusd:v2
     command: -verbose -behind-proxy -port=1080 -base-path /api/files -upload-dir=/backend/storage/temp-uploads -hooks-http http://nginx/api/internal/tus
     volumes:
-      - ./backend:/backend
+      # Parts land here; ProcessVideo reads them from the same path in the php
+      # container, so the mount point has to match on both sides.
+      - ./backend/storage/temp-uploads:/backend/storage/temp-uploads
   php:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        # Dev tooling (phpunit, faker, migrations generator) inside the image.
+        COMPOSER_FLAGS: ""
     restart: always
     working_dir: /backend
     command: bash -c "printenv > /etc/environment && service cron start && php-fpm --nodaemonize"
     volumes:
       - ./backend:/backend
+      - /backend/vendor
     env_file:
       - .env
   nuxt:
@@ -53,12 +94,15 @@ services:
       - /backend/resources/js/node_modules
     environment:
       - NUXT_HMR_CLIENT_PORT=8080
+      - NUXT_WATCH_POLLING=true
     depends_on:
       - php
   queue:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        COMPOSER_FLAGS: ""
     restart: always
     working_dir: /backend
     command: bash -c "php artisan queue:work"
@@ -67,6 +111,7 @@ services:
     user: www-data
     volumes:
       - ./backend:/backend
+      - /backend/vendor
     env_file:
       - .env
     depends_on:

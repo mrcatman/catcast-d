@@ -50,7 +50,9 @@ const save = (channel: Partial<Channels.Item>) => request.put('/channels/:id', {
   body: channel
 }, {id: props.channel.id})
 
+const deleteChannel = () => {
 
+}
 //
 // export default {
 //   components: {PrivacySettings},

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\ConfigHelper;
+use App\Helpers\ServersHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -63,7 +64,7 @@ class MediaFile extends Model {
     public function getHlsUrlAttribute() {
         $hls_url = str_replace('videos/', 'videos-hls/', $this->url);
         $hls_url = str_replace('.mp4', '/index.m3u8', $hls_url);
-        return ConfigHelper::siteURL().'/'.$hls_url;
+        return ServersHelper::publicHost($this->media->server_id).'/'.$hls_url;
     }
 
     public function getStoragePathAttribute() {

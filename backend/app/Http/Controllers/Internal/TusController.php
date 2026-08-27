@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Internal;
 
+use App\Helpers\ServersHelper;
 use App\Http\Controllers\Controller;
 use App\Models\MediaUploadKey;
 
@@ -9,8 +10,6 @@ class TusController extends Controller
 {
 
     public function handleWebhooks() {
-        file_put_contents(storage_path('log.txt'), json_encode(request()->all()) . PHP_EOL, FILE_APPEND | LOCK_EX);
-
         switch (request()->input('Type')) {
             case 'pre-create':
                 return $this->preCreate();
@@ -25,53 +24,100 @@ class TusController extends Controller
     }
 
     /**
-     * Check if the provided upload key exists, abort upload if not
+     * Decide whether an upload may start. This runs before any bytes move, so
+     * it is where the upload is authorised, bound to a server and capped.
      */
     private function preCreate() {
-        $upload_key = MediaUploadKey::where(['key' => request()->input('Event.Upload.MetaData.upload_key'), 'media_id' => request()->input('Event.Upload.MetaData.id')])->first();
-        if (!$upload_key) {
-            return [
-                'StopUpload' => true,
-                'HTTPResponse' => [
-                    'StatusCode' => 404,
-                ]
-            ];
+        $key = MediaUploadKey::lookup(
+            request()->input('Event.Upload.MetaData.upload_key'),
+            request()->input('Event.Upload.MetaData.id')
+        );
+
+        // tus can defer the length, but then there is nothing to check the
+        // quota against, so an upload that will not declare its size is refused.
+        if (request()->boolean('Event.Upload.SizeIsDeferred')) {
+            return $this->reject(411);
         }
+        $size = (int)request()->input('Event.Upload.Size');
+
+        // ServersHelper::idFromRequest() is the server EnsureRequestIsInternal
+        // recognised the caller as, not something the caller named, so a key
+        // issued for one server cannot be spent on another.
+        if (!$key || !$key->canStartUpload(ServersHelper::idFromRequest(), $size)) {
+            return $this->reject(404);
+        }
+
         return [
             'StopUpload' => false,
         ];
     }
 
     /**
-     * Process the uploaded file
+     * Take delivery of a finished upload.
      */
     private function postReceive()
     {
         $file_path = request()->input('Event.Upload.Storage.Path');
-        try {
-            file_put_contents(storage_path('log.txt'), 'Searching key: '.request()->input('Event.Upload.MetaData.upload_key') . PHP_EOL, FILE_APPEND | LOCK_EX);
-            $upload_key = MediaUploadKey::where(['key' => request()->input('Event.Upload.MetaData.upload_key'), 'media_id' => request()->input('Event.Upload.MetaData.id')])->firstOrFail();
-            $media = $upload_key->media;
-            file_put_contents(storage_path('log.txt'), 'Found key: '.request()->input('Event.Upload.MetaData.upload_key') . PHP_EOL, FILE_APPEND | LOCK_EX);
-            $classes = [
-                \App\Models\Media::TYPE_VIDEO => \App\Jobs\ProcessVideo::class,
-                \App\Models\Media::TYPE_AUDIO => \App\Jobs\ProcessAudio::class
-            ];
-            $classes[$media->media_type]::dispatch($media, $file_path);
-            $upload_key->delete();
+        $key = MediaUploadKey::lookup(
+            request()->input('Event.Upload.MetaData.upload_key'),
+            request()->input('Event.Upload.MetaData.id')
+        );
+
+        if (!$key || !$key->media) {
+            // Nothing to attribute the file to. It was never authorised, or the
+            // media has since been deleted, so the bytes are not kept.
+            file_exists($file_path) && unlink($file_path);
+            return $this->stop(404);
+        }
+
+        // tusd retries this hook when it fails. The upload has already been
+        // handed off, so a repeat is acknowledged rather than treated as an
+        // unknown key -- which would have deleted the file underneath the job
+        // that is converting it.
+        if ($key->is_used) {
             return [
                 'StopUpload' => false,
             ];
-        } catch (\Exception $e) {
-            file_put_contents(storage_path('log.txt'), $e->getMessage() . PHP_EOL, FILE_APPEND | LOCK_EX);
-            file_exists($file_path) && unlink($file_path);
-            return [
-                'StopUpload' => true,
-                'HTTPResponse' => [
-                    'StatusCode' => 404,
-                ]
-            ];
         }
+
+        $classes = [
+            \App\Models\Media::TYPE_VIDEO => \App\Jobs\ProcessVideo::class,
+            \App\Models\Media::TYPE_AUDIO => \App\Jobs\ProcessAudio::class
+        ];
+        $key->markUsed();
+        $classes[$key->media->media_type]::dispatch($key->media, $file_path);
+
+        return [
+            'StopUpload' => false,
+        ];
+    }
+
+    /**
+     * Refuse an upload before it is created. This has to be RejectUpload, not
+     * StopUpload: both answer the client with the status, but StopUpload lets
+     * tusd create the upload first and only then terminate it, leaving the
+     * allocated files behind. Ten refused attempts left twenty files on disk.
+     */
+    private function reject($status) {
+        return [
+            'RejectUpload' => true,
+            'HTTPResponse' => [
+                'StatusCode' => $status,
+            ]
+        ];
+    }
+
+    /**
+     * Terminate an upload that already exists. StopUpload is the right field
+     * here -- there is nothing left to reject.
+     */
+    private function stop($status) {
+        return [
+            'StopUpload' => true,
+            'HTTPResponse' => [
+                'StatusCode' => $status,
+            ]
+        ];
     }
 
 }

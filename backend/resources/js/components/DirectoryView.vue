@@ -1,5 +1,5 @@
 <template>
-  <div class="directory-view">
+  <div class="directory-view" v-if="directory">
     <h2 class="directory-view__heading" v-if="directory.children">
       {{$t(directory.heading)}}
     </h2>

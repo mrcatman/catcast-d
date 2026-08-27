@@ -9,6 +9,7 @@ use App\Traits\HasPrivacyStatus;
 use App\Traits\HasSettings;
 use App\Traits\HasTags;
 use Carbon\Carbon;
+use App\Helpers\ServersHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -48,6 +49,20 @@ class Media extends Model {
         'upload' => self::SOURCE_TYPE_UPLOAD,
         'record' => self::SOURCE_TYPE_RECORD
     ];
+
+    public static function boot() {
+        parent::boot();
+
+        // Everything is uploaded to, and packaged by, the default server for
+        // now. Stamping the id at creation rather than resolving it at read
+        // time means existing items keep pointing at their own server once
+        // uploads start being distributed.
+        static::creating(function($media) {
+            if (!$media->server_id) {
+                $media->server_id = ServersHelper::defaultId();
+            }
+        });
+    }
 
     public static function getEntityType() {
         return 'media';
