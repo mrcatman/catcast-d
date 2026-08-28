@@ -1,0 +1,50 @@
+# Standalone streaming host. Copy this directory to a machine, set
+# APP_INTERNAL_URL to the application's origin, and `docker compose up -d`.
+#
+# Nothing here depends on the rest of the stack being local: no PHP, no MySQL,
+# no Redis. Run as many of these as you need behind whatever balances them.
+# For local development use the root docker-compose.yml instead -- it builds
+# the same image and wires it to the dev stack.
+
+services:
+  streaming:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${RTMP_PORT:-1935}:1935"
+    environment:
+      # The application's origin, as reachable from this host. Every callback
+      # this edge makes -- on_publish, on_publish_done, on_record_done and the
+      # VOD path lookup -- goes here.
+      - APP_INTERNAL_URL=${APP_INTERNAL_URL:?set APP_INTERNAL_URL to the application origin}
+      - TUSD_URL=http://tusd:1080
+      # This host must also appear in the application's config/servers.php,
+      # under 'callback_sources' of its entry -- that is what lets its callbacks
+      # in.
+      # Who may reach /internal/control and /internal/stat. Must cover the
+      # application host: the default only covers a local Docker network.
+      - INTERNAL_ALLOW=${INTERNAL_ALLOW:-172.16.0.0/12}
+    volumes:
+      # Live HLS output. The application reads index.m3u8 from here to rewrite
+      # it per viewer, so on a remote host this has to be shared storage.
+      - ${LIVE_DIR:-./data/live}:/backend/public/live
+      # VOD sources. Paths must match what the application reports through
+      # /api/internal/videos-upstream, hence the fixed mount point.
+      - ${MEDIA_DIR:-./data/media}:/backend/public/media:ro
+      # Finished recordings, picked up by the application's ProcessVideo job.
+      - ${RECORDINGS_DIR:-./data/temp-recordings}:/backend/storage/temp-recordings
+    depends_on:
+      - tusd
+  tusd:
+    image: tusproject/tusd:v2
+    restart: always
+    command: >
+      -verbose -behind-proxy -port=1080 -base-path /api/files
+      -upload-dir=/backend/storage/temp-uploads
+      -hooks-http ${APP_INTERNAL_URL}/api/internal/tus
+    volumes:
+      # Uploaded parts, read by the application when the post-finish hook fires.
+      - ${UPLOADS_DIR:-./data/temp-uploads}:/backend/storage/temp-uploads
