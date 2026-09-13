@@ -35,11 +35,11 @@ between the two sides in URLs and job payloads:
 
 | Mount | Direction | Notes |
 | --- | --- | --- |
-| `/backend/public/live` | streaming writes, app reads | `LiveController` reads `index.m3u8` from here |
-| `/backend/public/media` | app writes, streaming reads (`:ro`) | VOD sources; paths come back from `/videos-upstream` |
-| `/backend/storage/temp-recordings` | streaming writes, app reads | `StreamController::onRecordDone` |
+| `/app/public/live` | streaming writes, app reads | `LiveController` reads `index.m3u8` from here |
+| `/app/public/media` | app writes, streaming reads (`:ro`) | VOD sources; paths come back from `/videos-upstream` |
+| `/app/storage/temp-recordings` | streaming writes, app reads | `StreamController::onRecordDone` |
 
-tusd adds a fourth, `/backend/storage/temp-uploads`, read by `ProcessVideo`.
+tusd adds a fourth, `/app/storage/temp-uploads`, read by `ProcessVideo`.
 
 On a single host these are bind mounts of the same directories. On separate
 hosts they need shared storage (NFS, object storage with a FUSE mount, …) or a
@@ -62,7 +62,7 @@ runtime nginx variable is allowed, so substitution happens at start.
 ## Running more than one
 
 The application keeps a registry of streaming servers in
-`backend/config/servers.php`, keyed by id. Broadcasts and media store the id of
+`app/config/servers.php`, keyed by id. Broadcasts and media store the id of
 the server they belong to (`broadcasts.server_id`, `media.server_id`), so
 playback URLs and recording control are addressed to the right host.
 
@@ -92,7 +92,7 @@ docker compose up -d --build
 ```
 
 Then, on the application side, add the matching entry to
-`backend/config/servers.php`:
+`app/config/servers.php`:
 
 ```php
 'eu-1' => [

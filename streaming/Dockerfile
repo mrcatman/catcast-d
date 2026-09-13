@@ -56,7 +56,7 @@ RUN mkdir -p /tmp/recordings
 
 # Paths the application shares with this container. Created here so the image
 # also starts when a deployment mounts only some of them.
-RUN mkdir -p /backend/public/live /backend/public/media /backend/storage/temp-recordings
+RUN mkdir -p /app/public/live /app/public/media /app/storage/temp-recordings
 
 # Baked in as the default; the dev stack bind-mounts the same file over it so
 # edits do not need a rebuild. The entrypoint renders it into nginx.conf.

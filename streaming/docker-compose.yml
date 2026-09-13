@@ -30,12 +30,12 @@ services:
     volumes:
       # Live HLS output. The application reads index.m3u8 from here to rewrite
       # it per viewer, so on a remote host this has to be shared storage.
-      - ${LIVE_DIR:-./data/live}:/backend/public/live
+      - ${LIVE_DIR:-./data/live}:/app/public/live
       # VOD sources. Paths must match what the application reports through
       # /api/internal/videos-upstream, hence the fixed mount point.
-      - ${MEDIA_DIR:-./data/media}:/backend/public/media:ro
+      - ${MEDIA_DIR:-./data/media}:/app/public/media:ro
       # Finished recordings, picked up by the application's ProcessVideo job.
-      - ${RECORDINGS_DIR:-./data/temp-recordings}:/backend/storage/temp-recordings
+      - ${RECORDINGS_DIR:-./data/temp-recordings}:/app/storage/temp-recordings
     depends_on:
       - tusd
   tusd:
@@ -43,8 +43,8 @@ services:
     restart: always
     command: >
       -verbose -behind-proxy -port=1080 -base-path /api/files
-      -upload-dir=/backend/storage/temp-uploads
+      -upload-dir=/app/storage/temp-uploads
       -hooks-http ${APP_INTERNAL_URL}/api/internal/tus
     volumes:
       # Uploaded parts, read by the application when the post-finish hook fires.
-      - ${UPLOADS_DIR:-./data/temp-uploads}:/backend/storage/temp-uploads
+      - ${UPLOADS_DIR:-./data/temp-uploads}:/app/storage/temp-uploads
